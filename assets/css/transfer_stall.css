@@ -1,0 +1,30 @@
+@import url('main.css');
+
+/* Application */
+.application.light{
+    background-color: #003366;
+    color: var(--bs-light);
+}
+
+.custom-table.light td {
+    padding: 15px;
+    background-color: #003366; /* Custom background color */
+    color: var(--bs-light);
+}
+
+/* DARK */
+.application.dark {
+    background-color: #1A2732; /* Darker background color */
+    color: var(--bs-light); /* Keep the text light for contrast */
+}
+
+.custom-table.dark td {
+    padding: 15px;
+    background-color: #1A2732; /* Darker background for dark mode */
+    color: var(--bs-light); /* Light text color for contrast */
+}
+
+.conditional-fields{
+    display: none;
+}
+

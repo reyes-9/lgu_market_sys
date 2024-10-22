@@ -1,0 +1,53 @@
+@import url('main.css');
+
+.faq-section {
+    padding: 50px;
+}
+
+.faq-header {
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.faq-description {
+    margin-bottom: 20px;
+    color: #6c757d;
+}
+
+.cta-button {
+    margin-bottom: 20px;
+}
+
+
+.feedback-section{
+    
+}
+.details,
+.input {
+    padding: 50px;
+
+}
+
+.input{
+
+}
+.feedback-header {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.feedback-description {
+    color: #6c757d;
+}
+
+.feedback-input {
+    margin-bottom: 20px;
+}
+
+.submit-button {
+    margin-top: 10px;
+    width: 120px;
+    padding: 5px;
+
+}

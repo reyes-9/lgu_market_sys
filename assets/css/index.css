@@ -1,0 +1,16 @@
+@import url('main.css');
+
+html,
+body {
+    background-image: url('../images/market.jpg');
+    background-size: cover;
+    background-position: center;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
