@@ -14,15 +14,15 @@
 <body class="body light">
     <?php include '../../includes/nav.php'; ?>
 
-    <div class="container faq-section">
+    <div class="container faq-section mb-5">
         <h1 class="text-center pb-5">Frequently Asked Questions</h1>
         <div class="row">
 
             <!-- Left Column: Header, Paragraph, and CTA Button -->
             <div class="col-md-4">
                 <h2 class="faq-header">Have More Questions?</h2>
-                <p class="faq-description">If you don't find the answers you're looking for, feel free to contact us. Our team is here to help!</p>
-                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Contact Us</button>
+                <p class="faq-description">If you don't find the questions you're looking for, feel free to submit one. Our team is here to help!</p>
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Submit Questions</button>
                 <div id="supportFormResponseMessage" class="mt-3"></div> <!-- Response message placeholder -->
             </div>
 
@@ -96,31 +96,43 @@
         </div>
     </div>
 
-    
+
 
 
 
 
     <div class="container feedback-section shadow rounded mb-4">
-    <div class="row d-flex justify-content-center align-items-stretch border rounded-4">
+        <div class="row d-flex justify-content-center align-items-stretch border rounded-4">
 
-        <!-- Left Column: Information About feedback -->
-        <div class="col-md-4 details d-flex flex-column border rounded-start-3">
-            <h1 class="feedback-header">Concerns Submission</h1>
-            <p class="feedback-description">Have any concerns or feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
+            <!-- Left Column: Information About feedback -->
+            <div class="col-md-4 details d-flex flex-column border rounded-start-3">
+                <h1 class="feedback-header">Concerns Submission</h1>
+                <p class="feedback-description">Have any concerns or feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
+            </div>
+
+            <!-- Right Column: Submit Concerns Form -->
+            <div class="col-md-8 input d-flex flex-column border rounded-end-3">
+                <h1 class="feedback-header">Have an issue?</h1>
+                <p class="feedback-description"></p>
+
+                <textarea type="text" class="form-control feedback-input" placeholder="Provide a brief description of your concern." required></textarea>
+                <button class="btn btn-warning submit-button">Submit</button>
+            </div>
+
         </div>
-
-        <!-- Right Column: Submit Concerns Form -->
-        <div class="col-md-8 input d-flex flex-column border rounded-end-3">
-            <h1 class="feedback-header">Submit Your Concern</h1>
-            <p class="feedback-description">Provide a brief description of your concern below.</p>
-
-            <textarea type="text" class="form-control feedback-input" placeholder="Enter your feedback here" required></textarea>
-            <button class="btn btn-warning submit-button">Submit</button>
-        </div>
-
     </div>
-</div>
+
+    <!-- Chatbot Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h3 class="text-secondary">Chatbot / Chat with System Admin</h3>
+                    <p class="text-muted">Currently under development...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -151,17 +163,7 @@
         </div>
     </div>
 
-    <!-- Chatbot Section -->
-    <div class="row mb-4">
-        <div class="col">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <h3 class="text-secondary">Chatbot / Chat with System Admin</h3>
-                    <p class="text-muted">Currently under development...</p>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Feedback Services Section -->
     <div class="row mb-4">
