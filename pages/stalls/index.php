@@ -61,8 +61,8 @@
 
           </div>
           <div class="mt-5 text-end">
-            <a href="/market-monitoring/pages/stall_extend" class="btn btn-warning m-2">Stall Extension Application</a>
-            <a href="/market-monitoring/pages/helper_app" class="btn btn-warning m-2">Add Helper Application</a>
+            <a href="/lgu_market_sys/pages/stall_extend" class="btn btn-warning m-2">Stall Extension Application</a>
+            <a href="/lgu_market_sys/pages/helper_app" class="btn btn-warning m-2">Add Helper Application</a>
             <a href="#" class="btn btn-warning m-2 disabled">Market Fees</a>
             <a href="#" class="btn btn-warning m-2 disabled">Violations</a>
           </div>
