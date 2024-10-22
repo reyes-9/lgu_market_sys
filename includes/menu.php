@@ -1,5 +1,5 @@
 <nav class="nav nav-pills nav-fill m-5">
-    <a class="nav-link" href="/market-monitoring/pages/portal">Profile</a>
+    <a class="nav-link" href="/lgu_market_sys/pages/portal">Profile</a>
     
     <!-- Transactions Dropdown -->
     <div class="nav-item dropdown">
@@ -12,5 +12,5 @@
         </ul>
     </div>
 
-    <a class="nav-link" href="/market-monitoring/pages/stalls">Stalls</a>
+    <a class="nav-link" href="/lgu_market_sys/pages/stalls">Stalls</a>
 </nav>
