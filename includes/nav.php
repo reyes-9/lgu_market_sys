@@ -11,7 +11,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto text-light">
                     <li class="nav-item">
-                        <a class="nav-link" href="http://localhost/lgu_market_sys/pages/home/">Home</a>
+                        <a class="nav-link" href="http://localhost/lgu_market_sys/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about">About Us</a>
