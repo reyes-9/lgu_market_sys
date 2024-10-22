@@ -36,7 +36,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <form id="supportForm" method="POST" action="feedback_action.php">
+                            <form id="supportForm" method="POST" action="../actions/feedback_action.php">
                                 <input type="hidden" name="type" value="support">
                                 <div class="form-group">
                                     <label for="supportMessage">Message</label>
@@ -199,7 +199,7 @@
                 <div class="card-body">
                     <h3 class="text-secondary">Feedback Submission</h3>
 
-                    <form id="feedbackForm" method="POST" action="feedback_action.php">
+                    <form id="feedbackForm" method="POST" action="../actions/feedback_action.php">
                         <input type="hidden" name="type" value="feedback">
 
                         <div class="form-group">

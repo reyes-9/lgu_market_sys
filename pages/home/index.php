@@ -20,8 +20,8 @@
         <p>Ensuring transparency for thriving markets.</p>
 
         <div class="button-container">
-            <a class="btn btn-custom" href="/market-monitoring/pages/portal">Vendor Portal</a>
-            <a class="btn btn-custom" href="/market-monitoring/pages/feedback">Feedback Services</a>
+            <a class="btn btn-custom" href="/lgu_market_sys/pages/portal">Vendor Portal</a>
+            <a class="btn btn-custom" href="/lgu_market_sys/pages/feedback">Feedback Services</a>
             <a class="btn btn-custom disabled" href="/market-monitoring/pages/maps">Vendor Mapping</a>
         </div>
     </div>

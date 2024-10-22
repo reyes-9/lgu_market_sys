@@ -7,8 +7,8 @@
             Transactions
         </a>
         <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
-            <li><a class="dropdown-item" href="/market-monitoring/pages/stall_app">Stall Application</a></li>
-            <li><a class="dropdown-item" href="/market-monitoring/pages/transfer_stall_app">Transfer Stall Application</a></li>
+            <li><a class="dropdown-item" href="/lgu_market_sys/pages/stall_app">Stall Application</a></li>
+            <li><a class="dropdown-item" href="/lgu_market_sys/pages/transfer_stall_app">Transfer Stall Application</a></li>
         </ul>
     </div>
 
