@@ -14,14 +14,14 @@
 
 /* DARK */
 .application.dark {
-    background-color: #1A2732; /* Darker background color */
-    color: var(--bs-light); /* Keep the text light for contrast */
+    background-color: #1A2732;
+    color: var(--bs-light); 
 }
 
 .custom-table.dark td {
     padding: 15px;
-    background-color: #1A2732; /* Darker background for dark mode */
-    color: var(--bs-light); /* Light text color for contrast */
+    background-color: #1A2732;
+    color: var(--bs-light); 
 }
 
 .conditional-fields{

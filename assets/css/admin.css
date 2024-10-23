@@ -1,0 +1,88 @@
+@import url('main.css');
+
+body{
+    background-color:rgb(245, 245, 245); 
+}
+/* .profile.light{
+    background-color: #003366;
+    color: var(--bs-light);
+}
+
+.profile.dark {
+    background-color: #1A2732;
+    color: var(--bs-light); 
+} */
+.card-body h5 {
+    font-weight: 600;
+}
+
+.card-body h3 {
+    font-weight: bold;
+}
+
+.chart-container {
+    position: relative;
+    margin-top: 20px;
+}
+
+.stat-title {
+    margin-bottom: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.stat-change {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Style for icon placement */
+.icon-container {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(120deg, #025db8, #003366);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: aliceblue;
+    font-size: 18px;
+}
+
+.card {
+    position: relative;
+    padding: 10px 20px;
+    background-color: #fff;
+}
+
+.stat-value {
+    margin-left: 10px;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #003366;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+tr:hover {
+    background-color: #ddd;
+}
