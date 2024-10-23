@@ -18,9 +18,6 @@
 
   <div class="content-wrapper">
 
-    <?php //include '../../includes/menu.php'; 
-    ?>
-
     <div class="container-fluid">
       <div class="row m-5 p-5 shadow rounded-3 profile light">
         <div class="container-fluid">
@@ -46,7 +43,7 @@
                     </div>
                     <div class="card-body">
                       <h5 class="stat-title">Active Vendors</h5>
-                      <h3 class="stat-value">53k</h3>
+                      <h3 class="stat-value">762</h3>
                       <p class="text-success stat-change">+55% than last week</p>
                     </div>
                   </div>
@@ -59,7 +56,7 @@
                     </div>
                     <div class="card-body">
                       <h5 class="stat-title">Today's Applications</h5>
-                      <h3 class="stat-value">2300</h3>
+                      <h3 class="stat-value">49</h3>
                       <p class="text-success stat-change">+3% than last month</p>
                     </div>
                   </div>
@@ -71,8 +68,8 @@
                       <i class="bi bi-bag-fill"></i>
                     </div>
                     <div class="card-body">
-                      <h5 class="stat-title">Total Occupied Stalls</h5>
-                      <h3 class="stat-value">3,462</h3>
+                      <h5 class="stat-title">Pending Applications</h5>
+                      <h3 class="stat-value">130</h3>
                       <p class="text-danger stat-change">-2% than yesterday</p>
                     </div>
                   </div>
@@ -103,34 +100,30 @@
                   </div>
                 </div>
 
-                <!-- Search and Filter Options -->
-                <div class="row">
+                <div class="row mb-3">
                   <div class="col-md-12">
                     <div class="card dashboard-card">
                       <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-filter card-icon"></i> Search and Filter Applications</h5>
-                        <div class="filter-buttons">
-                          <button class="btn">All Applications</button>
-                          <button class="btn">Approved</button>
-                          <button class="btn">Pending</button>
-                          <button class="btn">Rejected</button>
-                        </div>
                         <div>
-                          <h4>Applications Table</h4>
-                          <table class="table table-striped table-borderless table-hover custom-table light">
+                          <h4>Stall Applications Table</h4>
+                          <div class="filter-buttons mb-5">
+                            <button class="btn">All Applications</button>
+                            <button class="btn">Approved</button>
+                            <button class="btn">Pending</button>
+                            <button class="btn">Rejected</button>
+                          </div>
+
+                          <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
                             <thead>
                               <tr>
-                                <th>Vendor ID</th>
-                                <th>Vendor Name</th>
-                                <th>Stall Number</th>
-                                <th>Contact Number</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Business Type</th>
-                                <th>Date Registered</th>
+                                <th>Account</th>
+                                <th>Stall</th>
+                                <th>Section</th>
+                                <th>Market</th>
+                                <th>Application Type</th>
                                 <th>Status</th>
-                                <th>License Number</th>
-                                <th>Expiration Date</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -139,26 +132,281 @@
                                 <td>John Doe</td>
                                 <td>12A</td>
                                 <td>+1234567890</td>
-                                <td>johndoe@example.com</td>
-                                <td>123 Main St, City</td>
+                                <td>Helper</td>
+                                <td>Pending</td>
                                 <td>Food</td>
-                                <td>2024-01-15</td>
-                                <td>Active</td>
-                                <td>LICENSE12345</td>
-                                <td>2025-01-15</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Action</button></li>
+                                      <li><button class="dropdown-item" href="#">Another action</button></li>
+                                      <li><button class="dropdown-item" href="#">Something else here</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
                               </tr>
                               <tr>
                                 <td>2</td>
                                 <td>Jane Smith</td>
                                 <td>34B</td>
                                 <td>+0987654321</td>
-                                <td>janesmith@example.com</td>
-                                <td>456 Market St, City</td>
+                                <td>Stall</td>
+                                <td>Pending</td>
                                 <td>Clothing</td>
-                                <td>2023-11-20</td>
-                                <td>Inactive</td>
-                                <td>LICENSE98765</td>
-                                <td>2024-11-20</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
+                              </tr>
+                              <!-- Add more rows as needed -->
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="card dashboard-card">
+                      <div class="card-body">
+                        <div>
+                          <h4>Stall Transfer Applications Table</h4>
+                          <div class="filter-buttons mb-5">
+                            <button class="btn">All Applications</button>
+                            <button class="btn">Approved</button>
+                            <button class="btn">Pending</button>
+                            <button class="btn">Rejected</button>
+                          </div>
+                          <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
+                            <thead>
+                              <tr>
+                                <th>Account</th>
+                                <th>Stall</th>
+                                <th>Section</th>
+                                <th>Market</th>
+                                <th>Application Type</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <td>John Doe</td>
+                                <td>12A</td>
+                                <td>+1234567890</td>
+                                <td>Helper</td>
+                                <td>Pending</td>
+                                <td>Food</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <td>Jane Smith</td>
+                                <td>34B</td>
+                                <td>+0987654321</td>
+                                <td>Stall</td>
+                                <td>Pending</td>
+                                <td>Clothing</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
+                              </tr>
+                              <!-- Add more rows as needed -->
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="card dashboard-card">
+                      <div class="card-body">
+                        <div>
+                          <h4>Stall Extension Applications Table</h4>
+                          <div class="filter-buttons mb-5">
+                            <button class="btn">All Applications</button>
+                            <button class="btn">Approved</button>
+                            <button class="btn">Pending</button>
+                            <button class="btn">Rejected</button>
+                          </div>
+                          <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
+                            <thead>
+                              <tr>
+                                <th>Account</th>
+                                <th>Stall</th>
+                                <th>Section</th>
+                                <th>Market</th>
+                                <th>Application Type</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <td>John Doe</td>
+                                <td>12A</td>
+                                <td>+1234567890</td>
+                                <td>Helper</td>
+                                <td>Pending</td>
+                                <td>Food</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <td>Jane Smith</td>
+                                <td>34B</td>
+                                <td>+0987654321</td>
+                                <td>Stall</td>
+                                <td>Pending</td>
+                                <td>Clothing</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
+                              </tr>
+                              <!-- Add more rows as needed -->
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="card dashboard-card">
+                      <div class="card-body">
+                        <div>
+                          <h4>Helper Applications Table</h4>
+                          <div class="filter-buttons mb-5">
+                            <button class="btn">All Applications</button>
+                            <button class="btn">Approved</button>
+                            <button class="btn">Pending</button>
+                            <button class="btn">Rejected</button>
+                          </div>
+                          <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
+                            <thead>
+                              <tr>
+                                <th>Account</th>
+                                <th>Stall</th>
+                                <th>Section</th>
+                                <th>Market</th>
+                                <th>Application Type</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <td>John Doe</td>
+                                <td>12A</td>
+                                <td>+1234567890</td>
+                                <td>Helper</td>
+                                <td>Pending</td>
+                                <td>Food</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <td>Jane Smith</td>
+                                <td>34B</td>
+                                <td>+0987654321</td>
+                                <td>Stall</td>
+                                <td>Pending</td>
+                                <td>Clothing</td>
+                                <td>
+                                  <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Select
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><button class="dropdown-item" href="#">Approve</button></li>
+                                      <li><button class="dropdown-item" href="#">Reject</button></li>
+                                      <li><button class="dropdown-item" href="#">Delete</button></li>
+                                    </ul>
+                                  </div>
+                                </td>
+
                               </tr>
                               <!-- Add more rows as needed -->
                             </tbody>
@@ -356,7 +604,6 @@
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       // Website Views
       var ctx = document.getElementById('websiteViewsChart').getContext('2d');
@@ -422,28 +669,6 @@
           }
         }
       });
-
-      // Completed Tasks Chart
-      var ctx3 = document.getElementById('completedTasksChart').getContext('2d');
-      var completedTasksChart = new Chart(ctx3, {
-        type: 'line',
-        data: {
-          labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          datasets: [{
-            label: 'Completed Tasks',
-            data: [50, 100, 200, 300, 250, 400, 350, 450, 500],
-            borderColor: '#4caf50',
-            fill: false,
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
     </script>
 
     <!-- Bootstrap JS and dependencies -->
@@ -479,27 +704,6 @@
         table.classList.toggle('dark');
         table.classList.toggle('light');
       });
-      // Fetch the user data from the backend
-      document.addEventListener('DOMContentLoaded', function() {
-          fetch('../actions/profile_action.php')
-            .then(response => response.json())
-            .then(data => {
-              // Access user data
-              const user = data.user[0];
-              document.getElementById('name').textContent = user.name;
-              document.getElementById('email').textContent = user.email;
-              document.getElementById('bio').textContent = user.bio;
-              document.getElementById('profile-name').textContent = user.name;
-              document.getElementById('profile-email').textContent = user.email;
-              document.getElementById('profile-birthdate').textContent = user.birthdate;
-              document.getElementById('profile-address').textContent = user.address;
-              document.getElementById('profile-contact').textContent = user.contact;
-
-            })
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
     </script>
 </body>
 
