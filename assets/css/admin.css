@@ -1,6 +1,7 @@
 @import url('main.css');
 
 body{
+    /* box-sizing: border-box; */
     background-color:rgb(245, 245, 245); 
 }
 /* .profile.light{
@@ -63,10 +64,30 @@ body{
     margin-left: 10px;
 }
 
+.system_alert_icon{
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(120deg, #ff4c4c, #b30000);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: aliceblue;
+    font-size: 18px;
+}
+
 /* Table */
 
 .custom-table.light td {
     padding: 15px;
     background-color: #003366; /* Custom background color */
     color: var(--bs-light);
+}
+
+table td button{
+    background-color: #ffc107;
 }
