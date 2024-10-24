@@ -63,7 +63,7 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 $_SESSION['user_id'] = $user['id'];  
-                header('Location: home/');
+                header('Location: ../../');
                 exit();
             }
         }

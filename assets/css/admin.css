@@ -1,9 +1,10 @@
 @import url('main.css');
 
-body{
+body {
     /* box-sizing: border-box; */
-    background-color:rgb(245, 245, 245); 
+    background-color: rgb(245, 245, 245);
 }
+
 /* .profile.light{
     background-color: #003366;
     color: var(--bs-light);
@@ -26,11 +27,6 @@ body{
     margin-top: 20px;
 }
 
-.stat-title {
-    margin-bottom: 0;
-    font-size: 18px;
-    font-weight: bold;
-}
 
 .stat-change {
     font-size: 14px;
@@ -64,8 +60,8 @@ body{
     margin-left: 10px;
 }
 
-.system_alert_icon{
-    position: absolute;
+/* .system_alert_icon {
+    position: relative;
     top: 15px;
     left: 15px;
     width: 40px;
@@ -78,16 +74,27 @@ body{
     border-radius: 10px;
     color: aliceblue;
     font-size: 18px;
+} */
+
+.line{
+    border-bottom: 3px solid #ffc107;
+
+}
+
+.announcement{
+    background-color: #003366;
+    color: #fff;
 }
 
 /* Table */
-
 .custom-table.light td {
     padding: 15px;
-    background-color: #003366; /* Custom background color */
+    background-color: #003366;
     color: var(--bs-light);
 }
 
-table td button{
+table td button {
     background-color: #ffc107;
 }
+
+/* Toast */

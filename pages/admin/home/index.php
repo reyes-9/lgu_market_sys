@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vendor Portal - Public Market Monitoring System</title>
+  <title>Admin - Public Market Monitoring System</title>
   <link rel="icon" type="image/png" href="../favicon_192.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -47,15 +47,53 @@
     </div>
   </nav>
 
-  <div class="container-fluid p-0">
-    <div class="row m-5 p-5">
-      <div class="container-fluid">
+  <!-- Toast -->
+  <div class="toast-container mt-5 p-3 top-0 end-0">
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show" data-bs-autohide="false">
+      <div class="toast-header text-bg-warning rounded-top">
+        <svg class="mx-2" width="25" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="100" height="100" rx="20" fill="url(#grad1)" />
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#ff4c4c;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#b30000;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <polygon points="50,20 75,75 25,75" fill="white" />
+          <rect x="47" y="40" width="6" height="20" fill="#ff4c4c" />
+          <circle cx="50" cy="70" r="3" fill="#ff4c4c" />
+        </svg>
+        <strong class="me-auto">System Alerts</strong>
+        <small>11 mins ago</small>
+      </div>
+      <div class="toast-body text-bg-dark rounded-bottom p-4">
+        New system update available <br>
+        Market maintenance scheduled
+      </div>
+    </div>
+  </div>
 
-        <!-- Title and subtitle -->
-        <div class="row text-center mb-4">
-          <h2>Admin Dashboard</h2>
-          <p>Check the sales, value, and bounce rate by country.</p>
+
+
+  <div class="container-fluid p-0">
+    <div class="row m-5">
+      <h2>Admin Dashboard</h2>
+    </div>
+
+    <div class="row m-4 p-4">
+      <div class="container-fluid">
+        <div class="row announcement p-4 m-3 text-center rounded shadow">
+          <div class="line">
+            <h3 class="stat-title mb-3">Announcements</h3>
+          </div>
+
+          <ul class="list-unstyled mt-5">
+            <li> Public holiday on October 25th - Market will be closed.</li>
+            <li> Maintenance work scheduled for next week.</li>
+          </ul>
         </div>
+
+
 
         <!-- Statistic Cards Row -->
         <div class="row  justify-content-center align-items-center text-center mb-4">
@@ -125,25 +163,13 @@
             </div>
           </div>
 
-          <div class="col-md-4 mb-3">
-            <div class="card shadow-sm position-relative">
-              <div class="system_alert_icon">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-              </div>
-              <div class="card-body">
-                <h5 class="stat-title mb-3">System Alerts</h5>
-                <ul class="list-unstyled">
-                  <li>New system update available</li>
-                  <li>Market maintenance scheduled</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
+
+
   </div>
+
 
 
   <hr>
