@@ -1,25 +1,26 @@
 @import url('main.css');
 
 body {
-    /* box-sizing: border-box; */
     background-color: rgb(245, 245, 245);
 }
 
-/* .profile.light{
-    background-color: #003366;
-    color: var(--bs-light);
+.title {
+
 }
 
-.profile.dark {
-    background-color: #1A2732;
-    color: var(--bs-light); 
-} */
 .card-body h5 {
     font-weight: 600;
 }
 
 .card-body h3 {
     font-weight: bold;
+}
+
+.card {
+    position: relative;
+    padding: 10px 20px;
+    background-color: #fff;
+
 }
 
 .chart-container {
@@ -50,12 +51,6 @@ body {
     font-size: 18px;
 }
 
-.card {
-    position: relative;
-    padding: 10px 20px;
-    background-color: #fff;
-}
-
 .stat-value {
     margin-left: 10px;
 }
@@ -76,12 +71,12 @@ body {
     font-size: 18px;
 } */
 
-.line{
+.line {
     border-bottom: 3px solid #ffc107;
 
 }
 
-.announcement{
+.announcement {
     background-color: #003366;
     color: #fff;
 }
@@ -98,3 +93,8 @@ table td button {
 }
 
 /* Toast */
+.toast:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}

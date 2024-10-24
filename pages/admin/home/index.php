@@ -73,11 +73,12 @@
     </div>
   </div>
 
-
-
   <div class="container-fluid p-0">
-    <div class="row m-5">
-      <h2>Admin Dashboard</h2>
+    <div class="row">
+      <div class="title text-center m-2 p-5">
+        <h2>Admin Dashboard</h2>
+      </div>
+
     </div>
 
     <div class="row m-4 p-4">
@@ -100,7 +101,7 @@
 
           <!-- Today's Money -->
           <div class="col-md-4 mb-3">
-            <div class="card shadow-sm position-relative">
+            <div class="card shadow position-relative">
               <div class="icon-container">
                 <i class="bi bi-person-fill"></i>
               </div>
@@ -113,7 +114,7 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="card shadow-sm position-relative">
+            <div class="card shadow position-relative">
               <div class="icon-container">
                 <i class="bi bi-file-earmark-fill"></i>
               </div>
@@ -126,7 +127,7 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="card shadow-sm position-relative">
+            <div class="card shadow position-relative">
               <div class="icon-container">
                 <i class="bi bi-bag-fill"></i>
               </div>
@@ -142,7 +143,7 @@
           <div class="row">
             <!-- Website Views -->
             <div class="col-md-6 mb-3">
-              <div class="card shadow-sm">
+              <div class="card shadow">
                 <div class="card-body">
                   <h5 class="stat-title">Website Views</h5>
                   <p class="text-muted">Views Graph</p>
@@ -153,7 +154,7 @@
 
             <!-- Daily Sales -->
             <div class="col-md-6 mb-3">
-              <div class="card shadow-sm">
+              <div class="card shadow">
                 <div class="card-body">
                   <h5 class="stat-title">Daily Applications</h5>
                   <p class="text-muted">Vendors who submits application.</p>
@@ -164,6 +165,11 @@
           </div>
 
         </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="container">
+        <a href="../table/" class="btn btn-warning" tabindex="-1" role="button" aria-disabled="true">Go to Tables</a>
       </div>
     </div>
 
@@ -380,7 +386,6 @@
   </script>
 
   <!-- Bootstrap JS and dependencies -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
     var ctx = document.getElementById('applicationsChart').getContext('2d');

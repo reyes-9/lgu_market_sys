@@ -363,6 +363,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="row text-center">
+                    <div class="container">
+                        <a href="../home/" class="btn btn-warning" tabindex="-1" role="button" aria-disabled="true">Go to Dashboard</a>
+                    </div>
+                </div>
 
             </div>
         </div>
