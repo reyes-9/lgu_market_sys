@@ -4,7 +4,36 @@ body {
     background-color: rgb(245, 245, 245);
 }
 
-.title {
+.title.light {
+    color: #212529;
+}
+
+.title.dark {
+    color: #fff;
+}
+
+.announcement.light {
+    background-color: #003366;
+    color: #fff;
+}
+
+.announcement.dark {
+    background-color: #1A2732;
+    color: #fff;
+}
+
+.card.light {
+    position: relative;
+    padding: 10px 20px;
+    background-color: #fff;
+
+}
+
+.card.dark {
+    position: relative;
+    padding: 10px 20px;
+    background-color: #0D0D0D;
+    color: #fff;
 
 }
 
@@ -14,13 +43,6 @@ body {
 
 .card-body h3 {
     font-weight: bold;
-}
-
-.card {
-    position: relative;
-    padding: 10px 20px;
-    background-color: #fff;
-
 }
 
 .chart-container {
@@ -73,13 +95,8 @@ body {
 
 .line {
     border-bottom: 3px solid #ffc107;
-
 }
 
-.announcement {
-    background-color: #003366;
-    color: #fff;
-}
 
 /* Table */
 .custom-table.light td {
@@ -93,6 +110,9 @@ table td button {
 }
 
 /* Toast */
+.toast-body{
+    background-color: #1A2732;
+}
 .toast:hover {
     transform: scale(1.05);
     transition: transform 0.3s ease-in-out;

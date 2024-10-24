@@ -5,8 +5,8 @@ require_once '../../includes/config.php';
 
 if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
     $errors[] = "Invalid request. Please try again.";
-    // header('Location: register.php');
-    // exit();
+    header('Location: login.php');
+    exit();
 } else {
 
     // If the form is submitted
@@ -38,7 +38,7 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
         // Check if fields are empty
         if (empty($password) || empty($email)) {
             $errors[] = "Both fields are required.";
-        }       
+        }
 
         // Validate password if no errors so far
         if (empty($errors)) {
@@ -61,9 +61,13 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
                 $stmt = $pdo->prepare("SELECT id, email, password FROM accounts WHERE email = :email");
                 $stmt->execute([':email' => $email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                $_SESSION['user_id'] = $user['id'];  
-                header('Location: ../../');
+
+                $_SESSION['user_id'] = $user['id'];
+                if (!checkUserType($pdo, $email)) {      //if not admin
+                    header('Location: ../../');
+                    exit();
+                }
+                header('Location: ../admin/home/');
                 exit();
             }
         }
@@ -74,7 +78,7 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
             }
         }
     }
-} 
+}
 
 function checkUserPassword($pdo, $email, $password)
 {
@@ -94,4 +98,19 @@ function checkUserPassword($pdo, $email, $password)
     } else {
         return false;
     }
+}
+
+function checkUserType($pdo, $email)
+{
+    $stmt = $pdo->prepare("SELECT user_type FROM accounts WHERE email = :email");
+    $stmt->execute([
+        ':email' => $email,
+    ]);
+
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && $user['user_type'] === 'Admin') {
+        return true;
+    }
+    return false;
 }

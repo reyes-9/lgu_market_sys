@@ -22,7 +22,7 @@
         <!-- Sidebar -->
         <div class="col-md-4 text-center">
           <div class="text-center profile-card h-100">
-            <img id="profile_picture" src="../images/default_profile_pic.png" alt="Profile Image" class="img-fluid w-25 h-auto my-3">
+            <img id="profile_picture" src="../../images/default_profile_pic.png" alt="Profile Image" class="img-fluid w-25 h-auto my-3">
             <h2 class=""><span id="name"></span></h2>
             <p><span id="email"></span></p>
             <br>

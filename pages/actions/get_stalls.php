@@ -1,6 +1,11 @@
 <?php
 
 require_once '../../includes/config.php';
+if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    $errors[] = "Invalid request. Please try again.";
+    header('Location: login.php');
+    exit();
+}
 
 
 if (isset($_GET['market_id']) && isset($_GET['section_id'])) {

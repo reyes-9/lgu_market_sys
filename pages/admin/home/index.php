@@ -66,7 +66,7 @@
         <strong class="me-auto">System Alerts</strong>
         <small>11 mins ago</small>
       </div>
-      <div class="toast-body text-bg-dark rounded-bottom p-4">
+      <div class="toast-body text-light rounded-bottom p-4">
         New system update available <br>
         Market maintenance scheduled
       </div>
@@ -75,15 +75,15 @@
 
   <div class="container-fluid p-0">
     <div class="row">
-      <div class="title text-center m-2 p-5">
-        <h2>Admin Dashboard</h2>
+      <div class="text-center m-2 p-5">
+        <h2 class="title light">Admin Dashboard</h2>
       </div>
 
     </div>
 
     <div class="row m-4 p-4">
       <div class="container-fluid">
-        <div class="row announcement p-4 m-3 text-center rounded shadow">
+        <div class="row announcement light p-4 m-3 text-center rounded shadow">
           <div class="line">
             <h3 class="stat-title mb-3">Announcements</h3>
           </div>
@@ -97,11 +97,11 @@
 
 
         <!-- Statistic Cards Row -->
-        <div class="row  justify-content-center align-items-center text-center mb-4">
+        <div class="row justify-content-center align-items-center text-center mb-4">
 
           <!-- Today's Money -->
           <div class="col-md-4 mb-3">
-            <div class="card shadow position-relative">
+            <div class="card light shadow position-relative">
               <div class="icon-container">
                 <i class="bi bi-person-fill"></i>
               </div>
@@ -114,7 +114,7 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="card shadow position-relative">
+            <div class="card light shadow position-relative">
               <div class="icon-container">
                 <i class="bi bi-file-earmark-fill"></i>
               </div>
@@ -127,7 +127,7 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="card shadow position-relative">
+            <div class="card light shadow position-relative">
               <div class="icon-container">
                 <i class="bi bi-bag-fill"></i>
               </div>
@@ -143,10 +143,9 @@
           <div class="row">
             <!-- Website Views -->
             <div class="col-md-6 mb-3">
-              <div class="card shadow">
+              <div class="card light shadow">
                 <div class="card-body">
                   <h5 class="stat-title">Website Views</h5>
-                  <p class="text-muted">Views Graph</p>
                   <canvas id="websiteViewsChart"></canvas>
                 </div>
               </div>
@@ -154,10 +153,9 @@
 
             <!-- Daily Sales -->
             <div class="col-md-6 mb-3">
-              <div class="card shadow">
+              <div class="card light shadow">
                 <div class="card-body">
                   <h5 class="stat-title">Daily Applications</h5>
-                  <p class="text-muted">Vendors who submits application.</p>
                   <canvas id="dailySalesChart"></canvas>
                 </div>
               </div>
@@ -181,15 +179,15 @@
   <hr>
 
   <!-- Dashboard Header -->
-  <div class="dashboard-header">
+  <!-- <div class="dashboard-header">
     <h1 class="h3">Admin Dashboard</h1>
     <button class="btn btn-primary">+ Add New Application</button>
-  </div>
+  </div> -->
 
   <!-- Summary of Key Metrics -->
-  <div class="row">
-    <!-- Active Vendors -->
-    <div class="col-md-3">
+  <!-- <div class="row"> -->
+  <!-- Active Vendors -->
+  <!-- <div class="col-md-3">
       <div class="card dashboard-card bg-gradient-info">
         <div class="card-body card-stats">
           <i class="fas fa-user-friends card-icon"></i>
@@ -199,10 +197,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- Pending Applications -->
-    <div class="col-md-3">
+  <!-- Pending Applications -->
+  <!-- <div class="col-md-3">
       <div class="card dashboard-card bg-gradient-warning">
         <div class="card-body card-stats">
           <i class="fas fa-hourglass-half card-icon"></i>
@@ -212,10 +210,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- Approved Applications -->
-    <div class="col-md-3">
+  <!-- Approved Applications -->
+  <!-- <div class="col-md-3">
       <div class="card dashboard-card bg-gradient-success">
         <div class="card-body card-stats">
           <i class="fas fa-check-circle card-icon"></i>
@@ -225,10 +223,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- Rejected Applications -->
-    <div class="col-md-3">
+  <!-- Rejected Applications -->
+  <!-- <div class="col-md-3">
       <div class="card dashboard-card bg-gradient-danger">
         <div class="card-body card-stats">
           <i class="fas fa-times-circle card-icon"></i>
@@ -239,22 +237,22 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Stalls and Feedback -->
-  <div class="row">
-    <!-- Market Stalls -->
-    <div class="col-md-6">
+  <!-- <div class="row"> -->
+  <!-- Market Stalls -->
+  <!-- <div class="col-md-6">
       <div class="card dashboard-card">
         <div class="card-body">
           <h5 class="card-title"><i class="fas fa-store-alt card-icon"></i> Market Stalls</h5>
           <p class="stat-number">Occupied: 130 | Vacant: 20</p>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- Recent Feedback -->
-    <div class="col-md-6">
+  <!-- Recent Feedback -->
+  <!-- <div class="col-md-6">
       <div class="card dashboard-card">
         <div class="card-body">
           <h5 class="card-title"><i class="fas fa-comment card-icon"></i> Recent Feedback</h5>
@@ -265,12 +263,12 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Recent Vendor Activities and Alerts -->
-  <div class="row">
-    <!-- Recent Vendor Activities -->
-    <div class="col-md-6">
+  <!-- <div class="row"> -->
+  <!-- Recent Vendor Activities -->
+  <!-- <div class="col-md-6">
       <div class="card dashboard-card">
         <div class="card-body">
           <h5 class="card-title"><i class="fas fa-clipboard-list card-icon"></i> Recent Vendor Activities</h5>
@@ -280,24 +278,24 @@
           </ul>
         </div>
       </div>
-    </div>
+    </div> -->
 
 
 
-    <!-- Application Trends Chart -->
-    <div class="row">
+  <!-- Application Trends Chart -->
+  <!-- <div class="row">
       <div class="col-md-12">
         <div class="card dashboard-card chart-card">
           <h5 class="card-title"><i class="fas fa-chart-line card-icon"></i> Application Trends</h5>
           <canvas id="applicationsChart"></canvas>
         </div>
       </div>
-    </div>
+    </div> -->
 
 
 
-    <!-- Announcements -->
-    <div class="row">
+  <!-- Announcements -->
+  <!-- <div class="row">
       <div class="col-md-12">
         <div class="card dashboard-card">
           <div class="card-body">
@@ -312,7 +310,7 @@
     </div>
   </div>
   </div>
-  </div>
+  </div> -->
 
 
   <?php include '../../../includes/footer.php'; ?>
@@ -405,17 +403,24 @@
   </script>
   <script>
     // Theme
-    const profile = document.querySelector('.profile');
-    const divide = document.querySelector('.divide');
-    const table = document.querySelector('.custom-table');
+    const title = document.querySelector('.title');
+    const announcement = document.querySelector('.announcement');
+    const cards = document.querySelectorAll('.card');
+
+    console.log(announcement);
 
     themeToggleButton.addEventListener("click", () => {
-      profile.classList.toggle("dark");
-      profile.classList.toggle("light");
-      divide.classList.toggle('dark');
-      divide.classList.toggle('light');
-      table.classList.toggle('dark');
-      table.classList.toggle('light');
+
+      title.classList.toggle('dark');
+      title.classList.toggle('light');
+      announcement.classList.toggle('dark');
+      announcement.classList.toggle('light');
+
+      cards.forEach((cards) => {
+        cards.classList.toggle('dark');
+        cards.classList.toggle('light');
+        console.log("Card:", cards.classList);
+      });
     });
   </script>
 </body>
