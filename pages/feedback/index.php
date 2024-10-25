@@ -14,6 +14,35 @@
 <body class="body light">
     <?php include '../../includes/nav.php'; ?>
 
+    <div class="container feedback-section shadow rounded mb-4">
+        <div class="row d-flex justify-content-center align-items-stretch border rounded-4">
+
+            <div class="col-md-4 details d-flex flex-column border rounded-start-3">
+                <h1 class="feedback-header">Feedback Submission</h1>
+                <p class="feedback-description">Have any feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
+            </div>
+
+            <div class="col-md-8 input d-flex flex-column border rounded-end-3">
+                <h1 class="feedback-header">What are your thoughts?</h1>
+                <p class="feedback-description"></p>
+
+                <form id="feedbackForm" method="POST" action="../actions/feedback_action.php">
+                    <input type="hidden" name="type" value="feedback">
+
+                    <div class="form-group">
+                        <label for="feedbackMessage">Message</label>
+                        <textarea id="feedbackMessage" name="message" class="form-control" rows="5" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning btn-block mt-3">Submit Feedback</button>
+                </form>
+
+                <div id="feedbackFormResponseMessage" class="mt-3"></div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="container faq-section mb-5">
         <h1 class="text-center pb-5">Frequently Asked Questions</h1>
         <div class="row">
@@ -23,7 +52,7 @@
                 <h2 class="faq-header">Have More Questions?</h2>
                 <p class="faq-description">If you don't find the questions you're looking for, feel free to submit one. Our team is here to help!</p>
                 <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Submit Questions</button>
-                <div id="supportFormResponseMessage" class="mt-3"></div> <!-- Response message placeholder -->
+                <div id="faqFormResponseMessage" class="mt-3"></div> <!-- Response message placeholder -->
             </div>
 
             <!-- Modal -->
@@ -36,11 +65,11 @@
                         </div>
                         <div class="modal-body">
 
-                            <form id="supportForm" method="POST" action="../actions/feedback_action.php">
+                            <form id="supportFormModal" method="POST" action="../actions/feedback_action.php">
                                 <input type="hidden" name="type" value="support">
                                 <div class="form-group">
                                     <label for="supportMessage">Message</label>
-                                    <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your support request here..." required></textarea>
+                                    <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your question here..." required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-warning mt-3">Submit</button>
                             </form>
@@ -115,8 +144,16 @@
                 <h1 class="feedback-header">Have an issue?</h1>
                 <p class="feedback-description"></p>
 
-                <textarea type="text" class="form-control feedback-input" placeholder="Provide a brief description of your concern." required></textarea>
-                <button class="btn btn-warning submit-button">Submit</button>
+
+                <form id="supportForm" method="POST" action="../actions/feedback_action.php">
+                    <input type="hidden" name="type" value="support">
+                    <div class="form-group">
+                        <label for="supportMessage">Message</label>
+                        <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your support request here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-block mt-3">Submit Support Request</button>
+                </form>
+                <div id="supportFormResponseMessage" class="mt-3"></div>
             </div>
 
         </div>
@@ -142,7 +179,7 @@
 
 
     <!-- Contact Customer Support Section -->
-    <div class="row mb-4">
+    <!-- <div class="row mb-4">
         <div class="col">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -157,16 +194,16 @@
                         <button type="submit" class="btn btn-primary btn-block">Submit Support Request</button>
                     </form>
 
-                    <div id="supportFormResponseMessage" class="mt-3"></div> <!-- Response message placeholder -->
-                </div>
-            </div>
-        </div>
+                    <div id="supportFormResponseMessage" class="mt-3"></div> <-- Response message placeholder -->
+    </div>
+    </div>
+    </div>
     </div>
 
 
 
     <!-- Feedback Services Section -->
-    <div class="row mb-4">
+    <!-- <div class="row mb-4">
         <div class="col">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -192,10 +229,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Feedback Submission Form Section -->
-    <div class="row mb-4">
+    <!-- <div class="row mb-4">
         <div class="col">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -216,7 +253,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     </section>
     </div>
 
@@ -240,6 +277,8 @@
                     })
                     .then(response => response.json()) // Parse JSON response
                     .then(data => {
+
+                        console.log(data);
 
                         // Handle success or error response
                         const responseMessage = document.getElementById(`${formId}ResponseMessage`);

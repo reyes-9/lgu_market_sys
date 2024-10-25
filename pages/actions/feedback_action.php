@@ -1,12 +1,5 @@
 <?php
 require_once '../../includes/config.php';
-
-if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-    $errors[] = "Invalid request. Please try again.";
-    header('Location: login.php');
-    exit();
-}
-
 session_start();
 ob_start();
 
@@ -62,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => 'An error occurred while processing your request.']);
     }
-
     ob_end_clean();
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Not a POST request']);
