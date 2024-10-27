@@ -38,6 +38,7 @@ if (empty($_SESSION['csrf_token'])) {
 
                         <form id="application_form" action="../actions/stall_application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                            <input type="hidden" name="application_type" value="stall_app">
 
                             <!-- Market Dropdown -->
                             <div class="mb-3">
@@ -91,8 +92,7 @@ if (empty($_SESSION['csrf_token'])) {
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-    <!-- Bootstrap JS and dependencies -->
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
         let locationsData; // Store the fetched data for later use
 
@@ -121,9 +121,9 @@ if (empty($_SESSION['csrf_token'])) {
         });
 
         document.getElementById('application_form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
-            const formData = new FormData(this); // Create FormData object
+            const formData = new FormData(this); 
 
             fetch('../actions/stall_application_action.php', {
                     method: 'POST',
@@ -214,7 +214,7 @@ if (empty($_SESSION['csrf_token'])) {
 
         function loadStalls(marketId, sectionId) {
             // Fetch stalls based on market_id and section_id
-            fetch('get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
+            fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
                 .then(response => response.json())
                 .then(data => {
                     let stallSelect = document.getElementById('stall');
@@ -261,7 +261,7 @@ if (empty($_SESSION['csrf_token'])) {
             document.getElementById('stallInfo').innerHTML = stallInfo;
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
 </body>
 
 </html>

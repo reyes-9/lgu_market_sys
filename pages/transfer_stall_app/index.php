@@ -81,7 +81,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 <h5>For Transfer</h5>
                                 <label for="transfer_documents">Deed Of Transfer:</label>
                                 <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="transfer_names" name="transfer_names" value="Deed Of Transfer">
+                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
                             </div>
 
                             <!-- Succession Fields -->
@@ -89,7 +89,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 <h5>For Succession</h5>
                                 <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
                                 <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="succession_names" name="succession_names" value="Affidavit of Incapacitated Adjudicated Stallholder">
+                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
                             </div>
 
                             <!-- QC ID and Current ID (side by side) -->
@@ -97,12 +97,12 @@ if (empty($_SESSION['csrf_token'])) {
                                 <div class="col">
                                     <label for="qc_id_photo">QC ID Photo (Back to Back):</label>
                                     <input type="file" class="form-control" id="qc_id_photo" name="documents[]" multiple required>
-                                    <input type="hidden" id="qc_id_names" name="qc_id_names" value="QC ID">
+                                    <input type="hidden" id="qc_id_names" name="qc_id" value="QC ID">
                                 </div>
                                 <div class="col">
                                     <label for="current_id_picture">Current ID Picture:</label>
                                     <input type="file" class="form-control" id="current_id_picture" name="documents[]" multiple required>
-                                    <input type="hidden" id="current_id_names" name="current_id_names" value="Current ID Picture">
+                                    <input type="hidden" id="current_id_names" name="current_id" value="Current ID Picture">
                                 </div>
                             </div>
                             <br>
@@ -124,6 +124,25 @@ if (empty($_SESSION['csrf_token'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let locationsData;
+
+        // Applciation type radio button
+        function toggleFields() {
+            const transferFields = document.getElementById('transferFields');
+            const successionFields = document.getElementById('successionFields');
+            const isTransferSelected = document.getElementById('transfer').checked;
+
+            if (isTransferSelected) {
+                transferFields.style.display = 'block';
+                transferFields.querySelectorAll('input').forEach(input => input.disabled = false);
+                successionFields.style.display = 'none';
+                successionFields.querySelectorAll('input').forEach(input => input.disabled = true);
+            } else {
+                transferFields.style.display = 'none';
+                transferFields.querySelectorAll('input').forEach(input => input.disabled = true);
+                successionFields.style.display = 'block';
+                successionFields.querySelectorAll('input').forEach(input => input.disabled = false);
+            }
+        }
 
         // Theme
         const application = document.querySelector('.application');

@@ -1,0 +1,22 @@
+@import url('main.css');
+
+
+svg {
+    border: 1px solid #ccc;
+}
+.hover-effect {
+    transition: fill 0.3s;
+}
+.hover-effect:hover {
+    fill: #4db8b0;
+}
+.info {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    z-index: 10;
+}
