@@ -11,6 +11,46 @@
     <link rel="stylesheet" href="../../assets/css/transfer_stall.css">
 </head>
 
+<style>
+    .dynamic-section {
+        display: none;
+        /* Initially hidden */
+    }
+</style>
+<script>
+    function showSection() {
+        // Clear previous inputs
+        const form = document.getElementById('application_fields');
+        form.innerHTML = '';
+
+        // Get the selected radio button value
+        const selectedValue = document.querySelector('input[name="application_type"]:checked').value;
+
+        // Create input fields based on the selected option
+        if (selectedValue === 'transfer') {
+            form.innerHTML = `
+                            
+                                <h5>For Transfer</h5>
+                                <label for="transfer_documents">Deed Of Transfer:</label>
+                                <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
+                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
+                                <input type="hidden" id="transfer" name="application_type" value="stall transfer">
+                                
+
+                `;
+        } else if (selectedValue === 'succession') {
+            form.innerHTML = `
+
+                                <h5>For Succession</h5>
+                                <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
+                                <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
+                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
+                                <input type="hidden" id="succession" name="application_type" value="stall succession">
+                `;
+        }
+    }
+</script>
+
 <?php
 session_start();
 
@@ -20,6 +60,7 @@ if (empty($_SESSION['csrf_token'])) {
 ?>
 
 <body class="body light">
+
     <!-- NAVBAR -->
     <?php include '../../includes/nav.php'; ?>
 
@@ -33,7 +74,18 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="container shadow rounded-3 p-5 application light">
                         <h2 class="text-center mb-4">Transfer Stall Application</h2>
 
-                        <form class="pt-5" id="application_form" action="../actions/stall_application_action.php" method="POST" enctype="multipart/form-data">
+                        <!-- Application Type (radio buttons) -->
+                        <div class="mb-3">
+                            <h4>Transfer Type</h4>
+                            <div>
+                                <input type="radio" id="transfer" name="application_type" value="transfer" onclick="showSection()" required>
+                                <label for="transfer">Transfer</label>
+                                <input type="radio" id="succession" name="application_type" value="succession" onclick="showSection()">
+                                <label for="succession">Succession</label>
+                            </div>
+                        </div>
+
+                        <form class="pt-2" id="application_form" action="../actions/stall_application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 
                             <!-- Market Dropdown -->
@@ -65,32 +117,13 @@ if (empty($_SESSION['csrf_token'])) {
                                 Select a stall number to view information.
                             </div>
 
-                            <!-- Application Type (radio buttons) -->
-                            <div class="mb-3">
-                                <h4>Application Type</h4>
-                                <div>
-                                    <input type="radio" id="transfer" name="application_type" value="transfer" onclick="toggleFields()" required>
-                                    <label for="transfer">Transfer</label>
-                                    <input type="radio" id="succession" name="application_type" value="succession" onclick="toggleFields()">
-                                    <label for="succession">Succession</label>
-                                </div>
-                            </div>
 
                             <!-- Transfer Fields -->
-                            <div id="transferFields" class="conditional-fields mb-3">
-                                <h5>For Transfer</h5>
-                                <label for="transfer_documents">Deed Of Transfer:</label>
-                                <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
-                            </div>
+                            <div id="application_fields" class="conditional-fields mb-3">
 
-                            <!-- Succession Fields -->
-                            <div id="successionFields" class="conditional-fields mb-3">
-                                <h5>For Succession</h5>
-                                <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
-                                <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
                             </div>
+                            <!-- Succession Fields -->
+
 
                             <!-- QC ID and Current ID (side by side) -->
                             <div class="row mb-3">

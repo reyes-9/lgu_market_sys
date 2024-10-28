@@ -38,7 +38,7 @@ if (empty($_SESSION['csrf_token'])) {
 
                         <form id="application_form" action="../actions/stall_application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                            <input type="hidden" name="application_type" value="stall_app">
+                            <input type="hidden" name="application_type" value="stall">
 
                             <!-- Market Dropdown -->
                             <div class="mb-3">

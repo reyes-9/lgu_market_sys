@@ -6,6 +6,12 @@ ob_start();
 
 $response = ['success' => false, 'messages' => []];
 
+if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    $_SESSION['error'] = "Invalid request. Please try again.";
+    header('Location: profile.php');
+    exit();
+}
+
 // Check request method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['messages'][] = "Invalid request.";
@@ -28,6 +34,8 @@ $market_id = filter_input(INPUT_POST, 'market', FILTER_VALIDATE_INT);
 $stall_id = filter_input(INPUT_POST, 'stall', FILTER_VALIDATE_INT);
 $section_id = filter_input(INPUT_POST, 'section', FILTER_VALIDATE_INT);
 $application_type = isset($_POST['application_type']) ? htmlspecialchars(trim($_POST['application_type']), ENT_QUOTES, 'UTF-8') : '';
+
+print_r($_POST);
 
 if ($account_id === false || $market_id === false || $stall_id === false || $section_id === false || empty($application_type)) {
     $response['messages'][] = "Invalid input. Please check your data.";
@@ -52,7 +60,7 @@ $isFileUploaded = uploadFiles($uploadedFiles);
 if ($isFileUploaded === true) {
     // Submit the application
     $isAppSubmitted = submitApplication($application, $pdo);
-    
+
     if ($isAppSubmitted['status'] === false) {
         $response['messages'][] = "Failed to create application. Please try again.";
         header('Content-Type: application/json');
@@ -64,7 +72,7 @@ if ($isFileUploaded === true) {
 
     for ($i = 0; $i < count($uploadedFiles['name']); $i++) {
         if ($uploadedFiles['error'][$i] == UPLOAD_ERR_OK) {
-            $document_type = assignDocumentType($i); // Get the document type
+            $document_type = assignDocumentType($application_type, $i); // Get the document type
             $file_name = $uploadedFiles['name'][$i];
             $file_path = '../../uploads/' . $file_name; // Destination path
 
@@ -77,6 +85,7 @@ if ($isFileUploaded === true) {
             ];
 
             print_r($document);
+            print_r($_POST);
 
             if (!submitDocuments($document, $pdo)) {
                 $response['messages'][] = "Failed to upload document: " . $file_name;
@@ -94,25 +103,36 @@ header('Content-Type: application/json');
 echo json_encode($response);
 
 
-
-
-
-
-
 // Function Definitions
 
-function assignDocumentType($index) {
-    $documentNames = [
-        'Transfer Document',
-        'Succession Document',
-        'QC ID Document',
-        'Current ID Document',
-    ];
+function assignDocumentType($application_type, $index)
+{
+
+    switch ($application_type) {
+        case 'stall transfer':
+
+            $documentNames = [
+                'Transfer Document',
+                'QC ID Document',
+                'Current ID Document',
+            ];
+
+            break;
+        case 'stall succession':
+            $documentNames = [
+                'Succession Document',
+                'QC ID Document',
+                'Current ID Document',
+            ];
+            break;
+    }
+
 
     return isset($documentNames[$index]) ? $documentNames[$index] : 'Unknown Document Type';
 }
 
-function submitDocuments(array $document, $pdo) {
+function submitDocuments(array $document, $pdo)
+{
     $sql_document = "INSERT INTO documents (application_id, document_type, document_name, document_path) VALUES (:application_id, :document_type, :document_name, :document_path)";
     $stmt_document = $pdo->prepare($sql_document);
     $stmt_document->bindParam(':application_id', $document['application_id']);
@@ -123,7 +143,8 @@ function submitDocuments(array $document, $pdo) {
     return $stmt_document->execute();
 }
 
-function submitApplication(array $application, $pdo) {
+function submitApplication(array $application, $pdo)
+{
     $sql_application = "INSERT INTO applications (account_id, stall_id, section_id, market_id, application_type) VALUES (:account_id, :stall_id, :section_id, :market_id, :application_type)";
     $stmt_application = $pdo->prepare($sql_application);
     $stmt_application->bindParam(':account_id', $application['account_id']);
@@ -142,7 +163,8 @@ function submitApplication(array $application, $pdo) {
     ];
 }
 
-function uploadFiles($uploadedFiles) {
+function uploadFiles($uploadedFiles)
+{
     $file_upload_success = true;
     $error_messages = [];
 
@@ -167,6 +189,6 @@ function uploadFiles($uploadedFiles) {
             echo "<p class='error-message'>$message</p>";
         }
     }
-    
+
     return $file_upload_success;
 }
