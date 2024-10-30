@@ -16,7 +16,7 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['messages'][] = "Invalid request.";
     header('Content-Type: application/json');
-    echo json_encode($response);
+    // echo json_encode($response);
     exit();
 }
 
@@ -94,13 +94,15 @@ if ($isFileUploaded === true) {
     }
 
     $response['success'] = true;
-    $response['messages'][] = "All files uploaded successfully.";
+    $response['messages'][] = "Application Submitted.";
 } else {
-    $response['messages'][] = "File upload failed.";
+    $response['messages'][] = "Application Failed.";
 }
 
+ob_end_clean();
 header('Content-Type: application/json');
 echo json_encode($response);
+// print_r($response);
 
 
 // Function Definitions
@@ -186,7 +188,7 @@ function uploadFiles($uploadedFiles)
 
     if (!empty($error_messages)) {
         foreach ($error_messages as $message) {
-            echo "<p class='error-message'>$message</p>";
+            error_log ($message) ;
         }
     }
 

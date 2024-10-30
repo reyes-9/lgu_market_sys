@@ -18,37 +18,7 @@
     }
 </style>
 <script>
-    function showSection() {
-        // Clear previous inputs
-        const form = document.getElementById('application_fields');
-        form.innerHTML = '';
 
-        // Get the selected radio button value
-        const selectedValue = document.querySelector('input[name="application_type"]:checked').value;
-
-        // Create input fields based on the selected option
-        if (selectedValue === 'transfer') {
-            form.innerHTML = `
-                            
-                                <h5>For Transfer</h5>
-                                <label for="transfer_documents">Deed Of Transfer:</label>
-                                <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
-                                <input type="hidden" id="transfer" name="application_type" value="stall transfer">
-                                
-
-                `;
-        } else if (selectedValue === 'succession') {
-            form.innerHTML = `
-
-                                <h5>For Succession</h5>
-                                <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
-                                <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
-                                <input type="hidden" id="succession" name="application_type" value="stall succession">
-                `;
-        }
-    }
 </script>
 
 <?php
@@ -61,23 +31,21 @@ if (empty($_SESSION['csrf_token'])) {
 
 <body class="body light">
 
-    <!-- NAVBAR -->
     <?php include '../../includes/nav.php'; ?>
 
-    <!-- MAIN CONTENT -->
     <div class="content-wrapper">
         <?php include '../../includes/menu.php'; ?>
 
         <div class="container-fluid px-5">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-6">
-                    <div class="container shadow rounded-3 p-5 application light">
+                    <div class="container shadow rounded-3 pt-5 px-5 application light">
+                        <div id="responseMessage" class="alert m-0 text-center"></div>
                         <h2 class="text-center mb-4">Transfer Stall Application</h2>
 
-                        <!-- Application Type (radio buttons) -->
                         <div class="mb-3">
-                            <h4>Transfer Type</h4>
-                            <div>
+                            <h5 class="text-center">Select Type :</h5>
+                            <div class="radio-group">
                                 <input type="radio" id="transfer" name="application_type" value="transfer" onclick="showSection()" required>
                                 <label for="transfer">Transfer</label>
                                 <input type="radio" id="succession" name="application_type" value="succession" onclick="showSection()">
@@ -118,14 +86,14 @@ if (empty($_SESSION['csrf_token'])) {
                             </div>
 
 
-                            <!-- Transfer Fields -->
+                            <!-- Application Type Fields -->
                             <div id="application_fields" class="conditional-fields mb-3">
 
                             </div>
-                            <!-- Succession Fields -->
 
 
-                            <!-- QC ID and Current ID (side by side) -->
+
+                            <!-- QC ID and Current ID -->
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="qc_id_photo">QC ID Photo (Back to Back):</label>
@@ -140,12 +108,10 @@ if (empty($_SESSION['csrf_token'])) {
                             </div>
                             <br>
                             <!-- Submit Button -->
-                            <div class="text-end">
+                            <div class="text-end pb-4">
                                 <button type="submit" class="btn btn-warning">Submit Application</button>
                             </div>
                         </form>
-
-                        <div id="responseMessage" class="alert mt-3" style="display:none;"></div>
                     </div>
                 </div>
             </div>
@@ -158,24 +124,38 @@ if (empty($_SESSION['csrf_token'])) {
     <script>
         let locationsData;
 
-        // Applciation type radio button
-        function toggleFields() {
-            const transferFields = document.getElementById('transferFields');
-            const successionFields = document.getElementById('successionFields');
-            const isTransferSelected = document.getElementById('transfer').checked;
+        document.getElementById('application_form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            if (isTransferSelected) {
-                transferFields.style.display = 'block';
-                transferFields.querySelectorAll('input').forEach(input => input.disabled = false);
-                successionFields.style.display = 'none';
-                successionFields.querySelectorAll('input').forEach(input => input.disabled = true);
-            } else {
-                transferFields.style.display = 'none';
-                transferFields.querySelectorAll('input').forEach(input => input.disabled = true);
-                successionFields.style.display = 'block';
-                successionFields.querySelectorAll('input').forEach(input => input.disabled = false);
-            }
-        }
+            const formData = new FormData(this);
+
+            fetch('../actions/stall_application_action.php', {
+                    method: 'POST',
+                    body: formData
+                })
+
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+
+                    const responseMessage = document.getElementById('responseMessage');
+                    if (data.success) {
+                        responseMessage.innerHTML = `<div class="alert alert-success">${data.messages.join('<br>')}</div>`;
+                        responseMessage.style.display = 'block';
+                    } else {
+                        responseMessage.innerHTML = `<div class="alert alert-danger">${data.messages.join('<br>')}</div>`;
+                        responseMessage.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+                });
+        });
 
         // Theme
         const application = document.querySelector('.application');
@@ -183,6 +163,38 @@ if (empty($_SESSION['csrf_token'])) {
             application.classList.toggle("dark");
             application.classList.toggle("light");
         });
+
+        function showSection() {
+            // Clear previous inputs
+            const form = document.getElementById('application_fields');
+            form.innerHTML = '';
+
+            // Get the selected radio button value
+            const selectedValue = document.querySelector('input[name="application_type"]:checked').value;
+
+            // Create input fields based on the selected option
+            if (selectedValue === 'transfer') {
+                form.innerHTML = `
+                            
+                                <h5>For Transfer</h5>
+                                <label for="transfer_documents">Deed Of Transfer:</label>
+                                <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
+                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
+                                <input type="hidden" id="transfer" name="application_type" value="stall transfer">
+                                
+
+                `;
+            } else if (selectedValue === 'succession') {
+                form.innerHTML = `
+
+                                <h5>For Succession</h5>
+                                <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
+                                <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
+                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
+                                <input type="hidden" id="succession" name="application_type" value="stall succession">
+                `;
+            }
+        }
 
         // checks the stall number option
         document.addEventListener('DOMContentLoaded', function() {
@@ -199,40 +211,6 @@ if (empty($_SESSION['csrf_token'])) {
             sectionSelect.addEventListener('change', function() {
                 stallInfo.innerHTML = 'Select a stall number to view information.';
             });
-        });
-
-
-        function updateFileNames(inputId, hiddenInputId) {
-            const input = document.getElementById(inputId);
-            const hiddenInput = document.getElementById(hiddenInputId);
-            const fileNames = Array.from(input.files).map(file => file.name).join(', ');
-            hiddenInput.value = fileNames;
-        }
-
-        document.getElementById('application_form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(this);
-
-            fetch('../actions/stall_application_action.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const responseMessage = document.getElementById('responseMessage');
-                    if (data.success) {
-                        responseMessage.innerHTML = `<div class="alert alert-success">${data.messages.join('<br>')}</div>`;
-                        responseMessage.style.display = 'block';
-                    } else {
-                        responseMessage.innerHTML = `<div class="alert alert-danger">${data.messages.join('<br>')}</div>`;
-                        responseMessage.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
-                });
         });
 
         window.onload = function() {
@@ -347,27 +325,6 @@ if (empty($_SESSION['csrf_token'])) {
             </table>
             `;
             document.getElementById('stallInfo').innerHTML = stallInfo;
-        }
-
-        function toggleFields() {
-            const transferFields = document.getElementById('transferFields');
-            const transferInput = document.getElementById('transfer_documents');
-            const successionFields = document.getElementById('successionFields');
-            const successionInput = document.getElementById('succession_documents');
-
-            if (document.getElementById('transfer').checked) {
-                transferFields.style.display = 'block';
-                successionFields.style.display = 'none';
-                successionInput.required = false;
-
-            } else if (document.getElementById('succession').checked) {
-                transferFields.style.display = 'none';
-                successionFields.style.display = 'block';
-                transferInput.required = false;
-            } else {
-                transferFields.style.display = 'none';
-                successionFields.style.display = 'none';
-            }
         }
     </script>
 </body>

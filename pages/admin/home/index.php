@@ -73,13 +73,11 @@
     </div>
   </div>
 
-  <div class="container-fluid p-0">
-    <div class="row">
-      <div class="text-center m-2 p-5">
-        <h2 class="title light">Admin Dashboard</h2>
-      </div>
+  <div class="text-center mt-5 p-0">
+    <h2 class="title light">Admin Dashboard</h2>
+  </div>
 
-    </div>
+  <div class="container-fluid p-0">
 
     <div class="row m-4 p-4">
       <div class="container-fluid">
