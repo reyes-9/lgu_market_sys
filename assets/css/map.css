@@ -1,22 +1,91 @@
 @import url('main.css');
 
+.mapping {
+    background-color: #003366;
+    color: var(--bs-light);
+}
 
-svg {
-    border: 1px solid #ccc;
+.header{
+    font-weight: bold;
+    margin: 25px 0px 5px 0px;
 }
-.hover-effect {
-    transition: fill 0.3s;
+
+#map {
+    height: 300px;
+    width: 80%;
 }
-.hover-effect:hover {
-    fill: #4db8b0;
+
+.custom-table.light td {
+    padding: 15px;
+    background-color: #003366;
+    /* Custom background color */
+    color: var(--bs-light);
 }
-.info {
+
+.modal{
+    color: black;
+}
+/* Vicinity Map */
+/* .map {
+    border: 1px solid #ddd;
+    background-color: #fefefe;
+} */
+
+/* Background pattern */
+
+
+/* .map-section {
     display: none;
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    z-index: 10;
+} */
+
+
+/* Stalls
+.stall {
+    stroke-width: 1;
+    rx: 4;
+    ry: 4;
+    stroke: #666;
+}
+
+/* Specific Colors for Each Section */
+/* .fish-stall {
+    fill: #cdeaf1;
+    stroke: #4fa3b7;
+}
+
+.meat-stall {
+    fill: #f2d1d1;
+    stroke: #c15252;
+}
+
+.fruit-veg-stall {
+    fill: #daf2da;
+    stroke: #4d9b4d;
+}
+
+.grocery-stall {
+    fill: #fcf1cd;
+    stroke: #e0a848;
+}
+
+.dry-goods-stall {
+    fill: #eaeaea;
+    stroke: #999999;
+} */
+
+/* Passageways */
+/* .passageway {
+    stroke: #bbb;
+    stroke-width: 2;
+    stroke-dasharray: 6;
+}  */
+
+.stall {
+    cursor: pointer !important;
+}
+
+#stall-info {
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
 }
