@@ -25,6 +25,9 @@
 .modal{
     color: black;
 }
+.map-section{
+    display: none;
+}
 /* Vicinity Map */
 /* .map {
     border: 1px solid #ddd;

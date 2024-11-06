@@ -14,59 +14,52 @@
 </head>
 
 <body class="body light">
-    <?php include '../../includes/nav.php'; ?>\
-
+    <?php include '../../includes/nav.php'; ?>
 
     <div class="content-wrapper">
 
         <div class="container-fluid">
-            <h2 class="text-center"><strong>Vendor Mapping</strong></h2>
+            <h2 class="text-center mt-3"><strong>Vendor Mapping</strong></h2>
             <div class="row m-5 p-5 shadow rounded-3 mapping">
                 <div class="container">
 
-                    <div class="row justify-content-between">
+                    <div class="row justify-content-between m-3 p-3">
                         <!-- Left Section: Map and Select Market -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="marketSelect">Select Market</label>
-                                <select id="marketSelect" class="form-control">
-                                    <option>Select Market</option>
-                                    <option>Market 1</option>
-                                    <option>Market 2</option>
-                                    <!-- Add more markets as needed -->
-                                </select>
+                                <div class="mb-3">
+                                    <label for="market">Market:</label>
+                                    <select class="form-select" id="market" name="market" required>
+                                        <option value="">-- Select Market --</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="info-box my-3">
-                                <div class="header">Address:</div>
-                                <div class="content">Details will appear here based on selected market and stalls.</div>
-                                <div class="header">Market Info:</div>
-                                <div class="content">Stall Count: </div>
-                                <div class="content">Unoccupied: </div>
-                                <div class="content">Occupied: </div>
-   
-                                <!-- Add any additional information or dynamic content here -->
+                                <div class="header">Address</div>
+                                <div class="content" id="market_address"></div>
+                                <div class="header">Market Info</div>
+                                <div class="content">Stall Count: <span id="stall_count"></span></div>
+                                <div class="content">Vacant: <span id="stall_vacant"></span></div>
+                                <div class="content">Occupied: <span id="stall_occupied"></span></div>
                             </div>
+                            <div id="responseContainer"></div>
                             <div>
-                                <button class="btn btn-warning mb-3">View Stalls</button>
+                                <button class="btn btn-warning mb-3" id="viewStallsBtn" onclick=showStallMap() disabled>View Stalls</button>
                             </div>
 
                         </div>
 
-                        <!-- Right Section: Info Box -->
                         <div class="col-md-5">
-                            <!-- Map Placeholder -->
                             <div id="map" class="mb-3">
-                                <!-- Map will be loaded here -->
                                 <p class="text-center">Map Placeholder</p>
                             </div>
-
                         </div>
                     </div>
 
-                    <div class="row m-5 p-0 map-section">
+                    <div class="row m-5 p-0 map-section" id="map_section">
 
-                        <div class="container">
-                            <h2>Market Vicinity Map</h2>
+                        <div class="container text-center my-5">
+                            <h2>Market Stalls Map</h2>
 
                             <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
                                 <!-- 1x7 Red Stall (Single Row of 7 Squares) -->
@@ -187,12 +180,36 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="stallModalLabel">Stall Information</h5>
+                                            <h5 class="modal-title" id="stallModalLabel">Stall 102</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            <h6 id="modal-stall-title">Stall: </h6>
-                                            <p id="modal-stall-content">Details about the selected stall will appear here.</p>
+                                        <div class="modal-body text-start">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Vendor:</th>
+                                                        <td>Nelson Reyes</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Market Section:</th>
+                                                        <td>Vegetables</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Stall No.:</th>
+                                                        <td>102</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Stall Size:</th>
+                                                        <td>108 sq/m</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Stall Rent:</th>
+                                                        <td>₱400.00</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -368,17 +385,86 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        window.onload = function() {
+            fetch('../actions/get_market.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    locationsData = data; // Store data globally
+
+                    let marketLocationSelect = document.getElementById('market');
+                    data.forEach(location => {
+                        let option = document.createElement('option');
+                        option.value = location.id;
+                        option.text = location.market_name;
+                        marketLocationSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching market locations:', error);
+                    alert('Failed to load market locations. Please try again later.');
+                });
+
+        }
+
+        // Add event listener to the market select element
+        document.getElementById('market').addEventListener('change', function() {
+            loadMarketInfo(this);
+        });
+
+
+
         // Initialize the map and set its view
         const map = L.map('map').setView([14.676, 121.043], 15); // Set initial center and zoom level
-
         // Load and display tile layers (from OpenStreetMap)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
         // Add a marker to the map
         L.marker([14.676, 121.043]).addTo(map)
+
+        function showStallMap() {
+            document.getElementById("map_section").style.display = "block";
+        }
+
+
+        function loadMarketInfo(marketSelect) {
+            document.getElementById('viewStallsBtn').removeAttribute('disabled');
+
+            const selectedOption = marketSelect.options[marketSelect.selectedIndex];
+            const selectedId = selectedOption.value;
+
+            // Fetch location data if it exists
+            const selectedLocation = locationsData?.find(location => location.id == selectedId);
+            document.getElementById('market_address').innerText = selectedLocation ? selectedLocation.market_address : 'No address available';
+
+            // Send selectedId to the server using fetch
+            fetch('../actions/map_action.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: selectedId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the stall count if available, or fallback
+                    console.log(data);
+                    document.getElementById('stall_count').textContent = data?.s_count ?? 'N/A';
+                    document.getElementById('stall_vacant').textContent = data?.s_vacant ?? 'N/A';
+                    document.getElementById('stall_occupied').textContent = data?.s_occupied ?? 'N/A';
+
+                    document.getElementById('responseContainer').innerText = data.message || '';
+                })
+                .catch(error => console.error('Error:', error));
+        }
     </script>
     <script>
         // Select all stalls and add click event listeners
@@ -387,8 +473,8 @@
                 const stallId = this.getAttribute('data-stall-id');
 
                 // Set modal content
-                document.getElementById('modal-stall-title').textContent = `Stall: ${stallId}`;
-                document.getElementById('modal-stall-content').textContent = `Details about ${stallId}. (You can add more specific information here.)`;
+                // document.getElementById('modal-stall-title').textContent = `Stall: ${stallId}`;
+                // document.getElementById('modal-stall-content').textContent = `Details about ${stallId}. (You can add more specific information here.)`;
 
                 // Show the modal
                 const stallModal = new bootstrap.Modal(document.getElementById('stallModal'));

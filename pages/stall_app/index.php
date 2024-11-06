@@ -46,6 +46,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
                                     <option value="">-- Select Market --</option>
                                 </select>
+                                <span id="market_address"></span>
                             </div>
 
                             <!-- Section and Stall (side by side) -->

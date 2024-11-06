@@ -5,7 +5,6 @@ ob_start();
 
 $account_id = $_SESSION['user_id'];
 
-echo "before";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $type = trim($_POST['type']) ?? '';
