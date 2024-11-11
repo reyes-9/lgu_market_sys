@@ -72,7 +72,6 @@ function getMarketInfo($pdo)
                 header('Content-Type: application/json');
                 echo json_encode([
                     'success' => false,
-                    'message' => "No stall found with the provided ID."
                 ]);
             }
         } else {

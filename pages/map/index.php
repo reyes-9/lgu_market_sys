@@ -441,7 +441,7 @@
 
             // Fetch location data if it exists
             const selectedLocation = locationsData?.find(location => location.id == selectedId);
-            document.getElementById('market_address').innerText = selectedLocation ? selectedLocation.market_address : 'No address available';
+            document.getElementById('market_address').innerText = selectedLocation ? selectedLocation.market_address : '';
 
             // Send selectedId to the server using fetch
             fetch('../actions/map_action.php', {
@@ -457,9 +457,9 @@
                 .then(data => {
                     // Update the stall count if available, or fallback
                     console.log(data);
-                    document.getElementById('stall_count').textContent = data?.s_count ?? 'N/A';
-                    document.getElementById('stall_vacant').textContent = data?.s_vacant ?? 'N/A';
-                    document.getElementById('stall_occupied').textContent = data?.s_occupied ?? 'N/A';
+                    document.getElementById('stall_count').textContent = data?.s_count ?? '';
+                    document.getElementById('stall_vacant').textContent = data?.s_vacant ?? '';
+                    document.getElementById('stall_occupied').textContent = data?.s_occupied ?? '';
 
                     document.getElementById('responseContainer').innerText = data.message || '';
                 })
