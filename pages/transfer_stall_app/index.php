@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../../assets/css/transfer_stall.css">
+    <link rel="stylesheet" href="../../assets/css/stall.css">
 </head>
 
 <style>
@@ -53,7 +53,7 @@ if (empty($_SESSION['csrf_token'])) {
                             </div>
                         </div>
 
-                        <form class="pt-2" id="application_form" action="../actions/stall_application_action.php" method="POST" enctype="multipart/form-data">
+                        <form class="pt-2" id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 
                             <!-- Market Dropdown -->
@@ -129,7 +129,7 @@ if (empty($_SESSION['csrf_token'])) {
 
             const formData = new FormData(this);
 
-            fetch('../actions/stall_application_action.php', {
+            fetch('../actions/application_action.php', {
                     method: 'POST',
                     body: formData
                 })

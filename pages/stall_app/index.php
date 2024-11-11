@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../../assets/css/transfer_stall.css">
+    <link rel="stylesheet" href="../../assets/css/stall.css">
 </head>
 <?php
 session_start();
@@ -36,7 +36,7 @@ if (empty($_SESSION['csrf_token'])) {
                         <h2 class="text-center mb-4">Stall Application</h2>
 
 
-                        <form id="application_form" action="../actions/stall_application_action.php" method="POST" enctype="multipart/form-data">
+                        <form id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <input type="hidden" name="application_type" value="stall">
 
@@ -126,7 +126,7 @@ if (empty($_SESSION['csrf_token'])) {
 
             const formData = new FormData(this); 
 
-            fetch('../actions/stall_application_action.php', {
+            fetch('../actions/application_action.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -244,7 +244,7 @@ if (empty($_SESSION['csrf_token'])) {
 
             // Update the stallInfo section with a table
             const stallInfo = `
-            <table class="table table-striped table-borderless table-hover custom-table dark">
+            <table class="table table-striped table-borderless table-hover custom-table">
             <thead>
                 <tr>
                     <th>Rental Fee</th>
