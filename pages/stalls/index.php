@@ -31,9 +31,8 @@
           </div>
         </div>
 
-        <div class="col-md-8 px-5 divide light">
+        <div class="col-md-8 px-5 divide">
           <div class="stall-card">
-
             <h3>Stalls</h3>
             <hr>
             <br>
@@ -41,25 +40,21 @@
             <h5 id="stall_message"></h5>
 
             <table class="table table-striped table-borderless table-hover custom-table light">
-              <tbody>
+              <thead>
                 <tr>
-                  <td><strong>Market</strong></td>
-                  <td><strong>Section</strong></td>
-                  <td><strong>Stall No.</strong></td>
-                  <td><strong>Stall Size</strong></td>
-                  <td><strong>Rental Fee</strong></td>
+                  <th><strong>Market</strong></th>
+                  <th><strong>Section</strong></th>
+                  <th><strong>Stall No.</strong></th>
+                  <th><strong>Stall Size</strong></th>
+                  <th><strong>Rental Fee</strong></th>
                 </tr>
-                <tr>
-                  <td id="market"></td>
-                  <td id="section"></td>
-                  <td id="stall_number"></td>
-                  <td id="stall_size"></td>
-                  <td id="rental_fee"></td>
-                </tr>
+              </thead>
+              <tbody id="stallsContainer">
+                <!-- Dynamic stall rows will be inserted here -->
               </tbody>
             </table>
-
           </div>
+
           <div class="mt-5 text-end">
             <a href="/lgu_market_sys/pages/stall_extend" class="btn btn-warning m-2">Stall Extension Application</a>
             <a href="/lgu_market_sys/pages/helper_app" class="btn btn-warning m-2">Add Helper Application</a>
@@ -70,13 +65,12 @@
       </div>
     </div>
   </div>
-  </div>
 
   <?php include '../../includes/footer.php'; ?>
   <?php include '../../includes/theme.php'; ?>
   <!-- Bootstrap JS and dependencies -->
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
   <script>
     // Theme
     const profile = document.querySelector('.profile');
@@ -86,42 +80,49 @@
     themeToggleButton.addEventListener("click", () => {
       profile.classList.toggle("dark");
       profile.classList.toggle("light");
-      divide.classList.toggle('dark');
-      divide.classList.toggle('light');
       table.classList.toggle('dark');
       table.classList.toggle('light');
     });
 
     // Fetch the user data from the backend
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('../actions/profile_action.php')
-          .then(response => response.json())
-          .then(data => {
-            // Access user data
-            const user = data.user[0];
-            document.getElementById('name').textContent = user.name;
-            document.getElementById('email').textContent = user.email;
-            document.getElementById('bio').textContent = user.bio;
+      fetch('../actions/profile_action.php')
+        .then(response => response.json())
+        .then(data => {
+          // Set user profile data
+          const user = data.user[0];
+          document.getElementById('name').textContent = user.name;
+          document.getElementById('email').textContent = user.email;
+          document.getElementById('bio').textContent = user.bio;
 
-            if (!data.stalls || !data.stalls.length > 0) {
-              const response = data.message[0];
-              document.getElementById('stall_message').textContent = response.message;
-              document.getElementById('stall_display').style.display = 'none';
-            }
+          // Handle stalls
+          const stallsContainer = document.getElementById('stallsContainer');
+          stallsContainer.innerHTML = ''; // Clear previous entries
 
-            const stall = data.stalls[0];
-            document.getElementById('market').textContent = stall.market_name;
-            document.getElementById('section').textContent = stall.section_name;
-            document.getElementById('stall_number').textContent = stall.stall_number;
-            document.getElementById('stall_size').textContent = stall.stall_size;
-            document.getElementById('rental_fee').textContent = stall.rental_fee;
+          if (!data.stalls || data.stalls.length === 0) {
+            document.getElementById('stall_message').textContent = 'No stalls available.';
+          } else {
             document.getElementById('stall_message').textContent = '';
-            document.getElementById('stall_display').style.display = 'block';
-          })
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+
+            // Loop through each stall and create table rows
+            data.stalls.forEach(stall => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${stall.market_name}</td>
+                <td>${stall.section_name}</td>
+                <td>${stall.stall_number}</td>
+                <td>${stall.stall_size}</td>
+                <td>${stall.rental_fee}</td>
+              `;
+              stallsContainer.appendChild(row);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    });
   </script>
 </body>
+
 </html>

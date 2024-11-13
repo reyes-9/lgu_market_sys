@@ -40,37 +40,62 @@ if (empty($_SESSION['csrf_token'])) {
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 
                             <!-- Market Dropdown -->
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label for="market">Market:</label>
                                 <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
-                                    <option value="">-- Select Market --</option>
+                                    <option value="" disabled selected>-- Select Market --</option>
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- Section and Stall (side by side) -->
-                            <div class="row mb-3">
+                            <!-- <div class="row mb-3">
                                 <div class="col">
                                     <label for="section">Section:</label>
                                     <select class="form-select" id="section" name="section" onchange="loadStallsWithSection()">
-                                        <option value="">-- Select Section --</option>
+                                        <option value="" disabled selected>-- Select Section --</option>
                                     </select>
                                 </div>
                                 <div class="col">
                                     <label for="stall">Stall Number:</label>
                                     <select class="form-select" id="stall" name="stall" required>
-                                        <option value="">-- Select Stall Number --</option>
+                                        <option value="" disabled selected>-- Select Stall Number --</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Stall Info -->
-                            <div id="stallInfo" class="stall-info mb-3">
+                            <!-- <div id="stallInfo" class="stall-info mb-3">
                                 Select a stall number to view information.
                             </div>
 
-                            <!-- QC ID and Current ID (side by side) -->
                             <div class="row mb-3">
                                 <div class="col">
+                                    <label for="last-name">Last Name</label>
+                                    <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Enter last name" required>
+                                </div>
+                                <div class="col">
+                                    <label for="first-name">First Name</label>
+                                    <input type="text" class="form-control" id="first-name" name="first-name" placeholder="Enter first name" required>
+                                </div>
+                            </div> -->
+
+                            <!-- QC ID and Current ID (side by side) -->
+                            <div class="row mt-5">
+                                <div class="col">
+                                    <label for="validIdType">Select Valid Id</label>
+                                    <select class="form-control" id="validIdType" name="valid_id_type" required>
+                                        <option value="" disabled selected>-- Select an ID --</option>
+                                        <option value="passport">Philippine Passport</option>
+                                        <option value="sss">Social Security System (SSS) ID</option>
+                                        <option value="drivers_license">Driver’s License</option>
+                                        <option value="philhealth">PhilHealth ID</option>
+                                        <option value="tin">Taxpayer Identification Number (TIN) ID</option>
+                                        <option value="umid">Unified Multi-Purpose ID (UMID)</option>
+                                        <option value="voters_id">Voter’s ID</option>
+                                        <option value="postal">Postal ID</option>
+                                    </select>
+                                </div>
+                                <div class="p-3 my-3" id="id_section">
                                     <label for="documents">Upload Valid Id:</label>
                                     <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
                                 </div>
@@ -95,6 +120,13 @@ if (empty($_SESSION['csrf_token'])) {
 
     <script>
         let locationsData; // Store the fetched data for later use
+
+        // Theme
+        const application = document.querySelector('.application');
+        themeToggleButton.addEventListener("click", () => {
+            application.classList.toggle("dark");
+            application.classList.toggle("light");
+        });
 
         // checks the stall number option
         document.addEventListener('DOMContentLoaded', function() {

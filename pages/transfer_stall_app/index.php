@@ -60,7 +60,7 @@ if (empty($_SESSION['csrf_token'])) {
                             <div class="mb-3">
                                 <label for="market">Market:</label>
                                 <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
-                                    <option value="">-- Select Market --</option>
+                                    <option value="" disabled selected>-- Select Market --</option>
                                 </select>
                             </div>
 
@@ -69,13 +69,13 @@ if (empty($_SESSION['csrf_token'])) {
                                 <div class="col">
                                     <label for="section">Section:</label>
                                     <select class="form-select" id="section" name="section" onchange="loadStallsWithSection()">
-                                        <option value="">-- Select Section --</option>
+                                        <option value="" disabled selected>-- Select Section --</option>
                                     </select>
                                 </div>
                                 <div class="col">
                                     <label for="stall">Stall Number:</label>
                                     <select class="form-select" id="stall" name="stall" required>
-                                        <option value="">-- Select Stall Number --</option>
+                                        <option value="" disabled selected>-- Select Stall Number --</option>
                                     </select>
                                 </div>
                             </div>
@@ -85,13 +85,8 @@ if (empty($_SESSION['csrf_token'])) {
                                 Select a stall number to view information.
                             </div>
 
-
                             <!-- Application Type Fields -->
-                            <div id="application_fields" class="conditional-fields mb-3">
-
-                            </div>
-
-
+                            <div id="application_fields" class="conditional-fields mb-3"></div>
 
                             <!-- QC ID and Current ID -->
                             <div class="row mb-3">

@@ -35,7 +35,7 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="container shadow rounded-3 p-5 application light">
                         <h2 class="text-center mb-4">Stall Application</h2>
 
-
+                        <div id="responseMessage" class="alert mt-3 text-center" style="display:none;"></div>
                         <form id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <input type="hidden" name="application_type" value="stall">
@@ -44,7 +44,7 @@ if (empty($_SESSION['csrf_token'])) {
                             <div class="mb-3">
                                 <label for="market">Market:</label>
                                 <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
-                                    <option value="">-- Select Market --</option>
+                                    <option value="" disabled selected>-- Select Market --</option>
                                 </select>
                                 <span id="market_address"></span>
                             </div>
@@ -54,13 +54,13 @@ if (empty($_SESSION['csrf_token'])) {
                                 <div class="col">
                                     <label for="section">Section:</label>
                                     <select class="form-select" id="section" name="section" onchange="loadStallsWithSection()">
-                                        <option value="">-- Select Section --</option>
+                                        <option value="" disabled selected>-- Select Section --</option>
                                     </select>
                                 </div>
                                 <div class="col">
                                     <label for="stall">Stall Number:</label>
                                     <select class="form-select" id="stall" name="stall" required>
-                                        <option value="">-- Select Stall Number --</option>
+                                        <option value="" disabled selected>-- Select Stall Number --</option>
                                     </select>
                                 </div>
                             </div>
@@ -83,8 +83,6 @@ if (empty($_SESSION['csrf_token'])) {
                                 <button type="submit" class="btn btn-warning">Submit Application</button>
                             </div>
                         </form>
-
-                        <div id="responseMessage" class="alert mt-3" style="display:none;"></div>
                     </div>
                 </div>
             </div>
@@ -124,7 +122,7 @@ if (empty($_SESSION['csrf_token'])) {
         document.getElementById('application_form').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            const formData = new FormData(this); 
+            const formData = new FormData(this);
 
             fetch('../actions/application_action.php', {
                     method: 'POST',
@@ -262,7 +260,7 @@ if (empty($_SESSION['csrf_token'])) {
             document.getElementById('stallInfo').innerHTML = stallInfo;
         }
     </script>
-    
+
 </body>
 
 </html>

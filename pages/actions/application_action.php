@@ -34,8 +34,11 @@ $market_id = filter_input(INPUT_POST, 'market', FILTER_VALIDATE_INT);
 $stall_id = filter_input(INPUT_POST, 'stall', FILTER_VALIDATE_INT);
 $section_id = filter_input(INPUT_POST, 'section', FILTER_VALIDATE_INT);
 $application_type = isset($_POST['application_type']) ? htmlspecialchars(trim($_POST['application_type']), ENT_QUOTES, 'UTF-8') : '';
+$duration = filter_input(INPUT_POST, 'duration', FILTER_VALIDATE_INT);
+$duration = $duration !== false ? $duration : null;
 
-print_r($_POST);
+
+// print_r($_POST);
 
 if ($account_id === false || $market_id === false || $stall_id === false || $section_id === false || empty($application_type)) {
     $response['messages'][] = "Invalid input. Please check your data.";
@@ -53,7 +56,24 @@ $application = [
     'section_id' => $section_id,
     'market_id' => $market_id,
     'application_type' => $application_type,
+    'ext_duration' => $duration
 ];
+
+if ($application_type == "stall extension") {
+
+    echo ($application);
+    try {
+        submitApplication($application, $pdo);
+        $response['success'] = true;
+        $response['messages'][] = "Application Submitted.";
+    } catch (Exception $e) {
+        $response['messages'][] = "Application Failed.";
+    }
+    ob_end_clean();
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit();
+}
 
 $isFileUploaded = uploadFiles($uploadedFiles);
 
@@ -84,8 +104,8 @@ if ($isFileUploaded === true) {
                 'file_path' => $file_path,
             ];
 
-            print_r($document);
-            print_r($_POST);
+            // print_r($document);
+            // print_r($_POST);
 
             if (!submitDocuments($document, $pdo)) {
                 $response['messages'][] = "Failed to upload document: " . $file_name;
@@ -101,12 +121,13 @@ if ($isFileUploaded === true) {
 
 ob_end_clean();
 header('Content-Type: application/json');
-echo json_encode($response);
 // print_r($response);
+echo json_encode($response);
+
+
 
 
 // Function Definitions
-
 function assignDocumentType($application_type, $index)
 {
 
@@ -147,16 +168,24 @@ function submitDocuments(array $document, $pdo)
 
 function submitApplication(array $application, $pdo)
 {
-    $sql_application = "INSERT INTO applications (account_id, stall_id, section_id, market_id, application_type) VALUES (:account_id, :stall_id, :section_id, :market_id, :application_type)";
+    $sql_application = "INSERT INTO applications (account_id, stall_id, section_id, market_id, application_type, ext_duration) VALUES (:account_id, :stall_id, :section_id, :market_id, :application_type, :ext_duration)";
     $stmt_application = $pdo->prepare($sql_application);
     $stmt_application->bindParam(':account_id', $application['account_id']);
     $stmt_application->bindParam(':stall_id', $application['stall_id']);
     $stmt_application->bindParam(':section_id', $application['section_id']);
     $stmt_application->bindParam(':market_id', $application['market_id']);
     $stmt_application->bindParam(':application_type', $application['application_type']);
+    $stmt_application->bindParam(':ext_duration', $application['ext_duration']);
+
 
     if (!$stmt_application->execute()) {
         return ['status' => false];
+    }
+
+    if ($application['application_type'] == "stall extension") {
+        return [
+            'status' => true,
+        ];
     }
 
     return [
@@ -188,7 +217,7 @@ function uploadFiles($uploadedFiles)
 
     if (!empty($error_messages)) {
         foreach ($error_messages as $message) {
-            error_log ($message) ;
+            error_log($message);
         }
     }
 
