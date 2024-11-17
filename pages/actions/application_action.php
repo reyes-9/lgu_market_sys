@@ -34,9 +34,9 @@ $market_id = filter_input(INPUT_POST, 'market', FILTER_VALIDATE_INT);
 $stall_id = filter_input(INPUT_POST, 'stall', FILTER_VALIDATE_INT);
 $section_id = filter_input(INPUT_POST, 'section', FILTER_VALIDATE_INT);
 $application_type = isset($_POST['application_type']) ? htmlspecialchars(trim($_POST['application_type']), ENT_QUOTES, 'UTF-8') : '';
+$selected_stall_id = filter_input(INPUT_POST, 'selected_stall_id', FILTER_VALIDATE_INT);
 $duration = filter_input(INPUT_POST, 'duration', FILTER_VALIDATE_INT);
 $duration = $duration !== false ? $duration : null;
-
 
 // print_r($_POST);
 
@@ -61,9 +61,38 @@ $application = [
 
 if ($application_type == "stall extension") {
 
-    echo ($application);
+    $sql_find_stall = "SELECT id, market_id, section_id, account_id FROM stalls WHERE id = :stall_id";
+    $stmt_application = $pdo->prepare($sql_find_stall);
+    $stmt_application->bindParam(':stall_id', $selected_stall_id);
+    $stmt_application->execute();
+    $result = $stmt_application->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+        $stall_id = $result['id'];
+        $market_id = $result['market_id'];
+        $section_id = $result['section_id'];
+        $account_id = $result['account_id'];
+
+        $application = [
+            'account_id' => $account_id,
+            'stall_id' => $stall_id,
+            'section_id' => $section_id,
+            'market_id' => $market_id,
+            'application_type' => $application_type,
+            'ext_duration' => $duration
+        ];
+    }
+
     try {
-        submitApplication($application, $pdo);
+        $isAppSubmitted = submitApplication($application, $pdo);
+
+        if ($isAppSubmitted['status'] === false) {
+            $response['messages'][] = "Application Failed.";
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit();
+        }
+
         $response['success'] = true;
         $response['messages'][] = "Application Submitted.";
     } catch (Exception $e) {

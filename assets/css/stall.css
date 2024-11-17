@@ -1,87 +1,123 @@
-@import url('main.css');
+@import url("main.css");
 
 /* Application */
 .application.light {
-    background-color: #003366;
-    color: var(--bs-light);
+  background-color: #003366;
+  color: var(--bs-light);
 }
 
 .custom-table.light td,
 .custom-table.light th {
-    padding: 15px;
-    background-color: #003366;
-    color: var(--bs-light);
+  padding: 15px;
+  background-color: #003366;
+  color: var(--bs-light);
 }
 
 /* DARK */
 .application.dark {
-    background-color: #1A2732;
-    color: var(--bs-light);
+  background-color: #1a2732;
+  color: var(--bs-light);
 }
 
 .custom-table.dark td,
 .custom-table.dark th {
-    padding: 15px;
-    background-color: #1A2732;
-    color: var(--bs-light);
+  padding: 15px;
+  background-color: #1a2732;
+  color: var(--bs-light);
 }
 
 #id_section {
-    display: none;
+  display: none;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+label {
+  margin: 5px;
+}
+
+.btn-radio input[type="radio"] {
+  display: none;
+}
+
+.btn-radio label {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 1px solid #003366;
+  border-radius: 5px;
+  background-color: #ffffff81;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-radio input[type="radio"]:checked + label {
+  background-color: #ffc107;
+  color: #111111;
+  border-color: #0044cc;
+}
+
+.radio-label:hover {
+  background-color: #ffc107;
+  color: #111111;
+  border-color: #0044cc;
 }
 
 /* Modern Bootstrap-styled radio button */
 .radio-modern {
-    position: relative;
-    display: inline-block;
-    margin: 0 12px;
-    cursor: pointer;
+  position: relative;
+  display: inline-block;
+  margin: 0 12px;
+  cursor: pointer;
 }
 
 .radio-modern input[type="radio"] {
-    display: none;
+  display: none;
 }
 
 .radio-modern .radio-checkmark {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #d3d3d3;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #d3d3d3;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
 }
 
 .radio-modern input[type="radio"]:checked + .radio-checkmark {
-    background-color: #ffc107; /* Updated vibrant color */
-    box-shadow: 0 6px 12px rgba(255, 123, 0, 0.3); /* Highlight shadow when selected */
+  background-color: #ffc107;
+  box-shadow: 0 6px 12px rgba(255, 123, 0, 0.3);
 }
 
 .radio-modern .radio-checkmark::after {
-    content: "";
-    position: absolute;
-    display: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: white;
-    top: 6px;
-    left: 6px;
-    transition: transform 0.2s ease;
+  content: "";
+  position: absolute;
+  display: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  top: 6px;
+  left: 6px;
+  transition: transform 0.2s ease;
 }
 
 .radio-modern input[type="radio"]:checked + .radio-checkmark::after {
-    display: block;
-    transform: scale(1);
+  display: block;
+  transform: scale(1);
 }
 
-/* Hover effect for a smoother appearance */
 .radio-modern:hover .radio-checkmark {
-    background-color: #e6e6e6;
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+  background-color: #e6e6e6;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
 }
 
 table {
-    cursor: pointer;
+  cursor: pointer;
 }

@@ -109,6 +109,7 @@ if (empty($_SESSION['csrf_token'])) {
                 .then(data => {
 
                     // Handle stalls
+                    console.log(data);
                     const stallsContainer = document.getElementById('stallsContainer');
                     stallsContainer.innerHTML = ''; // Clear previous entries
 
@@ -123,7 +124,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 <tr style="background-color:orange;">
                                     <td>
                                         <label class="radio-modern">
-                                            <input type="radio" name="stallSelect" value="${stall.stall_number}" id="stall_${index}">
+                                            <input type="radio" name="selected_stall_id" value="${stall.id}" id="stall_${index}">
                                             <span class="radio-checkmark"></span>
                                         </label>
                                     </td>
@@ -141,15 +142,13 @@ if (empty($_SESSION['csrf_token'])) {
                                 // Add a click event listener to each row
                                 row.addEventListener("click", function() {
                                     // Get the radio button within the clicked row
-                                    const radio = row.querySelector('input[name="stallSelect"]');
+                                    const radio = row.querySelector('input[name="selected_stall_id"]');
 
                                     if (radio) {
-                                        // Set the radio button to checked
-                                        radio.checked = true;
 
-                                        // Log the selected stall value
-                                        const selectedStallValue = radio.value;
-                                        console.log("Selected Stall Value:", selectedStallValue);
+                                        radio.checked = true;
+                                        const selectedStallId = radio.value;
+                                        console.log("Selected Stall Id:", selectedStallId);
 
                                     }
                                 });
@@ -167,6 +166,9 @@ if (empty($_SESSION['csrf_token'])) {
             event.preventDefault(); // Prevent default form submission
 
             const formData = new FormData(this); // Create FormData object
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
+            }
 
             fetch('../actions/application_action.php', {
                     method: 'POST',
@@ -182,7 +184,7 @@ if (empty($_SESSION['csrf_token'])) {
                         responseMessage.innerHTML = `<div class="alert alert-danger">${data.messages.join('<br>')}</div>`;
                         responseMessage.style.display = 'block';
                     }
-                    console.table(data);
+                    // console.table(data);
                 })
                 .catch(error => {
                     console.error('Error:', error);

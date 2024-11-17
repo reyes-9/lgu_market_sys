@@ -10,7 +10,8 @@ try {
     $users = $stmt_user->fetchAll(PDO::FETCH_ASSOC);
 
     $stmt_stall = $pdo->prepare("
-            SELECT 
+            SELECT
+                s.id, 
                 s.stall_number, 
                 s.rental_fee, 
                 s.stall_size, 

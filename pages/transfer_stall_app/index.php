@@ -46,10 +46,14 @@ if (empty($_SESSION['csrf_token'])) {
                         <div class="mb-3">
                             <h5 class="text-center">Select Type :</h5>
                             <div class="radio-group">
-                                <input type="radio" id="transfer" name="application_type" value="transfer" onclick="showSection()" required>
-                                <label for="transfer">Transfer</label>
-                                <input type="radio" id="succession" name="application_type" value="succession" onclick="showSection()">
-                                <label for="succession">Succession</label>
+                                <div class="btn-radio">
+                                    <input type="radio" id="transfer" name="application_type" value="transfer" onclick="showSection()" required>
+                                    <label class="radio-label" for="transfer">Transfer</label>
+                                </div>
+                                <div class="btn-radio">
+                                    <input type="radio" id="succession" name="application_type" value="succession" onclick="showSection()">
+                                    <label class="radio-label" for="succession">Succession</label>
+                                </div>
                             </div>
                         </div>
 
