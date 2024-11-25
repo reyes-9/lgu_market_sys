@@ -14,7 +14,7 @@
 <body class="body light">
     <?php include '../../includes/nav.php'; ?>
 
-    <div class="container feedback-section shadow rounded mb-4">
+    <div class="container feedback-section shadow rounded my-5">
         <div class="row d-flex justify-content-center align-items-stretch border rounded-4">
 
             <div class="col-md-4 details d-flex flex-column border rounded-start-3">

@@ -171,3 +171,13 @@ footer.light {
 .btn-toggle:hover {
     transform: scale(1.1);
 }
+
+/* Disabled link styles */
+.disabled-link {
+    pointer-events: none; /* Disable clicking */
+    background-color: #6c757d; /* Gray background */
+    border-color: #6c757d;
+    color: #fff; /* White text */
+    cursor: not-allowed; /* Show not-allowed cursor */
+    opacity: 0.65; /* Reduce opacity */
+}
