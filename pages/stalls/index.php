@@ -27,7 +27,7 @@
             <p><span id="email"></span></p>
             <br>
             <hr>
-            <h5>" <span id="bio"></span> "</h5>
+            <!-- <h5>" <span id="bio"></span> "</h5> -->
           </div>
         </div>
 
@@ -93,7 +93,6 @@
           const user = data.user[0];
           document.getElementById('name').textContent = user.name;
           document.getElementById('email').textContent = user.email;
-          document.getElementById('bio').textContent = user.bio;
 
           // Handle stalls
           const stallsContainer = document.getElementById('stallsContainer');

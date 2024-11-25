@@ -31,7 +31,7 @@
             <p><span id="email"></span></p>
             <br>
             <hr>
-            <h5>" <span id="bio"></span> "</h5>
+            <!-- <h5>" <span id="bio"></span> "</h5> -->
 
           </div>
         </div>
@@ -104,7 +104,7 @@
             const user = data.user[0];
             document.getElementById('name').textContent = user.name;
             document.getElementById('email').textContent = user.email;
-            document.getElementById('bio').textContent = user.bio;
+            // document.getElementById('bio').textContent = user.bio;
             document.getElementById('profile-name').textContent = user.name;
             document.getElementById('profile-email').textContent = user.email;
             document.getElementById('profile-birthdate').textContent = user.birthdate;
