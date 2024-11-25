@@ -40,7 +40,7 @@ $duration = $duration !== false ? $duration : null;
 $first_name = isset($_POST['first_name']) ? htmlspecialchars(trim($_POST['first_name']), ENT_QUOTES, 'UTF-8') : '';
 $last_name = isset($_POST['last_name']) ? htmlspecialchars(trim($_POST['last_name']), ENT_QUOTES, 'UTF-8') : '';
 $valid_id_type = $_POST['valid_id_type'] ?? null;
-$helper_id = '';
+$helper_id = null;
 
 if ($account_id === false || $market_id === false || $stall_id === false || $section_id === false || empty($application_type)) {
     $response['messages'][] = "Invalid input. Please check your data.";
@@ -59,8 +59,6 @@ $application = [
     'helper_id' => $helper_id,
     'ext_duration' => $duration
 ];
-
-print_r($_POST);
 
 if ($application_type == "stall extension") {
 
@@ -108,8 +106,6 @@ if ($application_type == "stall extension") {
     exit();
 }
 if ($application_type == "add helper") {
-
-    print_r($_POST);
 
     $isFileUploaded = false;
     $uploadedFile = $_FILES['document'];
@@ -232,37 +228,38 @@ if ($application_type == "add helper") {
     exit();
 }
 
-$uploadedFiles = $_FILES['documents'];
+$uploadedFiles = $_FILES['documents']; // Contains all uploaded files' information
 
-$isFileUploaded = uploadFiles($uploadedFiles);
+$response = ['success' => false, 'messages' => []];
+$application_id = '';
 
-if ($isFileUploaded === true) {
-    // Submit the application
-    $isAppSubmitted = submitApplication($application, $pdo);
-
-    if ($isAppSubmitted['status'] === false) {
-        $response['messages'][] = "Failed to create application. Please try again.";
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit();
-    }
-
-    $application_id = $isAppSubmitted['application_id'];
-    if ($uploadedFiles['error'] == UPLOAD_ERR_OK) {
-        $document_type = assignDocumentType($application_type, 0); // Get the document type for the single file
-        $file_name = basename($uploadedFiles['name']); // Sanitize the file name
+// Validate and process each file
+foreach ($uploadedFiles['name'] as $index => $fileName) {
+    if ($uploadedFiles['error'][$index] == UPLOAD_ERR_OK) {
+        $document_type = assignDocumentType($application_type, $index); // Get the document type for the current file
+        $file_name = basename($uploadedFiles['name'][$index]); // Sanitize the file name
         $file_path = '../../uploads/' . $file_name; // Destination path
 
         // Check if the document type is valid
         if ($document_type === 'Unknown Document Type') {
             error_log("Invalid document type for file: " . $file_name); // Log the issue
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => "Failed to upload document."]);
-            exit();
+            $response['messages'][] = "Invalid document type for file: $file_name.";
+            continue;
         }
 
         // Attempt to move the uploaded file to the destination directory
-        if (move_uploaded_file($uploadedFiles['tmp_name'], $file_path)) {
+        if (move_uploaded_file($uploadedFiles['tmp_name'][$index], $file_path)) {
+
+            // Submit application only once for all files
+            if (!$application_id) {
+                $isAppSubmitted = submitApplication($application, $pdo);
+                if ($isAppSubmitted['status'] === false) {
+
+                    continue;
+                }
+                $application_id = $isAppSubmitted['application_id'];
+            }
+
             // Prepare document details for database insertion
             $document = [
                 'application_id' => $application_id,
@@ -274,39 +271,29 @@ if ($isFileUploaded === true) {
             // Insert document details into the database
             if (!submitDocuments($document, $pdo)) {
                 error_log("Failed to save document details to the database: " . $file_name); // Log the database error
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => "Failed to upload document."]);
-                exit();
+                $response['success'] = false;
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => true, 'message' => "Document uploaded successfully."]);
-                exit();
+                $response['success'] = true;
             }
         } else {
             error_log("Failed to move uploaded file: " . $file_name); // Log the file system error
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => "Failed to upload document."]);
-            exit();
+            $response['success'] = false;
         }
     } else {
-        error_log("Error uploading file: " . $uploadedFiles['name'] . " (Error code: " . $uploadedFiles['error'] . ")"); // Log the error code
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => "Failed to upload document."]);
-        exit();
+        error_log("Error uploading file: " . $fileName . " (Error code: " . $uploadedFiles['error'][$index] . ")"); // Log the error code
+        $response['success'] = false;
     }
-
-
-    $response['success'] = true;
-    $response['messages'][] = "Application Submitted.";
-} else {
-    $response['messages'][] = "Application Failed.";
 }
 
-ob_end_clean();
+// Finalize the response
+if ($response['success'] == false) {
+    $response['messages'][] = "Application Error, Please try again.";
+} else {
+    $response['messages'][] = "Application Succesful";
+}
+
 header('Content-Type: application/json');
 echo json_encode($response);
-
-
 
 
 // Function Definitions
@@ -328,6 +315,12 @@ function assignDocumentType($application_type, $index)
                 'Succession Document',
                 'QC ID Document',
                 'Current ID Document',
+            ];
+            break;
+
+        case 'stall':
+            $documentNames = [
+                'Document'
             ];
             break;
     }

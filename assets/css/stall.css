@@ -121,3 +121,62 @@ label {
 table {
   cursor: pointer;
 }
+
+/* Animation for the check-circle icon */
+.icon-animation {
+  font-size: 5rem; /* Adjust icon size */
+  color: #28a745; /* Green color */
+  animation: bounceIn 1s ease-out; /* Apply bounce-in animation */
+}
+
+/* Bounce-in animation */
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Styling for the modal header */
+.modal-header {
+  background-color: #f8f9fa; /* Light background */
+  border-bottom: 1px solid #ddd; /* Light border */
+  display: flex;
+  align-items: center; /* Align icon and title vertically */
+  justify-content: space-between;
+}
+
+/* Styling the title */
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Optional: Add a smooth fade-in effect for the modal */
+.modal-content {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Fade-in effect for modal content */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Style the button and icon for a consistent look */
+.btn-close {
+  background: transparent;
+  border: none;
+}

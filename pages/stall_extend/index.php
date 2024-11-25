@@ -33,10 +33,24 @@ if (empty($_SESSION['csrf_token'])) {
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-6">
                     <div class="container shadow rounded-3 p-5 application light">
+
+                        <!-- Response Modal -->
+                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+                            <div class="modal-dialog  modal-dialog-centered">
+                                <div class="modal-content text-center">
+                                    <i class="bi bi-check-circle-fill icon-animation"></i>
+                                    <div class="modal-body" id="responseModalBody">
+                                        <!-- Message content will go here -->
+                                    </div>
+                                    <div class="text-center text-secondary">
+                                        <p>Click anywhere to continue.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <h2 class="text-center mb-4">Stall Extension Application</h2>
 
-
-                        <div id="responseMessage" class="alert mt-2 text-center" style="display:none;"></div>
                         <div class="stall-card my-4">
 
                             <h5>Select Stall</h5>
@@ -176,15 +190,21 @@ if (empty($_SESSION['csrf_token'])) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    const responseMessage = document.getElementById('responseMessage');
+
                     if (data.success) {
-                        responseMessage.innerHTML = `<div class="alert alert-success">${data.messages.join('<br>')}</div>`;
-                        responseMessage.style.display = 'block';
+                        document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
+                        document.getElementById('responseModalBody').classList.remove('text-danger');
+                        document.getElementById('responseModalBody').classList.add('text-success');
                     } else {
-                        responseMessage.innerHTML = `<div class="alert alert-danger">${data.messages.join('<br>')}</div>`;
-                        responseMessage.style.display = 'block';
+                        document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
+                        document.getElementById('responseModalBody').classList.remove('text-success');
+                        document.getElementById('responseModalBody').classList.add('text-danger');
                     }
-                    // console.table(data);
+
+                    // Show the modal
+                    const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
+                    responseModal.show();
+
                 })
                 .catch(error => {
                     console.error('Error:', error);
