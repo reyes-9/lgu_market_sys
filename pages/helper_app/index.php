@@ -35,9 +35,13 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="container shadow rounded-3 p-5 application light">
                         <h2 class="text-center mb-4">Helper Application</h2>
 
+                        <h5>Select Stall</h5>
+                        <hr>
+                        <div id="responseMessage" class="alert mt-3" style="display:none;"></div>
                         <h5 id="stall_message"></h5>
                         <form id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                            <input type="hidden" name="application_type" value="add helper">
 
                             <table class="table table-striped table-borderless table-hover custom-table light">
                                 <thead>
@@ -55,14 +59,14 @@ if (empty($_SESSION['csrf_token'])) {
                                 </tbody>
                             </table>
 
-                            <div class="row mt-5">
+                            <div class="row mt-4">
                                 <div class="col">
                                     <label for="First Name">First Name:</label>
-                                    <input type="text" class="form-control" placeholder="Enter first name" required>
+                                    <input type="text" class="form-control" name="first_name" placeholder="Enter first name" required>
                                 </div>
                                 <div class="col">
                                     <label for="Last Name">Last Name:</label>
-                                    <input type="text" class="form-control" placeholder="Enter last name" required>
+                                    <input type="text" class="form-control" name="last_name" placeholder="Enter last name" required>
                                 </div>
                             </div>
 
@@ -71,32 +75,30 @@ if (empty($_SESSION['csrf_token'])) {
                                     <label for="validIdType">Select Valid Id</label>
                                     <select class="form-control" id="validIdType" name="valid_id_type" required>
                                         <option value="" disabled selected>-- Select an ID --</option>
-                                        <option value="passport">Philippine Passport</option>
-                                        <option value="sss">Social Security System (SSS) ID</option>
-                                        <option value="drivers_license">Driver’s License</option>
-                                        <option value="philhealth">PhilHealth ID</option>
-                                        <option value="tin">Taxpayer Identification Number (TIN) ID</option>
-                                        <option value="umid">Unified Multi-Purpose ID (UMID)</option>
-                                        <option value="voters_id">Voter’s ID</option>
-                                        <option value="postal">Postal ID</option>
+                                        <option value="Philippine Passport">Philippine Passport</option>
+                                        <option value="Social Security System (SSS) ID">Social Security System (SSS) ID</option>
+                                        <option value="Driver’s License">Driver’s License</option>
+                                        <option value="PhilHealth ID">PhilHealth ID</option>
+                                        <option value="Taxpayer Identification Number (TIN) ID">Taxpayer Identification Number (TIN) ID</option>
+                                        <option value="Unified Multi-Purpose ID (UMID)">Unified Multi-Purpose ID (UMID)</option>
+                                        <option value="Voter’s ID">Voter’s ID</option>
+                                        <option value="Postal ID">Postal ID</option>
                                     </select>
                                 </div>
-
-                                <div class="row mt-5">
-                                    <div class="p-3 my-3" id="id_section">
-                                        <label for="documents">Upload Valid Id:</label>
-                                        <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
+                                <br>
+                            </div>
+                            <div class="row my-4">
+                                <div class="col">
+                                    <div class="w-50" id="id_section">
+                                        <label for="documents"><span id="id_section_label"></span></label>
+                                        <input type="file" class="form-control" id="document" name="document" required>
                                     </div>
                                 </div>
-                                <br>
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-warning">Submit Application</button>
-                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-warning">Submit Application</button>
                             </div>
                         </form>
-
-                        <div id="responseMessage" class="alert mt-3" style="display:none;"></div>
 
                     </div>
                 </div>
@@ -109,13 +111,32 @@ if (empty($_SESSION['csrf_token'])) {
     <!-- Bootstrap JS and dependencies -->
 
     <script>
-        let locationsData; // Store the fetched data for later use
-
         // Theme
         const application = document.querySelector('.application');
+        const table = document.querySelector('.custom-table');
+
         themeToggleButton.addEventListener("click", () => {
             application.classList.toggle("dark");
             application.classList.toggle("light");
+            table.classList.toggle('dark');
+            table.classList.toggle('light');
+        });
+
+        // Valid Id Selection
+        const validIdType = document.getElementById('validIdType');
+        const idSection = document.getElementById('id_section');
+        const idSectionLabel = document.getElementById('id_section_label');
+
+        validIdType.addEventListener('change', function() {
+            const selectedValue = validIdType.value;
+
+            if (selectedValue) {
+                idSection.style.display = 'block'; // Show the ID section
+                idSectionLabel.textContent = `Upload ${validIdType.options[validIdType.selectedIndex].text}`;
+            } else {
+                idSection.style.display = 'none'; // Hide the ID section if no valid option is selected
+                idSectionLabel.textContent = '';
+            }
         });
 
 

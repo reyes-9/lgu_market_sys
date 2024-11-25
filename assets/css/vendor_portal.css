@@ -1,26 +1,28 @@
-@import url('main.css');
+@import url("main.css");
 
-.divide{
-    border-left: 3px solid #ffc107;
+.divide {
+  border-left: 3px solid #ffc107;
 }
-.profile.light{
-    background-color: #003366;
-    color: var(--bs-light);
+.profile.light {
+  background-color: #003366;
+  color: var(--bs-light);
 }
 
-.custom-table.light td {
-    padding: 15px;
-    background-color: #003366; /* Custom background color */
-    color: var(--bs-light);
+.custom-table.light td,
+.custom-table.light th {
+  padding: 15px;
+  background-color: #003366; /* Custom background color */
+  color: var(--bs-light);
 }
 
 .profile.dark {
-    background-color: #1A2732; /* Darker background color */
-    color: var(--bs-light); /* Keep the text light for contrast */
+  background-color: #1a2732; /* Darker background color */
+  color: var(--bs-light); /* Keep the text light for contrast */
 }
 
-.custom-table.dark td {
-    padding: 15px;
-    background-color: #1A2732; /* Darker background for dark mode */
-    color: var(--bs-light); /* Light text color for contrast */
+.custom-table.dark td,
+.custom-table.dark th {
+  padding: 15px;
+  background-color: #1a2732; /* Darker background for dark mode */
+  color: var(--bs-light); /* Light text color for contrast */
 }

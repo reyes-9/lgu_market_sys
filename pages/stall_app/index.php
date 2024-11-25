@@ -242,7 +242,7 @@ if (empty($_SESSION['csrf_token'])) {
 
             // Update the stallInfo section with a table
             const stallInfo = `
-            <table class="table table-striped table-borderless table-hover custom-table">
+            <table class="table table-striped table-borderless table-hover custom-table dark">
             <thead>
                 <tr>
                     <th>Rental Fee</th>
