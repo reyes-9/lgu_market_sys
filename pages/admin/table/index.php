@@ -66,6 +66,7 @@
                                     <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th>Account</th>
                                                 <th>Stall</th>
                                                 <th>Section</th>
@@ -76,50 +77,7 @@
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>John Doe</td>
-                                                <td>12A</td>
-                                                <td>+1234567890</td>
-                                                <td>Helper</td>
-                                                <td>Pending</td>
-                                                <td>Food</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Action</button></li>
-                                                            <li><button class="dropdown-item" href="#">Another action</button></li>
-                                                            <li><button class="dropdown-item" href="#">Something else here</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Jane Smith</td>
-                                                <td>34B</td>
-                                                <td>+0987654321</td>
-                                                <td>Stall</td>
-                                                <td>Pending</td>
-                                                <td>Clothing</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                        <tbody id="table-body-stall-app">
                                         </tbody>
                                     </table>
                                 </div>
@@ -143,6 +101,7 @@
                                     <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th>Account</th>
                                                 <th>Stall</th>
                                                 <th>Section</th>
@@ -153,52 +112,7 @@
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>John Doe</td>
-                                                <td>12A</td>
-                                                <td>+1234567890</td>
-                                                <td>Helper</td>
-                                                <td>Pending</td>
-                                                <td>Food</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Jane Smith</td>
-                                                <td>34B</td>
-                                                <td>+0987654321</td>
-                                                <td>Stall</td>
-                                                <td>Pending</td>
-                                                <td>Clothing</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                            <!-- Add more rows as needed -->
+                                        <tbody id="table-body-stall-transfer">
                                         </tbody>
                                     </table>
                                 </div>
@@ -222,62 +136,19 @@
                                     <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th>Account</th>
                                                 <th>Stall</th>
                                                 <th>Section</th>
                                                 <th>Market</th>
                                                 <th>Application Type</th>
+                                                <th>Extension Duration</th>
                                                 <th>Status</th>
                                                 <th>Created At</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>John Doe</td>
-                                                <td>12A</td>
-                                                <td>+1234567890</td>
-                                                <td>Helper</td>
-                                                <td>Pending</td>
-                                                <td>Food</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Jane Smith</td>
-                                                <td>34B</td>
-                                                <td>+0987654321</td>
-                                                <td>Stall</td>
-                                                <td>Pending</td>
-                                                <td>Clothing</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                            <!-- Add more rows as needed -->
+                                        <tbody id="table-body-stall-extension">
                                         </tbody>
                                     </table>
                                 </div>
@@ -301,61 +172,19 @@
                                     <table class="table table-striped table-borderless table-hover custom-table mt-4 light">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th>Account</th>
                                                 <th>Stall</th>
                                                 <th>Section</th>
                                                 <th>Market</th>
                                                 <th>Application Type</th>
+                                                <th>Helper Name</th>
                                                 <th>Status</th>
                                                 <th>Created At</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>John Doe</td>
-                                                <td>12A</td>
-                                                <td>+1234567890</td>
-                                                <td>Helper</td>
-                                                <td>Pending</td>
-                                                <td>Food</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Jane Smith</td>
-                                                <td>34B</td>
-                                                <td>+0987654321</td>
-                                                <td>Stall</td>
-                                                <td>Pending</td>
-                                                <td>Clothing</td>
-                                                <td>
-                                                    <div class="btn-group dropend">
-                                                        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Select
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item" href="#">Approve</button></li>
-                                                            <li><button class="dropdown-item" href="#">Reject</button></li>
-                                                            <li><button class="dropdown-item" href="#">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
+                                        <tbody id="table-body-stall-helper">
                                         </tbody>
                                     </table>
                                 </div>
@@ -421,7 +250,7 @@
             }
         });
 
-        // Daily Sales Chart
+        // Daily Sales 
         var ctx2 = document.getElementById('dailySalesChart').getContext('2d');
         var dailySalesChart = new Chart(ctx2, {
             type: 'line',
@@ -447,6 +276,155 @@
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        // Fetch data from the server and populate the table
+        function fetchTableData() {
+            fetch('../../actions/admin_action.php')
+                .then(response => response.json())
+                .then(data => {
+                    const stallTableBody = document.getElementById('table-body-stall-app');
+                    const stallTransferTableBody = document.getElementById('table-body-stall-transfer');
+                    const stallExtensionTableBody = document.getElementById('table-body-stall-extension');
+                    const stallHelperTableBody = document.getElementById('table-body-stall-helper');
+
+                    // Clear existing rows
+                    stallTableBody.innerHTML = '';
+                    stallTransferTableBody.innerHTML = '';
+                    stallExtensionTableBody.innerHTML = '';
+                    stallHelperTableBody.innerHTML = '';
+
+                    // STALL
+                    data.stall.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.account_name}</td>
+                    <td>${row.stall_number}</td>
+                    <td>${row.section_name}</td>
+                    <td>${row.market_name}</td>
+                    <td>${row.application_type}</td>
+                    <td>${row.status}</td>
+                    <td>${row.created_at}</td>
+                    <td>
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" href="#">Approve</button></li>
+                                <li><button class="dropdown-item" href="#">Reject</button></li>
+                                <li><button class="dropdown-item" href="#">Delete</button></li>
+                                <li><button class="dropdown-item" href="#">View Application</button></li>
+                            </ul>
+                        </div>
+                    </td>
+                `;
+                        stallTableBody.appendChild(tr);
+                    });
+
+                    // TRANSFER
+                    data.stall_transfer.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.account_name}</td>
+                    <td>${row.stall_number}</td>
+                    <td>${row.section_name}</td>
+                    <td>${row.market_name}</td>
+                    <td>${row.application_type}</td>
+                    <td>${row.status}</td>
+                    <td>${row.created_at}</td>
+                    <td>
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" href="#">Approve</button></li>
+                                <li><button class="dropdown-item" href="#">Reject</button></li>
+                                <li><button class="dropdown-item" href="#">Delete</button></li>
+                                <li><button class="dropdown-item" href="#">View Application</button></li>
+                            </ul>
+                        </div>
+                    </td>
+                `;
+                        stallTransferTableBody.appendChild(tr);
+                    });
+
+                    // EXTENSION
+                    data.stall_extension.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.account_name}</td>
+                    <td>${row.stall_number}</td>
+                    <td>${row.section_name}</td>
+                    <td>${row.market_name}</td>
+                    <td>${row.application_type}</td>
+                    <td>${row.ext_duration} Month(s)</td>
+                    <td>${row.status}</td>
+                    <td>${row.created_at}</td>
+                    <td>
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" href="#">Approve</button></li>
+                                <li><button class="dropdown-item" href="#">Reject</button></li>
+                                <li><button class="dropdown-item" href="#">Delete</button></li>
+                                <li><button class="dropdown-item" href="#">View Application</button></li>
+                            </ul>
+                        </div>
+                    </td>
+                `;
+                        stallExtensionTableBody.appendChild(tr);
+                    });
+
+
+                    // HELPER
+                    data.helper.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.account_name}</td>
+                    <td>${row.stall_number}</td>
+                    <td>${row.section_name}</td>
+                    <td>${row.market_name}</td>
+                    <td>${row.application_type}</td>
+                    <td>${row.helper_name}</td>
+                    <td>${row.status}</td>
+                    <td>${row.created_at}</td>
+                    <td>
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" href="#">Approve</button></li>
+                                <li><button class="dropdown-item" href="#">Reject</button></li>
+                                <li><button class="dropdown-item" href="#">Delete</button></li>
+                                <li><button class="dropdown-item" href="#">View Document</button></li>
+                            </ul>
+                        </div>
+                    </td>
+                `;
+                        stallHelperTableBody.appendChild(tr);
+                    });
+
+                })
+                .catch(error => console.error('Error fetching table data:', error));
+        }
+
+
+        // Fetch data when the page loads
+        window.onload = () => {
+            fetchTableData(); // Initial load
+            setInterval(fetchTableData, 5000); // Subsequent updates every 5 seconds
+        };
+    </script>
+
     <script>
         var ctx = document.getElementById('applicationsChart').getContext('2d');
         var applicationsChart = new Chart(ctx, {

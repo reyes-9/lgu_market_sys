@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 22, 2024 at 04:03 PM
+-- Generation Time: Nov 25, 2024 at 01:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,7 @@ INSERT INTO `accounts` (`id`, `email`, `password`, `user_type`, `created_at`) VA
 (1, 'user1@example.com', 'hashed_password_1', 'User', '2024-09-23 00:18:15'),
 (2, 'user2@example.com', 'hashed_password_2', 'User', '2024-09-23 00:18:15'),
 (3, 'admin@example.com', 'hashed_password_admin', 'Admin', '2024-09-23 00:18:15'),
-(4, 'reyes@gmail.com', '$2y$10$.Ouf1nFd3JyEDGxR1kGSturOgPiKIJRNsMMzRCzfkQHX7AbovA5qy', 'User', '2024-09-23 01:52:11'),
+(4, 'reyes@gmail.com', '$2y$10$.Ouf1nFd3JyEDGxR1kGSturOgPiKIJRNsMMzRCzfkQHX7AbovA5qy', 'Admin', '2024-09-23 01:52:11'),
 (5, 'bn@gmail.com', '$2y$10$dS4FMoqs6HlCS.i.kH9uv.RDlbkEp2NOIC2UVX3TXs2P1sWrqMMPu', 'User', '2024-09-25 12:56:15');
 
 -- --------------------------------------------------------
@@ -59,6 +59,8 @@ CREATE TABLE `applications` (
   `section_id` int(11) NOT NULL,
   `market_id` int(11) NOT NULL,
   `application_type` enum('stall','stall transfer','stall extension','add helper') NOT NULL,
+  `helper_id` int(10) DEFAULT NULL,
+  `ext_duration` int(11) DEFAULT NULL,
   `status` enum('Pending','Approved','Denied','') NOT NULL DEFAULT 'Pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -94,6 +96,20 @@ CREATE TABLE `feedback` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `helper`
+--
+
+CREATE TABLE `helper` (
+  `id` int(100) NOT NULL,
+  `stall_id` int(10) DEFAULT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `status` enum('Approved','Rejected','Pending','') NOT NULL DEFAULT 'Pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `login_attempts`
 --
 
@@ -124,7 +140,8 @@ CREATE TABLE `market_locations` (
 INSERT INTO `market_locations` (`id`, `market_name`, `market_address`) VALUES
 (1, 'Central Market', '123 Main St.'),
 (2, 'Eastside Market', '456 East St.'),
-(3, 'West End Market', '789 West St.');
+(3, 'West End Market', '789 West St.'),
+(4, 'Sunrise Public Market', '123 Market Road, Sunrise City');
 
 -- --------------------------------------------------------
 
@@ -151,9 +168,6 @@ CREATE TABLE `profiles` (
 --
 
 INSERT INTO `profiles` (`id`, `account_id`, `stall_id`, `name`, `bio`, `email`, `birthdate`, `address`, `contact`, `profile_picture`, `created_at`) VALUES
-(1, 1, NULL, 'User One', '', '', NULL, '', '0', 'path/to/profile_picture_1.jpg', '2024-09-23 00:18:15'),
-(2, 2, NULL, 'User Two', '', '', NULL, '', '0', 'path/to/profile_picture_2.jpg', '2024-09-23 00:18:15'),
-(3, 3, NULL, 'Admin User', '', '', NULL, '', '0', 'path/to/profile_picture_admin.jpg', '2024-09-23 00:18:15'),
 (39, 4, 6, 'Nelson Reyes', 'I.T. Student at BCP Major in Information Management', 'reyes@gmail.com', '2024-10-30', '98 Ambuklao St. Pasong Tamo, Tandang Sora, QC.', '09087527541', NULL, '2024-09-28 13:26:25');
 
 -- --------------------------------------------------------
@@ -200,12 +214,22 @@ CREATE TABLE `stalls` (
 
 INSERT INTO `stalls` (`id`, `market_id`, `section_id`, `account_id`, `stall_number`, `rental_fee`, `stall_size`, `status`) VALUES
 (1, 1, 1, NULL, 101, 100.00, '10x10 sqft', 'available'),
-(2, 1, 2, 4, 102, 80.00, '8x8 sqft', 'available'),
-(3, 1, 3, NULL, 103, 120.00, '12x12 sqft', 'available'),
-(4, 2, 1, NULL, 201, 110.00, '10x10 sqft', 'available'),
-(5, 2, 4, NULL, 202, 90.00, '9x9 sqft', 'available'),
+(2, 1, 2, 4, 102, 80.00, '8x8 sqft', 'occupied'),
+(3, 1, 3, 4, 103, 120.00, '12x12 sqft', 'occupied'),
+(4, 2, 1, 4, 201, 110.00, '10x10 sqft', 'occupied'),
+(5, 2, 4, 4, 202, 90.00, '9x9 sqft', 'occupied'),
 (6, 3, 2, NULL, 301, 85.00, '8x8 sqft', 'available'),
-(7, 3, 3, NULL, 302, 130.00, '12x12 sqft', 'available');
+(7, 3, 3, NULL, 302, 130.00, '12x12 sqft', 'available'),
+(18, 4, 1, NULL, 1, 1500.00, '12x12 sqft', 'available'),
+(19, 4, 2, NULL, 2, 1700.00, '10x8 sqft', 'available'),
+(20, 4, 4, NULL, 3, 1800.00, '15x10 sqft', 'available'),
+(21, 4, 4, NULL, 4, 2000.00, '20x15 sqft', 'occupied'),
+(22, 4, 4, NULL, 5, 1200.00, '8x6 sqft', 'available'),
+(23, 4, 1, NULL, 6, 1500.00, '12x12 sqft', 'occupied'),
+(24, 4, 2, NULL, 7, 1600.00, '10x8 sqft', 'available'),
+(25, 4, 4, NULL, 8, 1900.00, '15x10 sqft', 'available'),
+(26, 4, 4, NULL, 9, 1800.00, '20x15 sqft', 'occupied'),
+(27, 4, 1, NULL, 10, 1400.00, '8x6 sqft', 'available');
 
 -- --------------------------------------------------------
 
@@ -240,7 +264,8 @@ ALTER TABLE `applications`
   ADD KEY `stall_id` (`stall_id`),
   ADD KEY `fk_section_id` (`section_id`),
   ADD KEY `fk_market_location` (`market_id`),
-  ADD KEY `applications_ibfk_1` (`account_id`);
+  ADD KEY `applications_ibfk_1` (`account_id`),
+  ADD KEY `helper_id` (`helper_id`);
 
 --
 -- Indexes for table `documents`
@@ -255,6 +280,13 @@ ALTER TABLE `documents`
 ALTER TABLE `feedback`
   ADD PRIMARY KEY (`id`),
   ADD KEY `feedback_ibfk_1` (`account_id`);
+
+--
+-- Indexes for table `helper`
+--
+ALTER TABLE `helper`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_stall_id` (`stall_id`);
 
 --
 -- Indexes for table `login_attempts`
@@ -328,6 +360,12 @@ ALTER TABLE `feedback`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `helper`
+--
+ALTER TABLE `helper`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `login_attempts`
 --
 ALTER TABLE `login_attempts`
@@ -337,7 +375,7 @@ ALTER TABLE `login_attempts`
 -- AUTO_INCREMENT for table `market_locations`
 --
 ALTER TABLE `market_locations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `profiles`
@@ -355,7 +393,7 @@ ALTER TABLE `sections`
 -- AUTO_INCREMENT for table `stalls`
 --
 ALTER TABLE `stalls`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `support_tickets`
@@ -373,6 +411,7 @@ ALTER TABLE `support_tickets`
 ALTER TABLE `applications`
   ADD CONSTRAINT `applications_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `applications_ibfk_2` FOREIGN KEY (`stall_id`) REFERENCES `stalls` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_helper_id` FOREIGN KEY (`helper_id`) REFERENCES `helper` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_market_location` FOREIGN KEY (`market_id`) REFERENCES `market_locations` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_section_id` FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`) ON DELETE CASCADE;
 
@@ -387,6 +426,12 @@ ALTER TABLE `documents`
 --
 ALTER TABLE `feedback`
   ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `helper`
+--
+ALTER TABLE `helper`
+  ADD CONSTRAINT `fk_stall_id` FOREIGN KEY (`stall_id`) REFERENCES `stalls` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `login_attempts`

@@ -44,7 +44,7 @@ if (empty($_SESSION['csrf_token'])) {
                                         <!-- Message content will go here -->
                                     </div>
                                     <div class="text-center text-secondary">
-                                
+
                                         <p>Click anywhere to continue.</p>
                                     </div>
                                 </div>

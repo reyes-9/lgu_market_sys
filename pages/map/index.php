@@ -25,7 +25,7 @@
 
                     <div class="row justify-content-between m-3 p-3">
                         <!-- Left Section: Map and Select Market -->
-                        <div class="col-md-6">
+                        <di v class="col-md-6">
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="market">Market:</label>
@@ -47,12 +47,22 @@
                                 <button class="btn btn-warning mb-3" id="viewStallsBtn" onclick=showStallMap() disabled>View Stalls</button>
                             </div>
 
-                        </div>
+                        </di>
 
                         <div class="col-md-5">
                             <div id="map" class="mb-3">
                                 <p class="text-center">Map Placeholder</p>
                             </div>
+                            <!-- <iframe
+                                width="600"
+                                height="450"
+                                style="border:0"
+                                loading="lazy"
+                                allowfullscreen
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://www.google.com/maps/embed/v1/place?key=API_KEY
+    &q=Space+Needle,Seattle+WA">
+                            </iframe> -->
                         </div>
                     </div>
 
@@ -61,7 +71,7 @@
                         <div class="container text-center my-5">
                             <h2>Market Stalls Map</h2>
 
-                            <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
                                 <!-- 1x7 Red Stall (Single Row of 7 Squares) -->
                                 <g fill="#ff4d4d" stroke="#000" stroke-width="1">
                                     <rect x="10" y="10" width="20" height="20" class="stall" data-stall-id="1 Aling Nenas's Stall" />
@@ -72,108 +82,225 @@
                                     <rect x="110" y="10" width="20" height="20" class="stall" />
                                     <rect x="130" y="10" width="20" height="20" class="stall" />
                                 </g>
+                            </svg>
 
-                                <!-- 2x5 Green Stall (Two Rows of 5 Squares Each) -->
-                                <g fill="#4dff4d" stroke="#000" stroke-width="1">
-                                    <rect x="10" y="50" width="20" height="20" />
-                                    <rect x="30" y="50" width="20" height="20" />
-                                    <rect x="50" y="50" width="20" height="20" />
-                                    <rect x="70" y="50" width="20" height="20" />
-                                    <rect x="90" y="50" width="20" height="20" />
-                                    <rect x="10" y="70" width="20" height="20" />
-                                    <rect x="30" y="70" width="20" height="20" />
-                                    <rect x="50" y="70" width="20" height="20" />
-                                    <rect x="70" y="70" width="20" height="20" />
-                                    <rect x="90" y="70" width="20" height="20" />
+                            <svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg">
+                                <!-- 1x7 Red Stall (Single Row of 7 Squares) -->
+                                <g fill="#0362fc" stroke="#000" stroke-width="1">
+                                    <rect x="10" y="10" width="20" height="20" class="stall" data-stall-id="1 Aling Nenas's Stall" />
+                                    <rect x="10" y="30" width="20" height="20" class="stall" />
+                                    <rect x="10" y="50" width="20" height="20" class="stall" />
+                                    <rect x="10" y="70" width="20" height="20" class="stall" />
+                                    <rect x="10" y="90" width="20" height="20" class="stall" />
+                                    <rect x="10" y="110" width="20" height="10" class="stall" />
+                                    <rect x="10" y="120" width="20" height="10" class="stall" />
+                                    <rect x="10" y="130" width="20" height="20" class="stall" />
+                                    <rect x="10" y="150" width="20" height="20" class="stall" />
                                 </g>
-
-                                <!-- 2x8 Green Stall (Two Rows of 8 Squares Each) -->
-                                <g fill="#66ff66" stroke="#000" stroke-width="1">
-                                    <rect x="10" y="110" width="20" height="20" />
-                                    <rect x="30" y="110" width="20" height="20" />
-                                    <rect x="50" y="110" width="20" height="20" />
-                                    <rect x="70" y="110" width="20" height="20" />
-                                    <rect x="90" y="110" width="20" height="20" />
-                                    <rect x="110" y="110" width="20" height="20" />
-                                    <rect x="130" y="110" width="20" height="20" />
-                                    <rect x="150" y="110" width="20" height="20" />
-                                    <rect x="10" y="130" width="20" height="20" />
-                                    <rect x="30" y="130" width="20" height="20" />
-                                    <rect x="50" y="130" width="20" height="20" />
-                                    <rect x="70" y="130" width="20" height="20" />
-                                    <rect x="90" y="130" width="20" height="20" />
-                                    <rect x="110" y="130" width="20" height="20" />
-                                    <rect x="130" y="130" width="20" height="20" />
-                                    <rect x="150" y="130" width="20" height="20" />
+                                <g fill="#84dbe3" stroke="#000" stroke-width="1">
+                                    <rect x="10" y="255" width="20" height="20" class="stall" data-stall-id="1 Aling Nenas's Stall" />
+                                    <rect x="10" y="290" width="20" height="10" class="stall" />
+                                    <rect x="10" y="300" width="20" height="10" class="stall" />
+                                    <rect x="10" y="330" width="20" height="35" class="stall" />
+                                    <rect x="10" y="390" width="20" height="20" class="stall" />
+                                    <rect x="10" y="410" width="20" height="20" class="stall" />
+                                    <rect x="10" y="430" width="20" height="20" class="stall" />
+                                    <rect x="10" y="450" width="20" height="20" class="stall" />
                                 </g>
-
-                                <!-- 2x8 Gray Stall (Two Rows of 8 Squares Each) -->
-                                <g fill="#b3b3b3" stroke="#000" stroke-width="1">
-                                    <rect x="10" y="170" width="20" height="20" />
-                                    <rect x="30" y="170" width="20" height="20" />
-                                    <rect x="50" y="170" width="20" height="20" />
-                                    <rect x="70" y="170" width="20" height="20" />
-                                    <rect x="90" y="170" width="20" height="20" />
-                                    <rect x="110" y="170" width="20" height="20" />
-                                    <rect x="130" y="170" width="20" height="20" />
-                                    <rect x="150" y="170" width="20" height="20" />
-                                    <rect x="10" y="190" width="20" height="20" />
-                                    <rect x="30" y="190" width="20" height="20" />
-                                    <rect x="50" y="190" width="20" height="20" />
-                                    <rect x="70" y="190" width="20" height="20" />
-                                    <rect x="90" y="190" width="20" height="20" />
-                                    <rect x="110" y="190" width="20" height="20" />
-                                    <rect x="130" y="190" width="20" height="20" />
-                                    <rect x="150" y="190" width="20" height="20" />
+                                <g fill="#ebb691" stroke="#000" stroke-width="1">
+                                    <rect x="10" y="190" width="80" height="50" class="stall" data-stall-id="1 Aling Nenas's Stall" />
+                                    <rect x="30" y="220" width="60" height="40" class="stall" />
+                                    <rect x="30" y="260" width="50" height="25" class="stall" />
+                                    <rect x="30" y="285" width="50" height="25" class="stall" />
+                                    <rect x="10" y="310" width="80" height="23" class="stall" />
+                                    <rect x="30" y="333" width="60" height="27" class="stall" />
+                                    <rect x="10" y="360" width="80" height="30" class="stall" />
+                                    <rect x="30" y="390" width="60" height="29" class="stall" />
+                                    <rect x="30" y="418" width="60" height="29" class="stall" />
+                                    <rect x="30" y="447" width="60" height="29" class="stall" />
                                 </g>
-
-
-                                <!-- 2x2 Gray Stall (Two Rows of 2 Squares Each) -->
-                                <g fill="#d9d9d9" stroke="#000" stroke-width="1">
-                                    <rect x="10" y="230" width="20" height="20" />
-                                    <rect x="30" y="230" width="20" height="20" />
-                                    <rect x="10" y="250" width="20" height="20" />
-                                    <rect x="30" y="250" width="20" height="20" />
+                                <g fill="#f57040" stroke="#000" stroke-width="1">
+                                    <rect x="150" y="175" width="50" height="50" class="stall" data-stall-id="1 Aling Nenas's Stall" />
+                                    <rect x="200" y="175" width="50" height="50" class="stall" />
+                                    <rect x="250" y="175" width="40" height="50" class="stall" />
+                                    <rect x="290" y="175" width="40" height="50" class="stall" />
+                                    <rect x="330" y="175" width="35" height="50" class="stall" />
+                                    <rect x="365" y="175" width="35" height="50" class="stall" />
+                                    <rect x="400" y="175" width="35" height="50" class="stall" />
+                                    <rect x="435" y="175" width="35" height="50" class="stall" />
+                                    <rect x="470" y="175" width="40" height="50" class="stall" />
+                                    <rect x="510" y="175" width="35" height="50" class="stall" />
+                                    <rect x="545" y="175" width="35" height="50" class="stall" />
+                                    <rect x="580" y="175" width="47" height="50" class="stall" />
                                 </g>
-
-                                <!-- 2x7 Yellow Stall (Two Rows of 7 Squares Each) -->
-                                <g fill="#ffff4d" stroke="#000" stroke-width="1">
-                                    <rect x="10" y="290" width="20" height="20" />
-                                    <rect x="30" y="290" width="20" height="20" />
-                                    <rect x="50" y="290" width="20" height="20" />
-                                    <rect x="70" y="290" width="20" height="20" />
-                                    <rect x="90" y="290" width="20" height="20" />
-                                    <rect x="110" y="290" width="20" height="20" />
-                                    <rect x="130" y="290" width="20" height="20" />
-                                    <rect x="10" y="310" width="20" height="20" />
-                                    <rect x="30" y="310" width="20" height="20" />
-                                    <rect x="50" y="310" width="20" height="20" />
-                                    <rect x="70" y="310" width="20" height="20" />
-                                    <rect x="90" y="310" width="20" height="20" />
-                                    <rect x="110" y="310" width="20" height="20" />
-                                    <rect x="130" y="310" width="20" height="20" />
+                                <g fill="#f75e72" stroke="#000" stroke-width="1">
+                                    <rect x="125" y="270" width="30" height="30" class="stall" />
+                                    <rect x="125" y="300" width="30" height="30" class="stall" />
+                                    <rect x="125" y="330" width="30" height="30" class="stall" />
+                                    <rect x="125" y="360" width="30" height="30" class="stall" />
+                                    <rect x="125" y="390" width="30" height="30" class="stall" />
+                                    <rect x="125" y="420" width="30" height="30" class="stall" />
                                 </g>
-
-                                <!-- 2x8 Yellow Stall (Two Rows of 8 Squares Each) -->
-                                <g fill="#ffff66" stroke="#000" stroke-width="1">
-                                    <rect x="10" y="350" width="20" height="20" />
-                                    <rect x="30" y="350" width="20" height="20" />
-                                    <rect x="50" y="350" width="20" height="20" />
-                                    <rect x="70" y="350" width="20" height="20" />
-                                    <rect x="90" y="350" width="20" height="20" />
-                                    <rect x="110" y="350" width="20" height="20" />
-                                    <rect x="130" y="350" width="20" height="20" />
-                                    <rect x="150" y="350" width="20" height="20" />
-                                    <rect x="10" y="370" width="20" height="20" />
-                                    <rect x="30" y="370" width="20" height="20" />
-                                    <rect x="50" y="370" width="20" height="20" />
-                                    <rect x="70" y="370" width="20" height="20" />
-                                    <rect x="90" y="370" width="20" height="20" />
-                                    <rect x="110" y="370" width="20" height="20" />
-                                    <rect x="130" y="370" width="20" height="20" />
-                                    <rect x="150" y="370" width="20" height="20" />
+                                <g fill="#f75e72" stroke="#000" stroke-width="1">
+                                    <rect x="155" y="270" width="30" height="30" class="stall" />
+                                    <rect x="155" y="300" width="30" height="30" class="stall" />
+                                    <rect x="155" y="330" width="30" height="30" class="stall" />
+                                    <rect x="155" y="360" width="30" height="30" class="stall" />
+                                    <rect x="155" y="390" width="30" height="30" class="stall" />
+                                    <rect x="155" y="420" width="30" height="30" class="stall" />
+                                </g>
+                                <g fill="#dcf5f0" stroke="#000" stroke-width="1">
+                                    <rect x="215" y="245" width="30" height="40" class="stall" />
+                                    <rect x="215" y="285" width="30" height="25" class="stall" />
+                                    <rect x="215" y="310" width="30" height="30" class="stall" />
+                                    <rect x="215" y="340" width="30" height="30" class="stall" />
+                                    <rect x="215" y="370" width="30" height="30" class="stall" />
+                                    <rect x="215" y="400" width="30" height="30" class="stall" />
+                                    <rect x="215" y="430" width="30" height="30" class="stall" />
+                                </g>
+                                <g fill="#d7dedd" stroke="#000" stroke-width="1">
+                                    <rect x="260" y="245" width="40" height="20" class="stall" />
+                                    <rect x="260" y="265" width="40" height="20" class="stall" />
+                                    <rect x="260" y="285" width="40" height="20" class="stall" />
+                                    <rect x="260" y="305" width="40" height="20" class="stall" />
+                                    <rect x="260" y="325" width="40" height="20" class="stall" />
+                                    <rect x="260" y="345" width="40" height="20" class="stall" />
+                                    <rect x="260" y="365" width="40" height="20" class="stall" />
+                                    <rect x="260" y="385" width="40" height="20" class="stall" />
+                                    <rect x="260" y="405" width="40" height="20" class="stall" />
+                                    <rect x="260" y="425" width="40" height="20" class="stall" />
+                                    <rect x="260" y="445" width="40" height="20" class="stall" />
+                                    <rect x="260" y="465" width="40" height="20" class="stall" />
+                                </g>
+                                <g fill="#f5faf9" stroke="#000" stroke-width="1">
+                                    <rect x="340" y="245" width="35" height="45" class="stall" />
+                                    <rect x="340" y="290" width="35" height="45" class="stall" />
+                                    <rect x="340" y="335" width="35" height="45" class="stall" />
+                                    <rect x="340" y="380" width="35" height="45" class="stall" />
+                                    <rect x="340" y="425" width="35" height="45" class="stall" />
+                                </g>
+                                <g fill="#a1b3b0" stroke="#000" stroke-width="1">
+                                    <rect x="375" y="245" width="35" height="45" class="stall" />
+                                    <rect x="375" y="290" width="35" height="45" class="stall" />
+                                    <rect x="375" y="335" width="35" height="45" class="stall" />
+                                    <rect x="375" y="380" width="35" height="45" class="stall" />
+                                    <rect x="375" y="425" width="35" height="45" class="stall" />
+                                </g>
+                                <g fill="#bf1d1d" stroke="#000" stroke-width="1">
+                                    <rect x="450" y="245" width="20" height="20" class="stall" />
+                                    <rect x="450" y="265" width="20" height="20" class="stall" />
+                                    <rect x="450" y="285" width="20" height="20" class="stall" />
+                                    <rect x="450" y="305" width="20" height="20" class="stall" />
+                                    <rect x="450" y="325" width="20" height="20" class="stall" />
+                                    <rect x="450" y="345" width="20" height="20" class="stall" />
+                                    <rect x="450" y="365" width="20" height="20" class="stall" />
+                                    <rect x="450" y="385" width="20" height="20" class="stall" />
+                                    <rect x="450" y="405" width="20" height="20" class="stall" />
+                                    <rect x="450" y="425" width="20" height="20" class="stall" />
+                                    <rect x="450" y="445" width="20" height="20" class="stall" />
+                                    <rect x="450" y="465" width="20" height="20" class="stall" />
+                                </g>
+                                <g fill="#58e862" stroke="#000" stroke-width="1">
+                                    <rect x="490" y="245" width="35" height="45" class="stall" />
+                                    <rect x="490" y="290" width="35" height="35" class="stall" />
+                                    <rect x="490" y="325" width="35" height="50" class="stall" />
+                                    <rect x="490" y="375" width="35" height="55" class="stall" />
+                                    <rect x="490" y="430" width="35" height="55" class="stall" />
+                                </g>
+                                <g fill="#dcf5f0" stroke="#000" stroke-width="1">
+                                    <rect x="550" y="245" width="40" height="40" class="stall" />
+                                    <rect x="550" y="285" width="32" height="55" class="stall" />
+                                    <rect x="550" y="310" width="32" height="65" class="stall" />
+                                    <rect x="550" y="340" width="32" height="35" class="stall" />
+                                    <rect x="550" y="375" width="32" height="20" class="stall" />
+                                    <rect x="550" y="395" width="32" height="40" class="stall" />
+                                    <rect x="550" y="435" width="32" height="50" class="stall" />
+                                </g>
+                                <g fill="#d4c555" stroke="#000" stroke-width="1">
+                                    <rect x="590" y="245" width="40" height="40" class="stall" />
+                                    <rect x="605" y="295" width="25" height="35" class="stall" />
+                                    <rect x="605" y="330" width="25" height="35" class="stall" />
+                                    <rect x="605" y="365" width="25" height="37" class="stall" />
+                                    <rect x="605" y="400" width="25" height="40" class="stall" />
+                                    <rect x="605" y="440" width="25" height="45" class="stall" />
+                                </g>
+                                <g fill="#88b7fc" stroke="#000" stroke-width="1">
+                                    <rect x="650" y="175" width="60" height="60" class="stall" />
+                                    <rect x="650" y="235" width="60" height="50" class="stall" />
+                                </g>
+                                <g fill="#d4c555" stroke="#000" stroke-width="1">
+                                    <rect x="655" y="295" width="20" height="20" class="stall" data-stall-id="1 Aling Nenas's Stall" />
+                                    <rect x="655" y="315" width="20" height="20" class="stall" />
+                                    <rect x="655" y="335" width="20" height="20" class="stall" />
+                                    <rect x="655" y="355" width="20" height="20" class="stall" />
+                                    <rect x="655" y="375" width="20" height="20" class="stall" />
+                                    <rect x="655" y="395" width="20" height="20" class="stall" />
+                                    <rect x="655" y="415" width="20" height="20" class="stall" />
+                                    <rect x="655" y="435" width="20" height="20" class="stall" />
+                                    <rect x="655" y="455" width="20" height="20" class="stall" />
+                                    <rect x="655" y="475" width="20" height="20" class="stall" />
+                                    <rect x="655" y="495" width="20" height="20" class="stall" />
+                                </g>
+                                <g fill="#7f6bb5" stroke="#000" stroke-width="1">
+                                    <rect x="700" y="285" width="40" height="40" class="stall" />
+                                    <rect x="700" y="325" width="40" height="55" class="stall" />
+                                    <rect x="700" y="380" width="40" height="25" class="stall" />
+                                    <rect x="700" y="405" width="40" height="25" class="stall" />
+                                    <rect x="700" y="430" width="40" height="35" class="stall" />
+                                </g>
+                                <g fill="#c1b3e8" stroke="#000" stroke-width="1">
+                                    <rect x="125" y="580" width="40" height="40" class="stall" />
+                                    <rect x="125" y="540" width="40" height="40" class="stall" />
+                                    <rect x="165" y="580" width="40" height="40" class="stall" />
+                                    <rect x="165" y="540" width="40" height="40" class="stall" />
+                                    <rect x="205" y="580" width="40" height="40" class="stall" />
+                                    <rect x="205" y="540" width="40" height="40" class="stall" fill="#2e0636" />
+                                </g>
+                                <g fill="#c1b3e8" stroke="#000" stroke-width="1">
+                                    <rect x="265" y="580" width="40" height="40" class="stall" />
+                                    <rect x="265" y="540" width="40" height="40" class="stall" />
+                                    <rect x="305" y="540" width="40" height="40" class="stall" />
+                                </g>
+                                <g fill="#c1b3e8" stroke="#000" stroke-width="1">
+                                    <rect x="355" y="540" width="30" height="40" class="stall" />
+                                    <rect x="385" y="540" width="30" height="60" class="stall" />
+                                    <rect x="415" y="540" width="30" height="40" class="stall" />
+                                    <rect x="445" y="540" width="30" height="40" class="stall" />
+                                </g>
+                                <g fill="#c1b3e8" stroke="#000" stroke-width="1">
+                                    <rect x="490" y="540" width="50" height="40" class="stall" />
+                                    <rect x="540" y="540" width="50" height="40" class="stall" />
+                                    <rect x="590" y="540" width="40" height="40" class="stall" />
+                                    <rect x="490" y="580" width="50" height="40" class="stall" />
+                                    <rect x="540" y="580" width="50" height="40" class="stall" />
+                                    <rect x="490" y="620" width="50" height="30" class="stall" />
+                                    <rect x="540" y="620" width="50" height="30" class="stall" />
+                                    <rect x="590" y="580" width="40" height="70" class="stall" fill="transparent" />
+                                    <rect x="490" y="650" width="100" height="40" class="stall" fill="transparent" />
+                                    <rect x="590" y="650" width="40" height="60" class="stall" fill="transparent" />
+                                    <rect x="490" y="690" width="50" height="60" class="stall" />
+                                    <rect x="490" y="690" width="30" height="30" class="stall" />
+                                    <rect x="540" y="690" width="60" height="60" class="stall" />
+                                    <rect x="590" y="710" width="40" height="30" class="stall" fill="transparent" />
+                                </g>
+                                <g fill="#c1b3e8" stroke="#000" stroke-width="1">
+                                    <rect x="320" y="620" width="40" height="50" class="stall" />
+                                    <rect x="360" y="620" width="50" height="50" class="stall" />
+                                    <rect x="410" y="605" width="20" height="40" class="stall" />
+                                    <rect x="410" y="645" width="20" height="40" class="stall" />
+                                    <rect x="320" y="610" width="90" height="10" class="stall" fill="transparent" />
+                                </g>
+                                <g fill="#c9d4f5" stroke="#000" stroke-width="1">
+                                    <rect x="700" y="540" width="25" height="40" class="stall" fill="#ba6765" />
+                                    <rect x="700" y="580" width="25" height="40" class="stall" fill="#ba6765" />
+                                    <rect x="700" y="620" width="25" height="40" class="stall" />
+                                    <rect x="700" y="660" width="25" height="40" class="stall" />
+                                    <rect x="625" y="720" width="100" height="40" class="stall" />
+                                    <rect x="700" y="700" width="25" height="40" class="stall" />
                                 </g>
                             </svg>
+
+
 
                             <!-- Modal Structure -->
                             <div class="modal fade" id="stallModal" tabindex="-1" aria-labelledby="stallModalLabel" aria-hidden="true">
