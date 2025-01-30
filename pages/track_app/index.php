@@ -15,10 +15,14 @@
 <body class="body light">
 
     <?php include '../../includes/nav.php'; ?>
-    <!-- <div class="mt-3 text-end"><a href="../portal/" class="btn btn-primary m-1">Return to Profile</a></div> -->
     <div class="content-wrapper">
         <div class="container m-5">
-
+            <div class="container mt-3 p-0">
+                <!-- <a href="index.php" class="btn btn-custom ">← Back to Profile</a> -->
+                <a href="../portal/" class="btn btn-outline btn-return mb-3">
+                    <i class="bi bi-arrow-left"></i> Profile
+                </a>
+            </div>
             <h2>Your Applications</h2>
 
             <div class="container my-4">
@@ -45,12 +49,6 @@
                 </div>
             </div>
         </div>
-        <div class="container mt-3">
-            <!-- <a href="index.php" class="btn btn-custom ">← Back to Profile</a> -->
-            <a href="profile.php" class="btn btn-outline mb-3" style="border-color: #003366; color:#003366;">
-                <i class="bi bi-arrow-left"></i> Profile
-            </a>
-        </div>
     </div>
 
 
@@ -71,7 +69,7 @@
                 const delay = index * 0.1;
                 const card = `
             <div class="col-md-4 slide-up">
-            <div class="card fade-in-card fade-in-card-delay border-0" style="--delay: ${delay}s;">
+                <div class="card fade-in-card fade-in-card-delay border-0" style="--delay: ${delay}s;">
                 <span class="card-status ${
                     app.status === 'Draft' ? 'status-draft' :
                     app.status === 'Submitted' ? 'status-submitted' :
@@ -121,7 +119,7 @@
                     View Progress
                 </button>
                 <button type="button" class="btn btn-outline-secondary w-100 mt-3 withdraw-btn" data-bs-toggle="modal" data-bs-target="#withdrawModal${app.id}">Withdraw Application</button>
-            </div>
+                </div>
             </div>
 
             <!-- Progress Modal  -->
@@ -130,10 +128,8 @@
                     <div class="modal-content">
                         <div class="modal-header border-0">
                             <h5 class="modal-title" id="viewProgressModalLabel${app.id}">Application Progress</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <span>Application ID: ${app.id}</span>
                             <div class="progress-tracker-modern my-5 d-flex flex-column flex-md-row align-items-center justify-content-between" data-status="${app.status}">
                                 ${generateProgressSteps(app.status)}
                             </div>
