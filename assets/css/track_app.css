@@ -1,0 +1,232 @@
+@import url("main.css");
+
+/* Cards */
+.card {
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+}
+
+.card-status {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 15px;
+  font-weight: bold;
+  color: #fff;
+  width: 30%;
+  text-align: center;
+}
+
+.status-submitted {
+  background-color: #007bff;
+}
+.status-under-review {
+  background-color: #6f42c1;
+}
+.status-approved {
+  background-color: #28a745;
+}
+.status-denied {
+  background-color: #dc3545;
+}
+.status-withdrawn {
+  background-color: #fd7e14;
+}
+
+.pagination {
+  padding: 20px;
+  justify-content: center;
+  border: none;
+}
+.pagination .page-item .page-link {
+  color: #323335;
+  border: none;
+  border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #003366;
+  color: bisque;
+}
+
+/* Animation for each card - Slide up with fade-in */
+@keyframes slideUpCard {
+  0% {
+    transform: translateY(30px); /* Start below the normal position */
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0); /* Slide to normal position */
+    opacity: 1;
+  }
+}
+
+.fade-in-card {
+  animation: slideUpCard 0.7s ease forwards;
+}
+.fade-in-card-delay {
+  animation-delay: var(--delay);
+}
+/* Add a dynamic delay for each card */
+
+.btn-warning.custom-hover {
+  background-color: #ffc107; /* Original warning color */
+  color: #212529; /* Dark text */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-warning.custom-hover:hover {
+  background-color: #e0a800; /* Darker yellow for hover */
+  color: #ffffff; /* White text for better contrast */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+/* Progress Tracker Container */
+.progress-tracker-modern {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%; /* Ensure full-width layout */
+  padding: 1rem 0;
+}
+
+/* Individual Step */
+.step-modern {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  z-index: 1;
+}
+
+/* Circles */
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background: #e0e0e0; /* Default gray for pending */
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0 auto; /* Centers circle */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.step-modern.completed .circle {
+  background: #4caf50;
+  box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
+}
+
+.step-modern.ongoing .circle {
+  background: #f0b504;
+  box-shadow: 0 4px 6px rgba(176, 173, 75, 0.361);
+}
+
+/* Text Labels */
+.label {
+  font-size: 1 rem;
+  font-weight: 600;
+  color: #383d42;
+  margin-top: 0.5rem;
+}
+
+.timestamp {
+  font-size: 0.9rem;
+  color: #888d93;
+}
+
+/* Active or Hover Effect */
+.step-modern:hover .circle,
+.step-modern.active .circle {
+  background: #2196f3;
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(33, 150, 243, 0.3);
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .progress-tracker-modern {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  .circle {
+    height: 40px;
+    width: 40px; /* Reduce circle size for small screens */
+  }
+
+  .label {
+    font-size: 1rem;
+  }
+
+  .timestamp {
+    font-size: 0.625rem;
+  }
+}
+
+/* MODAL */
+/* Animation for the check-circle icon */
+.icon-animation {
+  font-size: 5rem; /* Adjust icon size */
+  color: #28a745; /* Green color */
+  animation: bounceIn 1s ease-out; /* Apply bounce-in animation */
+}
+
+/* Bounce-in animation */
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Styling for the modal header */
+.modal-header {
+  background-color: #f8f9fa; /* Light background */
+  border-bottom: 1px solid #ddd; /* Light border */
+  display: flex;
+  align-items: center; /* Align icon and title vertically */
+  justify-content: space-between;
+}
+
+/* Styling the title */
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Optional: Add a smooth fade-in effect for the modal */
+.modal-content {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Fade-in effect for modal content */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Style the button and icon for a consistent look */
+.btn-close {
+  background: transparent;
+  border: none;
+}

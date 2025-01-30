@@ -67,7 +67,7 @@
                 </tr>
               </tbody>
             </table>
-            <div class="mt-3 text-end"><a href="#" class="btn btn-warning m-1 disabled">Track Applications</a></div>
+            <div class="mt-3 text-end"><a href="../track_app/" class="btn btn-warning m-1">Track Applications</a></div>
           </div>
 
         </div>

@@ -2,7 +2,7 @@
 session_start();
 require_once '../../includes/config.php';
 
-$account_id = $_SESSION['user_id'];
+$account_id = $_SESSION['user_id']; 
 
 try {
     $stmt_user = $pdo->prepare("SELECT name, bio, email, birthdate, address, contact FROM profiles WHERE account_id = :account_id");
@@ -11,13 +11,13 @@ try {
 
     $stmt_stall = $pdo->prepare("
             SELECT
-                s.id, 
-                s.stall_number, 
-                s.rental_fee, 
-                s.stall_size, 
-                sec.section_name AS section_name, 
-                m.market_name AS market_name 
-            FROM stalls s
+                    s.id, 
+                    s.stall_number, 
+                    s.rental_fee, 
+                    s.stall_size, 
+                    sec.section_name AS section_name, 
+                    m.market_name AS market_name 
+                FROM stalls s
             JOIN sections sec ON s.section_id = sec.id
             JOIN market_locations m ON s.market_id = m.id
             WHERE s.account_id = :account_id

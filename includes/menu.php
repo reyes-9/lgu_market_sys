@@ -1,23 +1,34 @@
 <style>
-    .nav-link {
+    .nav-link.menu {
         transition: background-color 0.3s ease, color 0.3s ease;
+        color: #008080;
+        margin: 0px 40px !important;
+        font-size: 15px;
     }
 
-    .nav-link.active {
-        background-color: #007bff;
+    .nav-link.menu:hover {
+        background-color: rgba(8, 66, 152, 0.46);
+    }
+
+    .nav-link.menu.active {
+        background-color: #003366 !important;
         color: white;
         font-weight: bold;
         border-radius: 5px;
+    }
+
+    .nav-item.dropdown {
+        margin: 0px 60px 0px 0px !important;
     }
 </style>
 <?php
 $currentPage = basename($_SERVER['REQUEST_URI']);
 ?>
 <nav class="nav nav-pills nav-fill m-5">
-    <a class="nav-link <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
+    <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
 
     <div class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>" href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link menu dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>" href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Transactions
         </a>
         <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
@@ -26,5 +37,5 @@ $currentPage = basename($_SERVER['REQUEST_URI']);
         </ul>
     </div>
 
-    <a class="nav-link <?php echo $currentPage == 'stalls' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stalls">Stalls</a>
+    <a class="nav-link menu <?php echo $currentPage == 'stalls' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stalls">Stalls</a>
 </nav>
