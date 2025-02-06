@@ -1,5 +1,7 @@
 <?php
 require_once '../../includes/config.php';
+include_once 'notifications.php';
+
 session_start();
 ob_start();
 
@@ -26,6 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 ob_clean();
                 echo json_encode(['status' => 'success', 'message' => 'Your feedback has been submitted!', 'type' => 'feedback']);
+
+                $type = $notifications['feedback']['submitted']['type'];
+                $message = $notifications['feedback']['submitted']['message'];
+
+                insertNotification($pdo, $account_id, $type, $message, 'unread');
+
                 exit();
             } catch (PDOException $e) {
                 echo json_encode(['status' => 'error', 'message' => 'Error submitting feedback: ' . $e->getMessage()]);
@@ -44,6 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 ob_clean();
                 echo json_encode(['status' => 'success', 'message' => 'Your support request has been submitted.', 'type' => 'support']);
+
+                $type = $notifications['support']['submitted']['type'];
+                $message = $notifications['support']['submitted']['message'];
+
+                insertNotification($pdo, $account_id, $type, $message, 'unread');
+
                 exit();
             } catch (PDOException $e) {
                 echo json_encode(['status' => 'error', 'message' => 'Error submitting support request: ' . $e->getMessage()]);

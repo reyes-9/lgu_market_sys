@@ -1,5 +1,6 @@
 <?php
 require_once "../../includes/config.php";
+include_once "notifications.php";
 
 session_start();
 ob_start();
@@ -103,6 +104,11 @@ if ($application_type == "stall extension") {
     ob_end_clean();
     header('Content-Type: application/json');
     echo json_encode($response);
+
+    $type = "Stall Extension Application";
+    $message = sprintf($notifications['application']['submitted']['message'], $application_type);
+    insertNotification($pdo, $account_id, $type, $message, 'unread');
+
     exit();
 }
 if ($application_type == "add helper") {
@@ -148,7 +154,6 @@ if ($application_type == "add helper") {
         echo json_encode($response);
         exit();
     }
-
 
     $helper_id = $pdo->lastInsertId();
 
@@ -218,6 +223,10 @@ if ($application_type == "add helper") {
 
         $response['success'] = true;
         $response['messages'][] = "Application Submitted.";
+
+        $type = "Helper Application";
+        $message = sprintf($notifications['application']['submitted']['message'], $application_type);
+        insertNotification($pdo, $account_id, $type, $message, 'unread');
     } else {
         $response['messages'][] = "Application Failed.";
     }
@@ -290,6 +299,21 @@ if ($response['success'] == false) {
     $response['messages'][] = "Application Error, Please try again.";
 } else {
     $response['messages'][] = "Application Succesful";
+
+
+    switch ($application_type) {
+        case 'stall':
+            $type = "Stall Application";
+            break;
+        case 'stall transfer':
+            $type = "Stall Transfer";
+            break;
+        case 'stall succession':
+            $type = "Stall Succession";
+            break;
+    }
+    $message = sprintf($notifications['application']['submitted']['message'], $application_type);
+    insertNotification($pdo, $account_id, $type, $message, 'unread');
 }
 
 header('Content-Type: application/json');

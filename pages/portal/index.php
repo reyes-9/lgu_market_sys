@@ -31,25 +31,7 @@
 
             <h4>All Notifications</h4>
 
-            <ul class="list-group notification-list" id="notification">
-              <li class="list-group-item position-relative">
-                New message received <span class="time">Just now</span>
-              </li>
-              <li class="list-group-item position-relative">
-                New message received <span class="time">Just now</span>
-              </li>
-              <li class="list-group-item position-relative">
-                New message received <span class="time">Just now</span>
-              </li>
-              <li class="list-group-item position-relative">
-                New message received <span class="time">Just now</span>
-              </li>
-              <li class="list-group-item position-relative">
-                New message received <span class="time">Just now</span>
-              </li>
-              <li class="list-group-item">Pending approval needed</li>
-              <li class="list-group-item">Your request was approved</li>
-              <li class="list-group-item">Your stall renewal is due soon</li>
+            <ul class="list-group notification-list" id="notificationList">
             </ul>
           </div>
 
@@ -149,28 +131,63 @@
     });
   </script>
   <script>
-    // Fetch the user data from the backend
+    // Fetch user data and notifications after DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('../actions/profile_action.php')
-          .then(response => response.json())
-          .then(data => {
-            // Access user data
+      // Fetch user profile data
+      fetch('../actions/profile_action.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.user && data.user.length > 0) {
             const user = data.user[0];
             document.getElementById('name').textContent = user.name;
             document.getElementById('email').textContent = user.email;
-            // document.getElementById('bio').textContent = user.bio;
             document.getElementById('profile-name').textContent = user.name;
             document.getElementById('profile-email').textContent = user.email;
             document.getElementById('profile-birthdate').textContent = user.birthdate;
             document.getElementById('profile-address').textContent = user.address;
             document.getElementById('profile-contact').textContent = user.contact;
+          } else {
+            console.error('User data not found');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
 
-          })
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+      // Fetch notifications
+      fetch('../actions/notifications.php')
+        .then(response => {
+          // Check if the response is OK and return JSON
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const body = document.getElementById('notificationBody');
+
+          if (data.status === 'success' && Array.isArray(data.notifications)) {
+            data.notifications.forEach(notification => {
+              document.getElementById('notificationList').innerHTML += `
+          <li class="list-group-item position-relative">
+            <strong>${notification.type}</strong>
+            <p class="message-preview mb-1">${notification.message}</p>
+            <span class="time">${notification.status}</span>
+          </li>
+
+        `;
+            });
+          } else {
+            console.error('No notifications found or failed response:', data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching notifications:', error);
+        });
+
+    });
   </script>
+
 </body>
 
 </html>
