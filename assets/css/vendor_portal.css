@@ -26,3 +26,63 @@
   background-color: #1a2732; /* Darker background for dark mode */
   color: var(--bs-light); /* Light text color for contrast */
 }
+
+.btn-return {
+  color: white;
+  border: 0;
+  margin: 10px 0px;
+  font-size: 18px;
+}
+.btn-return:hover {
+  color: rgb(189, 189, 189);
+}
+
+#notification .list-group-item {
+  border: none;
+  color: white;
+  background-color: #1a2732;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 5px 0px;
+}
+
+/* Container Styling */
+.notification-container {
+  max-width: 600px; /* Adjust width as needed */
+  padding: 15px;
+  border-radius: 8px;
+  border: 0;
+}
+
+/* Scrollable List */
+.notification-list {
+  max-height: 250px; /* Adjust the height as needed */
+  overflow-y: auto;
+  padding-right: 5px; /* Prevents scrollbar overlapping text */
+  border-radius: 5px;
+}
+
+/* Optional: Style the Scrollbar (for better UI) */
+.notification-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.time {
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
+  font-size: 12px;
+  color: #ccc;
+}

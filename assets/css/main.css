@@ -15,13 +15,13 @@ body {
 }
 
 .btn-custom {
-  background-color: #003366;
-  color: white;
-  border-radius: 25px;
-  padding: 10px 20px;
-  margin: 10px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 5px 5px 11px rgba(0, 0, 0, 0.3);
+  background-color: #003366 !important;
+  color: white !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  margin: 10px !important;
+  transition: background-color 0.3s ease, transform 0.3s ease !important;
+  box-shadow: 5px 5px 11px rgba(0, 0, 0, 0.3) !important;
 }
 
 .btn-custom:hover {

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
 
                 ob_clean();
-                echo json_encode(['status' => 'success', 'message' => 'Thank you for your feedback!']);
+                echo json_encode(['status' => 'success', 'message' => 'Your feedback has been submitted!', 'type' => 'feedback']);
                 exit();
             } catch (PDOException $e) {
                 echo json_encode(['status' => 'error', 'message' => 'Error submitting feedback: ' . $e->getMessage()]);
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
 
                 ob_clean();
-                echo json_encode(['status' => 'success', 'message' => 'Your support request has been submitted.']);
+                echo json_encode(['status' => 'success', 'message' => 'Your support request has been submitted.', 'type' => 'support']);
                 exit();
             } catch (PDOException $e) {
                 echo json_encode(['status' => 'error', 'message' => 'Error submitting support request: ' . $e->getMessage()]);

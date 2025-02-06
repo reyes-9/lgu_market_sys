@@ -4,308 +4,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../../assets/css/feedback.css">
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
+    <link rel="stylesheet" href="../../assets/css/feedback.css">
     <title>Feedback Services - Public Market Monitoring System</title>
 </head>
 
 <body class="body light">
+    <?php include '../../includes/head.php'; ?>
     <?php include '../../includes/nav.php'; ?>
 
-    <div class="container feedback-section shadow rounded my-5">
-        <div class="row d-flex justify-content-center align-items-stretch border rounded-4">
-
-            <div class="col-md-4 details d-flex flex-column border rounded-start-3">
-                <h1 class="feedback-header">Feedback Submission</h1>
-                <p class="feedback-description">Have any feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
+    <!-- Toast Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="responseMsg" class="toast align-items-center  border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Feedback submitted successfully!
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-
-            <div class="col-md-8 input d-flex flex-column border rounded-end-3">
-                <h1 class="feedback-header">What are your thoughts?</h1>
-                <p class="feedback-description"></p>
-
-                <form id="feedbackForm" method="POST" action="../actions/feedback_action.php">
-                    <input type="hidden" name="type" value="feedback">
-
-                    <div class="form-group">
-                        <label for="feedbackMessage">Message</label>
-                        <textarea id="feedbackMessage" name="message" class="form-control" rows="5" required></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-warning btn-block mt-3">Submit Feedback</button>
-                </form>
-
-                <div id="feedbackFormResponseMessage" class="mt-3"></div>
-            </div>
-
         </div>
     </div>
 
-    <div class="container faq-section mb-5">
-        <h1 class="text-center pb-5">Frequently Asked Questions</h1>
-        <div class="row">
+    <div class="container-wrapper">
+        <div class="full-width-section">
+            <div class="container feedback-section scroll-section">
+                <div class="row d-flex justify-content-center align-items-stretch my-5 feedback-border">
 
-            <!-- Left Column: Header, Paragraph, and CTA Button -->
-            <div class="col-md-4">
-                <h2 class="faq-header">Have More Questions?</h2>
-                <p class="faq-description">If you don't find the questions you're looking for, feel free to submit one. Our team is here to help!</p>
-                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Submit Questions</button>
-                <div id="faqFormResponseMessage" class="mt-3"></div> <!-- Response message placeholder -->
+                    <div class="col-md-4 details d-flex flex-column ">
+                        <h1 class="header">Feedback Submission</h1>
+                        <p class="description">Have any feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
+                    </div>
+
+                    <div class="col-md-8 input d-flex flex-column">
+                        <h1 class="header">What are your thoughts?</h1>
+
+                        <form id="feedbackForm" method="POST" action="../actions/feedback_action.php">
+                            <input type="hidden" name="type" value="feedback">
+
+                            <div class="form-group">
+                                <label for="feedbackMessage">Message</label>
+                                <textarea id="feedbackMessage" name="message" class="form-control" rows="5" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning btn-block mt-3">Submit Feedback</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Contact Us</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
+        <div class="full-width-section">
+            <div class="container faq-section scroll-section">
+                <div class="row">
 
-                            <form id="supportFormModal" method="POST" action="../actions/feedback_action.php">
-                                <input type="hidden" name="type" value="support">
-                                <div class="form-group">
-                                    <label for="supportMessage">Message</label>
-                                    <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your question here..." required></textarea>
+                    <!-- Left Column: Header, Paragraph, and CTA Button -->
+                    <div class="col-md-4">
+                        <h2 class="header">Have More Questions?</h2>
+                        <p class="description">If you don't find the questions you're looking for, feel free to submit one. Our team is here to help!</p>
+                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Submit Questions</button>
+                        <div id="faqFormResponseMessage" class="mt-3"></div> <!-- Response message placeholder -->
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Contact Us</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <button type="submit" class="btn btn-warning mt-3">Submit</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <div class="modal-body">
 
-            <!-- Right Column: FAQ Accordion -->
-            <div class="col-md-8">
-                <div class="accordion" id="faqAccordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                What is the return policy?
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                You can return any item within 30 days of purchase as long as it’s in its original condition and packaging.
+                                    <form id="supportFormModal" method="POST" action="../actions/feedback_action.php">
+                                        <input type="hidden" name="type" value="support">
+                                        <div class="form-group">
+                                            <label for="supportMessage">Message</label>
+                                            <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your question here..." required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-warning mt-3">Submit</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                How do I track my order?
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Once your order is shipped, you will receive a tracking link via email to monitor the status of your package.
+                    <!-- Right Column: FAQ Accordion -->
+                    <div class="col-md-8">
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        What is the return policy?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        You can return any item within 30 days of purchase as long as it’s in its original condition and packaging.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        How do I track my order?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Once your order is shipped, you will receive a tracking link via email to monitor the status of your package.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Can I change my shipping address after placing an order?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Yes, you can change your shipping address within 24 hours of placing your order by contacting our customer service.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Can I change my shipping address after placing an order?
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Yes, you can change your shipping address within 24 hours of placing your order by contacting our customer service.
+                </div>
+            </div>
+        </div>
+
+        <div class="full-width-section">
+            <div class="container concern-section scroll-section">
+                <div class="row d-flex justify-content-center align-items-stretch mb-4 feedback-border">
+
+                    <!-- Left Column: Information About feedback -->
+                    <div class="col-md-4 details d-flex flex-column">
+                        <h1 class="header">Concerns Submission</h1>
+                        <p class="description">Have any concerns or feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
+                    </div>
+
+                    <!-- Right Column: Submit Concerns Form -->
+                    <div class="col-md-8 input d-flex flex-column">
+                        <h1 class="header">Have an issue?</h1>
+
+                        <form id="supportForm" method="POST" action="../actions/feedback_action.php">
+                            <input type="hidden" name="type" value="support">
+                            <div class="form-group">
+                                <label for="supportMessage">Message</label>
+                                <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your support request here..." required></textarea>
                             </div>
-                        </div>
+                            <button type="submit" class="btn btn-warning btn-block mt-3">Submit Support Request</button>
+                        </form>
+
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
-
-
-
-
-
-
-    <div class="container feedback-section shadow rounded mb-4">
-        <div class="row d-flex justify-content-center align-items-stretch border rounded-4">
-
-            <!-- Left Column: Information About feedback -->
-            <div class="col-md-4 details d-flex flex-column border rounded-start-3">
-                <h1 class="feedback-header">Concerns Submission</h1>
-                <p class="feedback-description">Have any concerns or feedback? We're here to listen! Please fill out the form to let us know your thoughts.</p>
-            </div>
-
-            <!-- Right Column: Submit Concerns Form -->
-            <div class="col-md-8 input d-flex flex-column border rounded-end-3">
-                <h1 class="feedback-header">Have an issue?</h1>
-                <p class="feedback-description"></p>
-
-
-                <form id="supportForm" method="POST" action="../actions/feedback_action.php">
-                    <input type="hidden" name="type" value="support">
-                    <div class="form-group">
-                        <label for="supportMessage">Message</label>
-                        <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your support request here..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-warning btn-block mt-3">Submit Support Request</button>
-                </form>
-                <div id="supportFormResponseMessage" class="mt-3"></div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Chatbot Section -->
-    <div class="row mb-4">
-        <div class="col">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <h3 class="text-secondary">Chatbot / Chat with System Admin</h3>
-                    <p class="text-muted">Currently under development...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-
-
-
-    <!-- Contact Customer Support Section -->
-    <!-- <div class="row mb-4">
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-secondary">Contact Customer Support</h3>
-
-                    <form id="supportForm" method="POST" action="feedback_action.php">
-                        <input type="hidden" name="type" value="support">
-                        <div class="form-group">
-                            <label for="supportMessage">Message</label>
-                            <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your support request here..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Submit Support Request</button>
-                    </form>
-
-                    <div id="supportFormResponseMessage" class="mt-3"></div> <-- Response message placeholder -->
-    </div>
-    </div>
-    </div>
-    </div>
-
-
-
-    <!-- Feedback Services Section -->
-    <!-- <div class="row mb-4">
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-secondary">Feedback Services</h3>
-                    <p>We provide comprehensive feedback services to help you understand your customers better.</p>
-
-                    <h4>Services Offered</h4>
-                    <ul>
-                        <li>Customer Satisfaction Surveys</li>
-                        <li>Product Feedback Collection</li>
-                        <li>Employee Engagement Surveys</li>
-                        <li>Market Research</li>
-                    </ul>
-
-                    <h4>Benefits</h4>
-                    <p>Utilize our feedback services to enhance decision-making and improve customer retention.</p>
-
-                    <h4>Our Process</h4>
-                    <p>From consultation to delivery of findings, we ensure a smooth experience.</p>
-
-                    <h4>Testimonials</h4>
-                    <p>"Their feedback services transformed our customer approach!" - Happy Client</p>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- Feedback Submission Form Section -->
-    <!-- <div class="row mb-4">
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-secondary">Feedback Submission</h3>
-
-                    <form id="feedbackForm" method="POST" action="../actions/feedback_action.php">
-                        <input type="hidden" name="type" value="feedback">
-
-                        <div class="form-group">
-                            <label for="feedbackMessage">Message</label>
-                            <textarea id="feedbackMessage" name="message" class="form-control" rows="5" required></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block">Submit Feedback</button>
-                    </form>
-
-                    <div id="feedbackFormResponseMessage" class="mt-3"></div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    </section>
-    </div>
-
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        let sections = document.querySelectorAll(".scroll-section");
+        let currentIndex = 0;
+        let isScrolling = false;
+
+        document.addEventListener("wheel", (event) => {
+            if (isScrolling) return; // Prevent rapid scrolling
+            isScrolling = true;
+
+            event.preventDefault();
+
+            let direction = event.deltaY > 0 ? 1 : -1; // Determine scroll direction
+            currentIndex = Math.min(Math.max(currentIndex + direction, 0), sections.length - 1);
+
+            sections[currentIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            setTimeout(() => {
+                isScrolling = false;
+            }, 900);
+        }, {
+            passive: false
+        });
+
+        // FAQ toggle 
+        $('#faqAccordion .accordion-button').on('click', function() {
+            $(this).toggleClass('active');
+        });
+    </script>
+
+    <script>
+        function showToast(message, status) {
+            var toastEl = document.getElementById("responseMsg");
+            toastEl.querySelector(".toast-body").innerText = message;
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+
+            toastEl.classList.remove("text-bg-success", "text-bg-danger");
+            if (status === "success") toastEl.classList.add("text-bg-success");
+            else if (status === "error") toastEl.classList.add("text-bg-danger");
+        }
+
         // Function to handle form submissions for both feedback and support forms
         function handleFormSubmit(formId) {
+
             const form = document.getElementById(formId);
             form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent default form submission
 
+                e.preventDefault();
                 const formData = new FormData(this);
 
                 fetch('../actions/feedback_action.php', {
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json()) // Parse JSON response
+                    .then(response => response.json())
                     .then(data => {
+                        switch (data.type) {
 
-                        console.log(data);
-
-                        // Handle success or error response
-                        const responseMessage = document.getElementById(`${formId}ResponseMessage`);
-                        if (data.status === 'success') {
-                            responseMessage.innerHTML = `<p style="color: green;">${data.message}</p>`;
-                        } else {
-                            responseMessage.innerHTML = `<p style="color: red;">${data.message}</p>`;
+                            case 'feedback':
+                                showToast(data.message, data.status);
+                                break;
+                            case 'support':
+                                showToast(data.message, data.status);
+                                break;
+                            default:
+                                showToast("Unexpected response type.", "error");
                         }
                     })
                     .catch(error => {
-                        // Handle network error
-                        const responseMessage = document.getElementById(`${formId}ResponseMessage`);
-                        responseMessage.innerHTML = `<p style="color: red;">  error: ${error.message}</p>`;
+                        showToast(`Error: ${error.message}`, "error");
                     });
             });
         }
 
-        handleFormSubmit('feedbackForm'); // For feedback form
-        handleFormSubmit('supportForm'); // For support form
-
-
-        // FAQ toggle functionality using Bootstrap collapse
-        $('#faqAccordion .collapse').on('show.bs.collapse', function() {
-            $(this).siblings('.card-header').addClass('active');
-        }).on('hide.bs.collapse', function() {
-            $(this).siblings('.card-header').removeClass('active');
-        });
+        handleFormSubmit('feedbackForm');
+        handleFormSubmit('supportForm');
     </script>
 </body>
 

@@ -236,10 +236,10 @@
 }
 
 .btn-return {
-  border-color: #003366;
   color: #003366;
+  border: 0;
+  font-size: 18px;
 }
 .btn-return:hover {
-  background-color: #003366;
-  color: white;
+  color: black;
 }

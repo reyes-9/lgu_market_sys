@@ -18,20 +18,9 @@
   <div class="content-wrapper">
     <?php include '../../includes/menu.php'; ?>
     <div class="container-fluid">
-      <div class="row m-5 p-5 shadow rounded-3 profile light">
-        <!-- Sidebar -->
-        <div class="col-md-4 text-center">
-          <div class="text-center profile-card h-100">
-            <img id="profile_picture" src="../../images/default_profile_pic.png" alt="Profile Image" class="img-fluid w-25 h-auto my-3">
-            <h2 class=""><span id="name"></span></h2>
-            <p><span id="email"></span></p>
-            <br>
-            <hr>
-            <!-- <h5>" <span id="bio"></span> "</h5> -->
-          </div>
-        </div>
+      <div class="row m-5 p-5 shadow rounded-3 profile light w-5">
 
-        <div class="col-md-8 px-5 divide">
+        <div class="col-md-12 px-5">
           <div class="stall-card">
             <h3>Stalls</h3>
             <hr>
@@ -89,10 +78,6 @@
       fetch('../actions/profile_action.php')
         .then(response => response.json())
         .then(data => {
-          // Set user profile data
-          const user = data.user[0];
-          document.getElementById('name').textContent = user.name;
-          document.getElementById('email').textContent = user.email;
 
           // Handle stalls
           const stallsContainer = document.getElementById('stallsContainer');

@@ -22,8 +22,38 @@
     <div class="container-fluid">
       <div class="row m-5 p-5 shadow rounded-3 profile light">
 
-        <div class="col-md-4 text-center">
-          <div class="text-center profile-card h-100">
+        <div class="col-md-4">
+          <!-- Notifications Section (Initially Hidden) -->
+          <div id="notificationsSection" class="mt-3 d-none notification-container">
+            <button class="btn btn-return" id="returnBtn">
+              <i class="bi bi-arrow-left"></i> Back
+            </button>
+
+            <h4>All Notifications</h4>
+
+            <ul class="list-group notification-list" id="notification">
+              <li class="list-group-item position-relative">
+                New message received <span class="time">Just now</span>
+              </li>
+              <li class="list-group-item position-relative">
+                New message received <span class="time">Just now</span>
+              </li>
+              <li class="list-group-item position-relative">
+                New message received <span class="time">Just now</span>
+              </li>
+              <li class="list-group-item position-relative">
+                New message received <span class="time">Just now</span>
+              </li>
+              <li class="list-group-item position-relative">
+                New message received <span class="time">Just now</span>
+              </li>
+              <li class="list-group-item">Pending approval needed</li>
+              <li class="list-group-item">Your request was approved</li>
+              <li class="list-group-item">Your stall renewal is due soon</li>
+            </ul>
+          </div>
+
+          <div class="text-center profile-card h-100" id="profileCard">
 
             <img id="profile_picture" src="../../images/default_profile_pic.png" alt="Profile Image" class="img-fluid w-25 h-auto my-3">
 
@@ -31,16 +61,25 @@
             <p><span id="email"></span></p>
             <br>
             <hr>
-            <!-- <h5>" <span id="bio"></span> "</h5> -->
+
+            <!-- Notifications Button -->
+
+            <button type="button" class="btn btn-warning position-relative" id="toggleNotifications">
+              Notifications
+              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger rounded-circle">
+                <span class="visually-hidden">New alerts</span>
+              </span>
+            </button>
 
           </div>
         </div>
 
-        <!-- Profile Info and Stalls -->
+        <!-- Profile Info -->
         <div class="col-md-8 px-5 divide">
           <div class="profile-card">
             <h3>Information</h3>
             <hr>
+            </button>
             <br>
 
             <table class="table table-striped table-borderless table-hover custom-table light">
@@ -94,6 +133,22 @@
       table.classList.toggle('dark');
       table.classList.toggle('light');
     });
+
+    var notifcation_section = document.getElementById('notificationsSection');
+    var profile_section = document.getElementById('profileCard');
+
+    // Toggle Notification Section
+    document.getElementById('toggleNotifications').addEventListener('click', function() {
+      notifcation_section.classList.toggle('d-none');
+      profile_section.classList.toggle('d-none');
+    });
+
+    document.getElementById('returnBtn').addEventListener('click', function() {
+      notifcation_section.classList.toggle('d-none');
+      profile_section.classList.toggle('d-none');
+    });
+  </script>
+  <script>
     // Fetch the user data from the backend
     document.addEventListener('DOMContentLoaded', function() {
         fetch('../actions/profile_action.php')

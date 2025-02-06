@@ -1,49 +1,89 @@
-@import url('main.css');
+@import url("main.css");
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  overflow: hidden; /* Prevent extra scroll */
+}
+
+.container-wrapper {
+  height: 100vh;
+  overflow-y: scroll; /* Enable vertical scrolling */
+  scroll-snap-type: y mandatory; /* Enable vertical snapping */
+}
+
+.scroll-section {
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start; /* Snap to section start */
+}
+
+.feedback-section,
 .faq-section {
-    padding: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.full-width-section .container {
+  max-width: 100%;
+  margin: auto;
+}
+.full-width-section:nth-child(odd) {
+  background-color: #6a9fd8; /* Darker pastel blue */
+  color: white; /* Ensure text visibility */
+  padding: 50px 0;
 }
 
-.faq-header {
-    font-size: 32px;
-    margin-bottom: 20px;
-    font-weight: bold;
+.full-width-section:nth-child(even) {
+  background-color: #e5b649; /* Muted gold yellow */
+  color: #333; /* Darker text for contrast */
+  padding: 50px 0;
 }
 
-.faq-description {
-    margin-bottom: 20px;
-    color: #6c757d;
+.feedback-border {
+  border-radius: 10px;
+  background: #6a9fd8;
+  box-shadow: -31px 31px 100px #5e8ec0, 31px -31px 100px #76b0f0;
+  border: 0;
+  padding: 0px 20px;
 }
 
 .cta-button {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
-
-
 
 .details,
 .input {
-    padding: 50px;
-
+  padding: 50px;
 }
 
-
-.feedback-header {
-    font-size: 32px;
-    font-weight: bold;
-}
-
-.feedback-description {
-    color: #6c757d;
+.description {
+  color: #ffffff;
+  margin: 15px 0px;
 }
 
 .feedback-input {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .submit-button {
-    margin-top: 10px;
-    width: 120px;
-    padding: 5px;
+  margin-top: 10px;
+  width: 120px;
+  padding: 5px;
+}
 
+textarea {
+  background: transparent !important;
+}
+
+.header {
+  font-size: 32px;
+  font-weight: bold;
+  color: #1e2a38;
 }
