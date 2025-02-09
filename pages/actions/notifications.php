@@ -1,7 +1,7 @@
 <?php
-
+require_once '../../includes/config.php';
 session_start();
-// Define notification types and their corresponding messages in an array
+$account_id = $_SESSION['user_id'];
 $notifications = [
     'application' => [
         'submitted' => [
@@ -19,6 +19,12 @@ $notifications = [
         'ownership_transferred' => [
             'type' => 'Stall Ownership Transferred',
             'message' => 'The stall ownership has been transferred to you.',
+        ]
+    ],
+    'track' => [
+        'withdrawn' => [
+            'type' => 'Application Successfully Withdrawn',
+            'message' => 'Your application for %s has been withdrawn successfully.',
         ]
     ],
     'violation' => [
@@ -68,15 +74,34 @@ $notifications = [
         ]
     ]
 ];
-// Function to fetch notifications for a user
-function getNotifications()
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+
+    getNotifications($pdo, $account_id);
+}
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+if (isset($data['action']) && $data['action'] === 'mark_all_read') {
+    $success = markAllAsRead($pdo, $account_id);
+
+    if ($success != true) {
+        echo json_encode(['read_status' => 'error', 'message' => 'Failed to update notifications']);
+        exit;
+    }
+    echo json_encode(['read_status' => 'success']);
+    exit;
+}
+
+
+function getNotifications($pdo, $account_id)
 {
-    require_once '../../includes/config.php';
+
     header('Content-Type: application/json');
-    $account_id = $_SESSION['user_id'];
 
     try {
-        $query = "SELECT message, type, status FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC";
+        $query = "SELECT message, type, status, created_at FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC";
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':user_id', $account_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -91,14 +116,13 @@ function getNotifications()
         }
     } catch (PDOException $e) {
         // Return error as JSON
-        header('Content-Type: application/json');
+
         echo json_encode(['status' => 'error', 'message' => 'Failed to fetch notifications']);
     }
 }
 
 function insertNotification($pdo, $user_id, $type, $message, $status = 'unread')
 {
-
     try {
         $query = "INSERT INTO notifications (user_id, type, message, status, created_at) 
                   VALUES (:user_id, :type, :message, :status, NOW())";
@@ -116,13 +140,12 @@ function insertNotification($pdo, $user_id, $type, $message, $status = 'unread')
     }
 }
 
-// Function to mark notification as read
-function markNotificationAsRead($pdo, $notification_id)
+function markAllAsRead($pdo, $account_id)
 {
     try {
-        $query = "UPDATE notifications SET status = 'read' WHERE id = :id";
+        $query = "UPDATE notifications SET status = 'read' WHERE user_id = :id";
         $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':id', $notification_id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $account_id, PDO::PARAM_INT);
 
         return $stmt->execute();
     } catch (PDOException $e) {
@@ -131,4 +154,16 @@ function markNotificationAsRead($pdo, $notification_id)
     }
 }
 
-getNotifications();
+function markAsRead($pdo, $account_id)
+{
+    try {
+        $query = "UPDATE notifications SET status = 'read' WHERE user_id = :user_id AND id = :id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':id', $account_id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        // Handle error
+        return false;
+    }
+}

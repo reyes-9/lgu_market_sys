@@ -18,7 +18,14 @@ try {
             exit;
         }
 
+        // Check if 'id' exists in the JSON data
+        if (!isset($data['name'])) {
+            echo json_encode(['success' => false, 'message' => 'Application name is required.']);
+            exit;
+        }
+
         $applicationId = $data['id'];
+        $applicationName = $data['name'];
 
         // Prepare SQL to update the application's status
         $sql = "UPDATE applications SET status = 'Withdrawn' WHERE id = :id";
@@ -28,10 +35,19 @@ try {
 
         // Check if the application was updated
         if ($stmt->rowCount() > 0) {
+
+            include_once 'notifications.php';
+            ob_clean();
             echo json_encode([
                 'success' => true,
                 'message' => ["Application successfully withdrawn."]
             ]);
+
+            $type = $notifications['track']['withdrawn']['type'];
+            $message = sprintf($notifications['track']['withdrawn']['message'], $applicationName);
+
+            insertNotification($pdo, $account_id, $type, $message, 'unread');
+            exit();
         } else {
             throw new Exception('Application not found or already withdrawn.');
         }

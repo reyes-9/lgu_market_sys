@@ -34,22 +34,59 @@
   font-size: 18px;
 }
 .btn-return:hover {
-  color: rgb(189, 189, 189);
+  color: #bdbdbd;
 }
 
-.list-group-item {
+/* READ */
+.list-group .list-group-item {
   border: none;
+  border-bottom: 1px solid #acacac;
   color: white;
-  background-color: #1a2732;
-  border-radius: 10px;
+  background-color: #003366;
   padding: 15px;
-  margin: 5px 0px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #02407e;
+}
+
+.message-preview {
+  font-size: 1rem;
+  color: #abb1b6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Prevent the preview from wrapping */
+}
+
+.time {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+/* UNREAD */
+.list-group-item.unread {
+  background-color: #0055aa;
+  font-weight: bold;
+  border-left: 5px solid #ffcc00;
+  color: #ffffff;
+}
+.list-group-item.unread:hover {
+  background-color: #0063c7;
+}
+.list-group-item.unread .message-preview {
+  color: #ffffffce;
+}
+
+.list-group-item.unread .time {
+  color: #ffcc00;
 }
 
 /* Container Styling */
 .notification-container {
-  max-width: 600px; /* Adjust width as needed */
-  padding: 15px;
+  max-width: 600px;
+  padding: 10px;
   border-radius: 8px;
   border: 0;
 }
@@ -79,15 +116,12 @@
 .notification-list::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-.message-preview {
-  font-size: 0.9rem; /* Slightly smaller text */
-  color: #6c757d; /* Light gray for subtlety */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; /* Prevent the preview from wrapping */
-}
 
-.time {
-  font-size: 0.8rem;
-  color: #aaa; /* Subtle color for time */
+#markAllReadBtn {
+  border: none;
+  background-color: none;
+}
+#markAllReadBtn:hover {
+  background: none;
+  color: #bdbdbd;
 }

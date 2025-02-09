@@ -1,6 +1,5 @@
 <?php
 require_once '../../includes/config.php';
-include_once 'notifications.php';
 
 session_start();
 ob_start();
@@ -18,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        include_once 'notifications.php';
         if ($type === 'feedback') {
             try {
                 $stmt = $pdo->prepare("INSERT INTO feedback (account_id, message) VALUES (:account_id, :message)");

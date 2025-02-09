@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Application - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../assets/css/track_app.css">
-
+    <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
 <body class="body light">
@@ -54,9 +52,31 @@
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Fetch initial data when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const initialPage = 1; // Set initial page number
+            fetchData(initialPage);
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            attachWithdrawListeners(); // Attach listeners on initial load
+        });
+
+        // Handle pagination clicks
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('page-link')) {
+                const urlParams = new URLSearchParams(e.target.href.split('?')[1]);
+                const page = parseInt(urlParams.get('page'));
+
+                e.preventDefault();
+                fetchData(page);
+                console.log(page);
+            }
+        });
+
+
         function capitalizeWords(str) {
             return str.replace(/\b\w/g, (char) => char.toUpperCase());
         }
@@ -154,7 +174,7 @@
                        </div>
                         <div class="modal-footer">
                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-danger confirmWithdraw" data-id="${app.id}">Withdraw</button>
+                            <button type="button" class="btn btn-danger confirmWithdraw" data-id="${app.id}" data-app_name="${app.application_type}">Withdraw</button>
                         </div>
                     </div>
                 </div>
@@ -304,14 +324,14 @@
                 });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            attachWithdrawListeners(); // Attach listeners on initial load
-        });
+
 
         function attachWithdrawListeners() {
             document.querySelector(".row.g-5").addEventListener("click", function(event) {
                 if (event.target.classList.contains("confirmWithdraw")) {
-                    let appId = event.target.dataset.id; // ID from data attribute
+                    let appId = event.target.dataset.id;
+                    let appName = event.target.dataset.app_name;
+                    console.log("Application Name:", appName);
                     console.log("Withdrawing application ID:", appId);
 
                     fetch("../actions/track_action.php", {
@@ -320,7 +340,8 @@
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                id: appId
+                                id: appId,
+                                name: appName
                             })
                         })
                         .then(response => response.json())
@@ -365,24 +386,6 @@
                 }
             });
         }
-
-        // Fetch initial data when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            const initialPage = 1; // Set initial page number
-            fetchData(initialPage);
-        });
-
-        // Handle pagination clicks
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('page-link')) {
-                const urlParams = new URLSearchParams(e.target.href.split('?')[1]);
-                const page = parseInt(urlParams.get('page'));
-
-                e.preventDefault();
-                fetchData(page);
-                console.log(page);
-            }
-        });
     </script>
 </body>
 

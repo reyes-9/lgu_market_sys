@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vendor Portal - Public Market Monitoring System</title>
   <link rel="icon" type="image/png" href="../../images/favicon_192.png">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../../assets/css/vendor_portal.css">
+  <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
 <body class="body light">
@@ -24,15 +23,16 @@
 
         <div class="col-md-4">
           <!-- Notifications Section (Initially Hidden) -->
-          <div id="notificationsSection" class="mt-3 d-none notification-container">
+          <div id="notificationsSection" class="d-none notification-container">
             <button class="btn btn-return" id="returnBtn">
               <i class="bi bi-arrow-left"></i> Back
             </button>
 
-            <h4>All Notifications</h4>
+            <h4>Notifications</h4>
 
             <ul class="list-group notification-list" id="notificationList">
             </ul>
+            <button class="btn btn-outline-light d-none" id="markAllReadBtn"></button>
           </div>
 
           <div class="text-center profile-card h-100" id="profileCard">
@@ -45,10 +45,9 @@
             <hr>
 
             <!-- Notifications Button -->
-
             <button type="button" class="btn btn-warning position-relative" id="toggleNotifications">
               Notifications
-              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger rounded-circle">
+              <span class="position-absolute top-0 start-100 translate-middle p-2" id="notificationAlert">
                 <span class="visually-hidden">New alerts</span>
               </span>
             </button>
@@ -98,9 +97,7 @@
 
   <?php include '../../includes/footer.php'; ?>
   <?php include '../../includes/theme.php'; ?>
-  <!-- Bootstrap JS and dependencies -->
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
     // Theme
     const profile = document.querySelector('.profile');
@@ -133,7 +130,47 @@
   <script>
     // Fetch user data and notifications after DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-      // Fetch user profile data
+
+      fetchUser();
+      fetchNotifications();
+
+      document.getElementById("returnBtn").addEventListener("click", function() {
+        fetchNotifications();
+      });
+      document.getElementById('markAllReadBtn').addEventListener('click', markAllAsRead);
+
+    });
+
+
+
+    function fetchNotifications() {
+      fetch('../actions/notifications.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success' && Array.isArray(data.notifications)) {
+            renderNotifications(data.notifications);
+
+            const hasUnread = data.notifications.some(notification => notification.status === 'unread');
+            const notificationAlert = document.getElementById('notificationAlert');
+            const readBtn = document.getElementById('markAllReadBtn');
+
+            console.log(hasUnread);
+
+            if (hasUnread) {
+              notificationAlert.classList.add("bg-danger", "rounded-circle");
+              readBtn.classList.remove('d-none');
+              readBtn.innerHTML = "<small>Mark all as read</small>";
+            } else {
+              notificationAlert.classList.remove("bg-danger", "rounded-circle");
+              readBtn.classList.add('d-none');
+              readBtn.innerHTML = "<small>All read</small>";
+            }
+          }
+        })
+        .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    function fetchUser() {
       fetch('../actions/profile_action.php')
         .then(response => response.json())
         .then(data => {
@@ -153,39 +190,84 @@
         .catch(error => {
           console.error('Error fetching user data:', error);
         });
+    }
 
-      // Fetch notifications
-      fetch('../actions/notifications.php')
-        .then(response => {
-          // Check if the response is OK and return JSON
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
+    function timeAgo(timestamp) {
+      const now = new Date();
+      const past = new Date(timestamp);
+      const diffInSeconds = Math.floor((now - past) / 1000);
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      const diffInDays = Math.floor(diffInHours / 24);
+      const diffInWeeks = Math.floor(diffInDays / 7);
+      const diffInMonths = Math.floor(diffInDays / 30); // Approximate
+
+      if (diffInSeconds < 60) return "Just now";
+      if (diffInMinutes < 60) return `${diffInMinutes} min`;
+      if (diffInHours < 24) return `${diffInHours}h`;
+      if (diffInDays < 7) return `${diffInDays}d`;
+      if (diffInWeeks < 4) return `${diffInWeeks}w`;
+
+      return past.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function renderNotifications(notifications) {
+      const notificationList = document.getElementById('notificationList');
+
+      // let unread = false;
+      notificationList.innerHTML = ""; // Clear previous notifications
+
+      notifications.forEach(notification => {
+        const notificationItem = document.createElement('li');
+        notificationItem.classList.add("list-group-item", "position-relative");
+
+        // If notification is unread, add the 'unread' class
+        if (notification.status === "unread") {
+          notificationItem.classList.add("unread");
+
+        } else {
+          notificationItem.classList.remove("unread");
+
+        }
+
+        notificationItem.innerHTML = `
+      <strong>${notification.type}</strong>
+      <p class="message-preview mb-1">${notification.message}</p>
+      <span class="time">${timeAgo(notification.created_at)}</span>
+      `;
+
+        notificationList.appendChild(notificationItem);
+      });
+
+    }
+
+    function markAllAsRead() {
+      const notificationAlert = document.getElementById('notificationAlert');
+      const readBtn = document.getElementById('markAllReadBtn');
+      fetch('../actions/notifications.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'mark_all_read'
+          })
         })
+        .then(response => response.json())
         .then(data => {
-          const body = document.getElementById('notificationBody');
+          if (data.read_status === 'success') {
 
-          if (data.status === 'success' && Array.isArray(data.notifications)) {
-            data.notifications.forEach(notification => {
-              document.getElementById('notificationList').innerHTML += `
-          <li class="list-group-item position-relative">
-            <strong>${notification.type}</strong>
-            <p class="message-preview mb-1">${notification.message}</p>
-            <span class="time">${notification.status}</span>
-          </li>
-
-        `;
+            document.querySelectorAll('.list-group-item.unread').forEach(item => {
+              item.classList.remove('unread');
             });
-          } else {
-            console.error('No notifications found or failed response:', data);
           }
-        })
-        .catch(error => {
-          console.error('Error fetching notifications:', error);
-        });
 
-    });
+        })
+    }
   </script>
 
 </body>

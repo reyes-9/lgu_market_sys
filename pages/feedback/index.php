@@ -7,10 +7,11 @@
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
     <link rel="stylesheet" href="../../assets/css/feedback.css">
     <title>Feedback Services - Public Market Monitoring System</title>
+    <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
 <body class="body light">
-    <?php include '../../includes/head.php'; ?>
+
     <?php include '../../includes/nav.php'; ?>
 
     <!-- Toast Container -->

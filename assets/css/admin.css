@@ -1,105 +1,153 @@
-@import url('main.css');
+@import url("main.css");
 
 body {
-    background-color: rgb(245, 245, 245);
-    overflow-x: hidden;
+  background-color: rgb(245, 245, 245);
+  overflow-x: hidden;
 }
 
 .title.light {
-    color: #212529;
+  color: #212529;
 }
 
 .title.dark {
-    color: #fff;
+  color: #fff;
 }
 
 .announcement.light {
-    background-color: #003366;
-    color: #fff;
+  background-color: #003366;
+  color: #fff;
 }
 
 .announcement.dark {
-    background-color: #1A2732;
-    color: #fff;
+  background-color: #1a2732;
+  color: #fff;
 }
 
 .card.light {
-    position: relative;
-    padding: 10px 20px;
-    background-color: #fff;
-
+  position: relative;
+  padding: 10px 20px;
+  background-color: #fff;
 }
 
 .card.dark {
-    position: relative;
-    padding: 10px 20px;
-    background-color: #0D0D0D;
-    color: #fff;
-
+  position: relative;
+  padding: 10px 20px;
+  background-color: #0d0d0d;
+  color: #fff;
 }
 
 .card-body h5 {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .card-body h3 {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .chart-container {
-    position: relative;
-    margin-top: 20px;
+  position: relative;
+  margin-top: 20px;
 }
 
-
 .stat-change {
-    font-size: 14px;
-    font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 /* Style for icon placement */
 .icon-container {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(120deg, #025db8, #003366);
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    color: aliceblue;
-    font-size: 18px;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(120deg, #025db8, #003366);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: aliceblue;
+  font-size: 18px;
 }
 
 .stat-value {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .line {
-    border-bottom: 3px solid #ffc107;
+  border-bottom: 3px solid #ffc107;
 }
 
-
 /* Table */
+table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.table-container {
+  max-height: 500px;
+}
 .custom-table.light td {
-    padding: 15px;
-    background-color: #003366;
-    color: var(--bs-light);
+  padding: 15px;
+  background-color: #003366;
+  color: var(--bs-light);
 }
 
 table td button {
-    background-color: #ffc107;
+  background-color: #ffc107;
 }
 
 /* Toast */
-.toast-body{
-    background-color: #1A2732;
+.toast-body {
+  background-color: #1a2732;
 }
 .toast:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease-in-out;
-    cursor: pointer;
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+/* Buttons */
+.filter-button {
+  position: relative;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2c2c2c;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Underline Effect */
+.filter-button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: #007bff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.filter-button:hover {
+  color: #0056b3;
+}
+
+.filter-button.active {
+  color: #0056b3;
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.filter-button:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }

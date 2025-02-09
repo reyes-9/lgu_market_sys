@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transfer Stall Application - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../assets/css/stall.css">
+    <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
 <style>
@@ -134,7 +133,6 @@ if (empty($_SESSION['csrf_token'])) {
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let locationsData;
 
