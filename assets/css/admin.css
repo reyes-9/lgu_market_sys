@@ -3,6 +3,7 @@
 body {
   background-color: rgb(245, 245, 245);
   overflow-x: hidden;
+  height: 100vh;
 }
 
 .title.light {
@@ -136,6 +137,14 @@ table td button {
   transition: transform 0.3s ease-in-out;
 }
 
+.btn-return {
+  border: 0 !important;
+  margin: 10px 0px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
+
 /* Hover Effect */
 .filter-button:hover {
   color: #0056b3;
@@ -150,4 +159,43 @@ table td button {
 .filter-button:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+.btn-return:hover {
+  color: #5e5e5e !important;
+}
+
+/* Card 1 - Stall Application */
+.card-db {
+  border: 0 !important;
+  padding: 50px 10px;
+  background-color: #003366;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-db:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Common Card Body Styles */
+.card-body {
+  padding: 25px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #f0f0f0 !important;
+  margin-bottom: 15px;
+}
+.table-menu {
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

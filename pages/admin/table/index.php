@@ -47,21 +47,77 @@
     </nav>
 
     <div class="container-fluid text-center">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row justify-content-center mb-3">
                 <div class="col-lg-10 col-md-12 mt-5">
-                    <div class="container stall-transfer">
-                        <h4 class="mb-3">Stall Transfer Applications Table</h4>
+                    <div class="table-menu container">
+                        <div class="row align-items-center">
+                            <!-- Title Column -->
+                            <div class="col-md-3 text-center">
+                                <div class="title">
+                                    <h2>Select Table</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+                                    <!-- Card 1 -->
+                                    <div class="col">
+                                        <div class="card-db card-stall" onclick="">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Stall Application</h5>
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    <!-- Card 2 -->
+                                    <div class="col">
+                                        <div class="card-db card-transfer" onclick="window.location.href='#'">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Stall Transfer Application</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 3 -->
+                                    <div class="col">
+                                        <div class="card-db card-ext" onclick="window.location.href='#'">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Stall Extension Application</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 4 -->
+                                    <div class="col">
+                                        <div class="card-db card-helper" onclick="window.location.href='#'">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Helper Application</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Stall Transfer Table -->
+                    <div class="container stall-transfer d-none">
+
+                        <button class="btn btn-return" data-name="transferBtn">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+
+                        <h4 class="mb-3">Stall Transfer Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
                             <button class="btn filter-button">All Applications</button>
                             <button class="btn filter-button">Approved</button>
                             <button class="btn filter-button">Pending</button>
                             <button class="btn filter-button">Rejected</button>
                         </div>
-
-                        <div class="table-responsive table-container">
-                            <table class="table table-striped table-borderless table-hover custom-table">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover custom-table">
                                 <thead class="table-primary sticky-header">
                                     <tr>
                                         <th>ID</th>
@@ -75,14 +131,16 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-body-stall-transfer">
-
-                                </tbody>
+                                <tbody id="table-body-stall-transfer"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="container stall-app">
+                    <!-- Stall Applications Table -->
+                    <div class="container stall-app d-none">
+                        <button class="btn btn-return" data-name="stallBtn">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
                         <h4 class="mb-3">Stall Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
                             <button class="btn filter-button">All Applications</button>
@@ -90,9 +148,8 @@
                             <button class="btn filter-button">Pending</button>
                             <button class="btn filter-button">Rejected</button>
                         </div>
-
-                        <div class="table-responsive table-container">
-                            <table class="table table-striped table-hover table-borderless custom-table">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover custom-table">
                                 <thead class="table-primary sticky-header">
                                     <tr>
                                         <th>ID</th>
@@ -106,23 +163,25 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-body-stall-app">
-
-                                </tbody>
+                                <tbody id="table-body-stall-app"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="container stall-extend">
-                        <h4>Stall Extension Applications Table</h4>
+                    <!-- Stall Extension Table -->
+                    <div class="container stall-extend d-none">
+                        <button class="btn btn-return" data-name="extensionBtn">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+                        <h4 class="mb-3">Stall Extension Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
                             <button class="btn filter-button">All Applications</button>
                             <button class="btn filter-button">Approved</button>
                             <button class="btn filter-button">Pending</button>
                             <button class="btn filter-button">Rejected</button>
                         </div>
-                        <div class="table-responsive table-container">
-                            <table class="table table-striped table-hover table-borderless custom-table">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover custom-table">
                                 <thead class="table-primary sticky-header">
                                     <tr>
                                         <th>ID</th>
@@ -137,22 +196,25 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-body-stall-extension">
-                                </tbody>
+                                <tbody id="table-body-stall-extension"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="container add-helper">
-                        <h4>Helper Applications Table</h4>
+                    <!-- Helper Applications Table -->
+                    <div class="container stall-helper d-none">
+                        <button class="btn btn-return" data-name="helperBtn">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+                        <h4 class="mb-3">Helper Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
                             <button class="btn filter-button">All Applications</button>
                             <button class="btn filter-button">Approved</button>
                             <button class="btn filter-button">Pending</button>
                             <button class="btn filter-button">Rejected</button>
                         </div>
-                        <div class="table-responsive table-container">
-                            <table class="table table-striped table-hover table-borderless custom-table">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover custom-table">
                                 <thead class="table-primary sticky-header">
                                     <tr>
                                         <th>ID</th>
@@ -167,8 +229,7 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-body-stall-helper">
-                                </tbody>
+                                <tbody id="table-body-stall-helper"></tbody>
                             </table>
                         </div>
                     </div>
@@ -176,6 +237,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="row text-center">
         <div class="container">
@@ -255,12 +317,107 @@
     </script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelector(".card-stall").addEventListener("click", function() {
+                showTableStall();
+            });
+            document.querySelector(".card-transfer").addEventListener("click", function() {
+                showTableTransfer();
+            });
+            document.querySelector(".card-ext").addEventListener("click", function() {
+                showTableExtension();
+            });
+            document.querySelector(".card-helper").addEventListener("click", function() {
+                showTableHelper();
+            });
+
+            let returnButtons = document.querySelectorAll(".btn-return");
+
+            returnButtons.forEach(button => {
+                button.addEventListener("click", function() {
+
+                    let dataName = this.getAttribute("data-name");
+                    returnToTableMenu(dataName);
+                });
+            });
+
+        })
+
+        function returnToTableMenu(type) {
+            let tableMenu = document.querySelector(".table-menu");
+            let stallAppDiv = document.querySelector(".stall-app");
+            let stallTransferDiv = document.querySelector(".stall-transfer");
+            let stallExtensionDiv = document.querySelector(".stall-extend");
+            let stallHelperDiv = document.querySelector(".stall-helper");
+
+            tableMenu.classList.remove("d-none");
+
+            switch (type) {
+                case 'stallBtn':
+                    stallAppDiv.classList.toggle("d-none");
+                    break;
+                case 'transferBtn':
+                    stallTransferDiv.classList.toggle("d-none");
+                    break;
+                case 'extensionBtn':
+                    stallExtensionDiv.classList.toggle("d-none");
+                    break;
+                case 'helperBtn':
+                    stallHelperDiv.classList.toggle("d-none");
+                    break;
+            }
+
+        }
+
+        function showTableStall() {
+
+            let tableMenu = document.querySelector(".table-menu");
+            let stallStallDiv = document.querySelector(".stall-app");
+
+            tableMenu.classList.add("d-none");
+            stallStallDiv.classList.toggle("d-none");
+
+        }
+
+        function showTableTransfer() {
+
+            let tableMenu = document.querySelector(".table-menu");
+            let stallTransferDiv = document.querySelector(".stall-transfer");
+
+            tableMenu.classList.add("d-none");
+            stallTransferDiv.classList.toggle("d-none");
+
+        }
+
+        function showTableExtension() {
+
+            let tableMenu = document.querySelector(".table-menu");
+            let stallExtensionDiv = document.querySelector(".stall-extend");
+
+            tableMenu.classList.add("d-none");
+            stallExtensionDiv.classList.toggle("d-none");
+
+        }
+
+        function showTableHelper() {
+
+            let tableMenu = document.querySelector(".table-menu");
+            let stallHelperDiv = document.querySelector(".stall-helper");
+
+            tableMenu.classList.add("d-none");
+            stallHelperDiv.classList.toggle("d-none");
+
+        }
+    </script>
+
+    <script>
         window.onload = () => {
             fetchTableStall();
             fetchTableStallTransfer();
             fetchTableStallExtend();
             fetchTableAddHelper();
-            setInterval(fetchTableData, 10000); // Subsequent updates every 5 seconds
+            // setInterval(fetchTableData, 10000); // Subsequent updates every 5 seconds
         };
 
         function fetchTableAddHelper() {
@@ -376,7 +533,6 @@
                 })
         }
 
-        // Fetch data from the server and populate the table
         function fetchTableStall() {
             fetch('../../actions/admin_action.php')
                 .then(response => response.json())
