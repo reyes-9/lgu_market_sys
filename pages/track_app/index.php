@@ -16,7 +16,6 @@
     <div class="content-wrapper">
         <div class="container m-5">
             <div class="container mt-3 p-0">
-                <!-- <a href="index.php" class="btn btn-custom ">← Back to Profile</a> -->
                 <a href="../portal/" class="btn btn-outline btn-return mb-3">
                     <i class="bi bi-arrow-left"></i> Profile
                 </a>
@@ -95,7 +94,7 @@
                     app.status === 'Submitted' ? 'status-submitted' :
                     app.status === 'Under Review' ? 'status-under-review' : 
                     app.status === 'Approved' ? 'status-approved' :
-                    app.status === 'Denied' ? 'status-denied' :
+                    app.status === 'Rejected' ? 'status-rejected' :
                     app.status === 'Withdrawn' ? 'status-withdrawn' : ''
                     }">
                     ${app.status}

@@ -22,7 +22,7 @@
       <div class="row m-5 p-5 shadow rounded-3 profile light">
 
         <div class="col-md-4">
-          <!-- Notifications Section (Initially Hidden) -->
+
           <div id="notificationsSection" class="d-none notification-container">
             <button class="btn btn-return" id="returnBtn">
               <i class="bi bi-arrow-left"></i> Back
@@ -40,54 +40,101 @@
             <img id="profile_picture" src="../../images/default_profile_pic.png" alt="Profile Image" class="img-fluid w-25 h-auto my-3">
 
             <h2 class=""><span id="name"></span></h2>
+            <p><span id="profile-address"></span></p>
             <p><span id="email"></span></p>
+            <p><span id="profile-name"></span></p>
+            <p><span id="profile-contact"></span></p>
+            <p><span id="profile-email"></span></p>
+            <p><span id="profile-birthdate"></span></p>
+
             <br>
             <hr>
 
             <!-- Notifications Button -->
             <button type="button" class="btn btn-warning position-relative" id="toggleNotifications">
-              Notifications
+              <i class="bi bi-bell-fill"></i>
+
               <span class="position-absolute top-0 start-100 translate-middle p-2" id="notificationAlert">
                 <span class="visually-hidden">New alerts</span>
               </span>
             </button>
+            <a href="../track_app/" class="btn btn-warning mx-3"><i class="bi bi-arrow-repeat"></i> Track Applications</a>
 
           </div>
         </div>
 
-        <!-- Profile Info -->
         <div class="col-md-8 px-5 divide">
-          <div class="profile-card">
-            <h3>Information</h3>
-            <hr>
-            </button>
-            <br>
 
-            <table class="table table-striped table-borderless table-hover custom-table light">
-              <tbody>
-                <tr>
-                  <td><strong>Name:</strong></td>
-                  <td id="profile-name"></td>
-                </tr>
-                <tr>
-                  <td><strong>Email:</strong></td>
-                  <td id="profile-email"></td>
-                </tr>
-                <tr>
-                  <td><strong>Birthdate:</strong></td>
-                  <td id="profile-birthdate"></td>
-                </tr>
-                <tr>
-                  <td><strong>Address:</strong></td>
-                  <td id="profile-address"></td>
-                </tr>
-                <tr>
-                  <td><strong>Contact:</strong></td>
-                  <td id="profile-contact"></td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="mt-3 text-end"><a href="../track_app/" class="btn btn-warning m-1">Track Applications</a></div>
+          <!-- Violation Modal -->
+          <div class="modal fade text-dark" id="violationModal" tabindex="-1" aria-labelledby="violationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="violationModalLabel">Add Violation</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="violationForm">
+                    <div class="mb-3">
+                      <label for="vendor" class="form-label">Select Vendor</label>
+                      <select id="vendor" class="form-control" required></select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="violationType" class="form-label">Violation Type</label>
+                      <select id="violationType" class="form-control" required>
+                        <option value="Late Payment">Late Payment</option>
+                        <option value="Unauthorized Selling">Unauthorized Selling</option>
+                        <option value="Sanitation Issue">Sanitation Issue</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="remarks" class="form-label">Remarks</label>
+                      <textarea id="remarks" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Violation</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container mt-4 text-center">
+            <h2 class="mb-3">Violations Summary</h2>
+            <div class="violation card">
+              <div class="card-body">
+                <div class="row">
+                  <!-- Critical Violations Card -->
+                  <div class="col-md-4">
+                    <div class="info-card shadow rounded bg-danger text-white"
+                      data-bs-toggle="tooltip" title="Critical issues that require immediate action">
+                      <h4 id="criticalTxt"></h4>
+                      <p class="mb-0">Critical Violations</p>
+                    </div>
+                  </div>
+                  <!-- Pending Violations Card -->
+                  <div class="col-md-4">
+                    <div class="info-card shadow rounded bg-warning text-dark"
+                      data-bs-toggle="tooltip" title="Pending violations awaiting resolution">
+                      <h4 id="pendingTxt"></h4>
+                      <p class="mb-0">Pending Violations</p>
+                    </div>
+                  </div>
+                  <!-- Resolved Violations Card -->
+                  <div class="col-md-4">
+                    <div class="info-card shadow rounded bg-success text-white"
+                      data-bs-toggle="tooltip" title="Resolved issues that have been addressed">
+                      <h4 id="resolvedTxt"></h4>
+                      <p class="mb-0">Resolved Violations</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-end mt-3">
+                <a href="../violation/" class="btn btn-warning">
+                  <i class="bi bi-arrow-right-circle"></i> Manage Violations
+                </a>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -126,6 +173,14 @@
       notifcation_section.classList.toggle('d-none');
       profile_section.classList.toggle('d-none');
     });
+
+    // Enable tooltips after page load
+    document.addEventListener("DOMContentLoaded", function() {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
   </script>
   <script>
     // Fetch user data and notifications after DOM is loaded
@@ -133,6 +188,7 @@
 
       fetchUser();
       fetchNotifications();
+      fetchStatusCount();
 
       document.getElementById("returnBtn").addEventListener("click", function() {
         fetchNotifications();
@@ -153,8 +209,6 @@
             const hasUnread = data.notifications.some(notification => notification.status === 'unread');
             const notificationAlert = document.getElementById('notificationAlert');
             const readBtn = document.getElementById('markAllReadBtn');
-
-            console.log(hasUnread);
 
             if (hasUnread) {
               notificationAlert.classList.add("bg-danger", "rounded-circle");
@@ -178,8 +232,6 @@
             const user = data.user[0];
             document.getElementById('name').textContent = user.name;
             document.getElementById('email').textContent = user.email;
-            document.getElementById('profile-name').textContent = user.name;
-            document.getElementById('profile-email').textContent = user.email;
             document.getElementById('profile-birthdate').textContent = user.birthdate;
             document.getElementById('profile-address').textContent = user.address;
             document.getElementById('profile-contact').textContent = user.contact;
@@ -266,6 +318,24 @@
             });
           }
 
+        })
+    }
+
+    function fetchStatusCount() {
+      fetch('../actions/violation_action.php')
+        .then(response => response.json())
+        .then(data => {
+          if (!data.success) {
+            throw new Error(data.error || "Failed to fetch status count.");
+          }
+
+          let pendingCount = document.getElementById('pendingTxt');
+          let criticalCount = document.getElementById('criticalTxt');
+          let resolveCount = document.getElementById('resolvedTxt');
+
+          pendingCount.innerHTML = `<i class="bi bi-x-circle"></i> ${data.count.Pending}`;
+          criticalCount.innerHTML = `<i class="bi bi-exclamation-circle"></i> ${data.count.Critical}`;
+          resolveCount.innerHTML = `<i class="bi bi-check-circle"></i> ${data.count.Resolved}`;
         })
     }
   </script>

@@ -1,0 +1,56 @@
+@import url("main.css");
+
+.btn-return {
+  color: #d3d3d3 !important;
+  border: 0 !important;
+  font-size: 18px !important;
+  outline: none !important;
+}
+.btn-return:hover {
+  color: #757575 !important;
+}
+
+.container.content {
+  color: white;
+  background-color: #003366;
+  padding: 30px 50px 70px 50px;
+  margin-bottom: 50px;
+  border-radius: 10px;
+}
+
+.table-container {
+  max-height: 350px; /* Set a fixed height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+table.custom-table th,
+table.custom-table td {
+  background-color: #003366 !important;
+  padding: 15px;
+  color: var(--bs-light);
+  border-bottom: 1px solid rgb(126, 126, 126);
+}
+
+table.custom-table th {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Ensure the header remains visible */
+  z-index: 10;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

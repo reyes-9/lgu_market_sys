@@ -112,13 +112,13 @@ table td button {
 /* Buttons */
 .filter-button {
   position: relative;
-  padding: 10px 20px;
+  padding: 10px 20px !important;
   font-size: 16px;
   font-weight: bold;
   color: #2c2c2c;
   background: none;
-  border: none;
-  cursor: pointer;
+  border: 0 !important;
+  cursor: pointer !important;
   outline: none;
   transition: color 0.3s ease-in-out;
 }
@@ -147,11 +147,14 @@ table td button {
 
 /* Hover Effect */
 .filter-button:hover {
-  color: #0056b3;
+  color: #0056b3 !important;
 }
-
 .filter-button.active {
-  color: #0056b3;
+  border: 0;
+  color: #0056b3 !important;
+  font-weight: 600;
+}
+.filter-button.active::after {
   transform: scaleX(1);
   transform-origin: left;
 }
@@ -160,6 +163,7 @@ table td button {
   transform: scaleX(1);
   transform-origin: left;
 }
+
 .btn-return:hover {
   color: #5e5e5e !important;
 }

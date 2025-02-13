@@ -110,11 +110,8 @@
                         </button>
 
                         <h4 class="mb-3">Stall Transfer Applications Table</h4>
-                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
-                            <button class="btn filter-button">All Applications</button>
-                            <button class="btn filter-button">Approved</button>
-                            <button class="btn filter-button">Pending</button>
-                            <button class="btn filter-button">Rejected</button>
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="">
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover custom-table">
@@ -142,11 +139,8 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
                         <h4 class="mb-3">Stall Applications Table</h4>
-                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
-                            <button class="btn filter-button">All Applications</button>
-                            <button class="btn filter-button">Approved</button>
-                            <button class="btn filter-button">Pending</button>
-                            <button class="btn filter-button">Rejected</button>
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="filter-container">
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover custom-table">
@@ -174,11 +168,8 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
                         <h4 class="mb-3">Stall Extension Applications Table</h4>
-                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
-                            <button class="btn filter-button">All Applications</button>
-                            <button class="btn filter-button">Approved</button>
-                            <button class="btn filter-button">Pending</button>
-                            <button class="btn filter-button">Rejected</button>
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="filter-container">
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover custom-table">
@@ -207,11 +198,8 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
                         <h4 class="mb-3">Helper Applications Table</h4>
-                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
-                            <button class="btn filter-button">All Applications</button>
-                            <button class="btn filter-button">Approved</button>
-                            <button class="btn filter-button">Pending</button>
-                            <button class="btn filter-button">Rejected</button>
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="filter-container">
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover custom-table">
@@ -320,15 +308,23 @@
         document.addEventListener("DOMContentLoaded", function() {
 
             document.querySelector(".card-stall").addEventListener("click", function() {
+                fetchTableStall('All Applications');
+                createFilterButtons('stall');
                 showTableStall();
             });
             document.querySelector(".card-transfer").addEventListener("click", function() {
+                fetchTableStallTransfer('All Applications');
+                createFilterButtons('transfer');
                 showTableTransfer();
             });
             document.querySelector(".card-ext").addEventListener("click", function() {
+                fetchTableStallExtend('All Applications');
+                createFilterButtons('extend');
                 showTableExtension();
             });
             document.querySelector(".card-helper").addEventListener("click", function() {
+                fetchTableHelper('All Applications');
+                createFilterButtons('helper');
                 showTableHelper();
             });
 
@@ -341,8 +337,55 @@
                     returnToTableMenu(dataName);
                 });
             });
-
         })
+
+
+        const filterOptions = ['All Applications', 'Approved', 'Submitted', 'Rejected', 'Withdrawn'];
+
+        function createFilterButtons(type) {
+            const containers = document.querySelectorAll('.filter-container');
+
+            containers.forEach(container => {
+
+                container.innerHTML = '';
+
+                filterOptions.forEach(option => {
+                    const button = document.createElement('button');
+
+                    if (option === 'All Applications') {
+                        button.classList.add('active');
+                    }
+                    button.classList.add('btn', 'filter-button');
+                    button.textContent = option;
+
+                    button.onclick = () => {
+
+                        switch (type) {
+                            case 'stall':
+                                fetchTableStall(option);
+                                break;
+                            case 'transfer':
+                                fetchTableStallTransfer(option)
+                                break;
+                            case 'helper':
+                                fetchTableHelper(option);
+                                break;
+                            case 'extend':
+                                fetchTableStallExtend(option);
+                                break;
+                        }
+                        console.log(option.toLowerCase().replace(/ /g, ''))
+                        console.log(option)
+
+                        const allButtons = container.querySelectorAll('.filter-button');
+                        allButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                    };
+
+                    container.appendChild(button);
+                });
+            });
+        }
 
         function returnToTableMenu(type) {
             let tableMenu = document.querySelector(".table-menu");
@@ -412,22 +455,65 @@
     </script>
 
     <script>
-        window.onload = () => {
-            fetchTableStall();
-            fetchTableStallTransfer();
-            fetchTableStallExtend();
-            fetchTableAddHelper();
-            // setInterval(fetchTableData, 10000); // Subsequent updates every 5 seconds
-        };
+  
+        function fetchTableStall(filter) {
+            fetch('../../actions/admin_action.php')
+                .then(response => response.json())
+                .then(data => {
+                    const stallTableBody = document.getElementById('table-body-stall-app');
 
-        function fetchTableAddHelper() {
+                    stallTableBody.innerHTML = '';
+
+                    data.stall.forEach(row => {
+
+                        if (filter !== 'All Applications' && filter !== row.status) {
+                            return
+                        }
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.account_name}</td>
+                    <td>${row.stall_number}</td>
+                    <td>${row.section_name}</td>
+                    <td>${row.market_name}</td>
+                    <td>${row.application_type}</td>
+                    <td>${row.status}</td>
+                    <td>${row.created_at}</td>
+                    <td>
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" href="#">Approve</button></li>
+                                <li><button class="dropdown-item" href="#">Reject</button></li>
+                                <li><button class="dropdown-item" href="#">Delete</button></li>
+                                <li><button class="dropdown-item" href="#">View Application</button></li>
+                            </ul>
+                        </div>
+                    </td>
+                `;
+
+                        stallTableBody.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error('Error fetching table data:', error));
+        }
+
+        function fetchTableHelper(filter) {
             fetch('../../actions/admin_action.php')
                 .then(response => response.json())
                 .then(data => {
                     const stallHelperTableBody = document.getElementById('table-body-stall-helper');
                     stallHelperTableBody.innerHTML = '';
-                    // HELPER
+
                     data.helper.forEach(row => {
+
+                        if (filter !== 'All Applications' && filter !== row.status) {
+                            return
+                        }
+
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                         <td>${row.id}</td>
@@ -455,17 +541,22 @@
                     `;
                         stallHelperTableBody.appendChild(tr);
                     });
+
                 }).catch(error => console.error('Error fetching table data:', error));
         }
 
-        function fetchTableStallExtend() {
+        function fetchTableStallExtend(filter) {
             fetch('../../actions/admin_action.php')
                 .then(response => response.json())
                 .then(data => {
                     const stallExtensionTableBody = document.getElementById('table-body-stall-extension');
                     stallExtensionTableBody.innerHTML = '';
-                    // EXTENSION
+
                     data.stall_extension.forEach(row => {
+
+                        if (filter !== 'All Applications' && filter !== row.status) {
+                            return
+                        }
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                         <td>${row.id}</td>
@@ -496,7 +587,7 @@
                 }).catch(error => console.error('Error fetching table data:', error));
         }
 
-        function fetchTableStallTransfer() {
+        function fetchTableStallTransfer(filter) {
             fetch('../../actions/admin_action.php')
                 .then(response => response.json())
                 .then(data => {
@@ -504,6 +595,9 @@
                     stallTransferTableBody.innerHTML = '';
                     // TRANSFER
                     data.stall_transfer.forEach(row => {
+                        if (filter !== 'All Applications' && filter !== row.status) {
+                            return
+                        }
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                         <td>${row.id}</td>
@@ -532,49 +626,9 @@
                     });
                 })
         }
-
-        function fetchTableStall() {
-            fetch('../../actions/admin_action.php')
-                .then(response => response.json())
-                .then(data => {
-                    const stallTableBody = document.getElementById('table-body-stall-app');
-
-                    // Clear existing rows
-                    stallTableBody.innerHTML = '';
-
-                    // STALL
-                    data.stall.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                    <td>${row.id}</td>
-                    <td>${row.account_name}</td>
-                    <td>${row.stall_number}</td>
-                    <td>${row.section_name}</td>
-                    <td>${row.market_name}</td>
-                    <td>${row.application_type}</td>
-                    <td>${row.status}</td>
-                    <td>${row.created_at}</td>
-                    <td>
-                        <div class="btn-group dropend">
-                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Select
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" href="#">Approve</button></li>
-                                <li><button class="dropdown-item" href="#">Reject</button></li>
-                                <li><button class="dropdown-item" href="#">Delete</button></li>
-                                <li><button class="dropdown-item" href="#">View Application</button></li>
-                            </ul>
-                        </div>
-                    </td>
-                `;
-                        stallTableBody.appendChild(tr);
-                    });
-                })
-                .catch(error => console.error('Error fetching table data:', error));
-        }
     </script>
 
+    <!-- Charts -->
     <script>
         var ctx = document.getElementById('applicationsChart').getContext('2d');
         var applicationsChart = new Chart(ctx, {

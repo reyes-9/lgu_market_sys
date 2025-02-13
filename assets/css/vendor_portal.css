@@ -125,3 +125,14 @@
   background: none;
   color: #bdbdbd;
 }
+
+/* Violation */
+.violation {
+  background: transparent !important;
+  border: 0 !important;
+  margin: 100px 50px;
+}
+.info-card {
+  padding: 20px 20px;
+  border: 0 !important;
+}
