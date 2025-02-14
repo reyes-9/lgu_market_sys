@@ -56,13 +56,13 @@ label {
 }
 
 .btn-radio input[type="radio"]:checked + label {
-  background-color: #ffc107;
+  background-color: var(--bs-warning);
   color: #111111;
   border-color: #0044cc;
 }
 
 .radio-label:hover {
-  background-color: #ffc107;
+  background-color: var(--bs-warning);
   color: #111111;
   border-color: #0044cc;
 }
@@ -91,7 +91,7 @@ label {
 }
 
 .radio-modern input[type="radio"]:checked + .radio-checkmark {
-  background-color: #ffc107;
+  background-color: var(--bs-warning);
   box-shadow: 0 6px 12px rgba(255, 123, 0, 0.3);
 }
 

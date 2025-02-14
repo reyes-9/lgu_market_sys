@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stall Application - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
-    <link rel="stylesheet" href="../../assets/css/stall.css">
+    <link rel="stylesheet" href="../../assets/css/stall_app.css">
     <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 <?php
@@ -28,7 +28,7 @@ if (empty($_SESSION['csrf_token'])) {
 
         <?php include '../../includes/menu.php'; ?>
 
-        <div class="container-fluid px-5">
+        <div class="container-fluid px-5 d-none">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-6">
                     <div class="container shadow rounded-3 p-5 application light">
@@ -101,11 +101,187 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
             </div>
         </div>
+
+
+        <div class="form-container">
+
+            <form id="stallApplicationForm" method="POST" action="submit_application.php">
+
+                <div class="form-header">
+                    <div class="header-top">
+                        <img src="logo1.png" alt="Logo" class="logo left">
+                        <div class="header-text">
+                            <h3>Republic of the Philippines</h3>
+                            <h2>QUEZON CITY</h2>
+                            <h3>PUBLIC MARKET MONITORING SYSTEM</h3>
+                            <p>publicmarketmonitoring@gmail.com</p>
+                        </div>
+                        <img src="logo2.png" alt="Logo" class="logo right">
+                    </div>
+
+                    <div class="header-bottom container">
+                        <div class="row">
+                            <div class="col-md-6"><strong>Application Type:</strong> STALL APPLICATION</div>
+                            <div class="col-md-6"><strong>Application Status:</strong> New</div>
+                            <div class="col-md-6"><strong>Date Submitted:</strong> 02/14/2025</div>
+                            <div class="col-md-6"><strong>Application Form Number:</strong> NSA006106</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="form-section">Personal Information</div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label>Email: <small class="error-message"></small></label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Alternate Email: <small class="error-message"></small></label>
+                        <input type="email" class="form-control" name="alt_email">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Contact Number: <small class="error-message"></small></label>
+                        <input type="tel" class="form-control" name="contact_no">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="form-group col-md-4">
+                        <label>First Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="first_name">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Middle Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="middle_name">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Last Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="last_name">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="form-group col-md-4 position-relative">
+                        <label>Sex: <small class="error-message"></small></label>
+                        <div class="dropdown-wrapper">
+                            <select class="form-control" name="sex">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <i class="bi bi-chevron-down dropdown-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4 position-relative">
+                        <label>Civil Status <small class="error-message"></small></label>
+                        <div class="dropdown-wrapper">
+                            <select class="form-control" name="status">
+                                <option value="">Select</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                            </select>
+                            <i class="bi bi-chevron-down dropdown-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Nationality: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="nationality" value="Filipino">
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="form-section">Address</div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label>House Number: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="house_no">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Street: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="street">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Subdivision: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="subdivision">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="form-group col-md-4">
+                        <label>Province: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="province">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>City: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="city">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Barangay: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="barangay">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="form-group col-md-4">
+                        <label>Zip Code: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="zip_code">
+                    </div>
+                </div>
+
+                <!-- Market Information -->
+                <div class="form-section">Market Information</div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label>What will you sell? <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="market_items">
+                    </div>
+                </div>
+
+                <button type="submit" class="form-button">Submit Application</button>
+
+            </form>
+        </div>
+
+
+
     </div>
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
+
     <script>
+        document.getElementById("stallApplicationForm").addEventListener("submit", function(event) {
+            let isValid = true;
+
+            const inputs = document.querySelectorAll("input");
+
+            inputs.forEach(input => {
+                const parentDiv = input.closest(".form-group");
+                if (!parentDiv) return;
+
+                const errorMessage = parentDiv.querySelector(".error-message");
+                if (!errorMessage) return;
+
+                if (input.value.trim() === "") {
+                    input.classList.add("error");
+                    errorMessage.textContent = "*";
+
+                    isValid = false;
+                } else {
+                    input.classList.remove("error");
+                    errorMessage.textContent = "";
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    </script>
+
+    <!-- <script>
         let locationsData; // Store the fetched data for later use
 
         // Theme
@@ -281,7 +457,9 @@ if (empty($_SESSION['csrf_token'])) {
             `;
             document.getElementById('stallInfo').innerHTML = stallInfo;
         }
-    </script>
+    </script> -->
+
+
 
 </body>
 

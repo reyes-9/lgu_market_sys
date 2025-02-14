@@ -77,7 +77,7 @@ body {
 }
 
 .line {
-  border-bottom: 3px solid #ffc107;
+  border-bottom: 3px solid var(--bs-warning);
 }
 
 /* Table */
@@ -96,7 +96,7 @@ table thead {
 }
 
 table td button {
-  background-color: #ffc107;
+  background-color: var(--bs-warning);
 }
 
 /* Toast */

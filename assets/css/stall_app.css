@@ -1,0 +1,154 @@
+@import url("main.css");
+.form-header {
+  color: #003366; /* Dark blue */
+  padding: 20px;
+  text-align: center;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #003366;
+}
+
+.logo {
+  width: 60px;
+  height: auto;
+}
+
+.left {
+  margin-right: 10px;
+}
+
+.right {
+  margin-left: 10px;
+}
+
+.header-text {
+  flex-grow: 1;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+h3,
+p {
+  margin: 3px 0;
+}
+
+.header-bottom {
+  margin-top: 15px;
+  background-color: #003366;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.header-bottom div {
+  margin: 3px 0;
+}
+
+.form-container {
+  background-color: #f8f9fc; /* Soft white */
+  color: #003366;
+  border-radius: 8px;
+  box-shadow: 0 1px 100px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 70% !important;
+  margin: 30px auto;
+}
+.form-container h2 {
+  font-size: 1.5rem;
+  color: #003366;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.form-section {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 50px;
+  color: #003366;
+  border-bottom: 2px solid #ffc107; /* Keeping the warning accent */
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+}
+.form-group label {
+  font-weight: 500;
+  color: #003366;
+}
+.form-control {
+  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #bbb; /* Lighter border */
+}
+.form-control:focus {
+  border-color: #003366;
+  box-shadow: 0 0 5px rgba(0, 51, 102, 0.3);
+}
+.form-button {
+  display: block;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 25px;
+  width: 20%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 20px auto;
+}
+.form-button:hover {
+  background-color: #002447;
+}
+
+.row {
+  margin-bottom: 25px;
+}
+input,
+select {
+  background-color: #ffffff !important; /* Pure white for better contrast */
+  color: #003366 !important;
+  border-color: #bbb !important;
+}
+.error {
+  border-color: #d32f2f !important;
+}
+
+.error-message {
+  color: #d32f2f !important;
+  font-size: 0.85rem !important;
+  display: inline !important;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-wrapper select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 40px;
+}
+
+/* Style the dropdown icon */
+.dropdown-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  pointer-events: none;
+  color: #555;
+}
