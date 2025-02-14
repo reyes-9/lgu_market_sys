@@ -15,18 +15,23 @@ if (isset($_GET['market_id']) && isset($_GET['section_id'])) {
         $stmt->execute();
         $stalls = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if ($stalls) {
-
             // Filter out stalls that are not available
             $availableStalls = array_filter($stalls, function ($stall) {
                 return $stall['status'] === 'available';
             });
 
+            if (empty($availableStalls)) {
+                echo json_encode(['success' => false, 'message' => 'No available stalls found for this section']);
+                exit;
+            }
+
             header('Content-Type: application/json');
             echo json_encode(array_values($availableStalls));
+            exit;
         } else {
-
             http_response_code(404); // Not Found
-            echo json_encode(['message' => 'No available stalls found for this section']);
+            echo json_encode(['success' => false, 'message' => 'That section is not available in this market']);
+            exit;
         }
     } catch (PDOException $e) {
         http_response_code(500);

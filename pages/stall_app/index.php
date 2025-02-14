@@ -55,16 +55,16 @@ if (empty($_SESSION['csrf_token'])) {
                             <input type="hidden" name="application_type" value="stall">
 
                             <!-- Market Dropdown -->
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label for="market">Market:</label>
                                 <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
                                     <option value="" disabled selected>-- Select Market --</option>
                                 </select>
                                 <span id="market_address"></span>
-                            </div>
+                            </div> -->
 
                             <!-- Section and Stall (side by side) -->
-                            <div class="row mb-3">
+                            <!-- <div class="row mb-3">
                                 <div class="col">
                                     <label for="section">Section:</label>
                                     <select class="form-select" id="section" name="section" onchange="loadStallsWithSection()">
@@ -77,20 +77,20 @@ if (empty($_SESSION['csrf_token'])) {
                                         <option value="" disabled selected>-- Select Stall Number --</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Stall Info -->
-                            <div id="stallInfo" class="stall-info mb-3">
+                            <!-- <div id="stallInfo" class="stall-info mb-3">
                                 Select a stall number to view information.
-                            </div>
+                            </div> -->
 
                             <!-- QC ID and Current ID (side by side) -->
-                            <div class="row mb-3">
+                            <!-- <div class="row mb-3">
                                 <div class="col">
                                     <label for="documents">Upload Required Documents:</label>
                                     <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
                                 </div>
-                            </div>
+                            </div> -->
                             <br>
                             <!-- Submit Button -->
                             <div class="text-end">
@@ -105,32 +105,80 @@ if (empty($_SESSION['csrf_token'])) {
 
         <div class="form-container">
 
-            <form id="stallApplicationForm" method="POST" action="submit_application.php">
-
-                <div class="form-header">
-                    <div class="header-top">
-                        <img src="logo1.png" alt="Logo" class="logo left">
-                        <div class="header-text">
-                            <h3>Republic of the Philippines</h3>
-                            <h2>QUEZON CITY</h2>
-                            <h3>PUBLIC MARKET MONITORING SYSTEM</h3>
-                            <p>publicmarketmonitoring@gmail.com</p>
-                        </div>
-                        <img src="logo2.png" alt="Logo" class="logo right">
+            <div class="form-header">
+                <div class="header-top">
+                    <!-- <img src="logo1.png" alt="Logo" class="logo left"> -->
+                    <div class="header-text">
+                        <h3>Republic of the Philippines</h3>
+                        <h2>QUEZON CITY</h2>
+                        <h3><strong>PUBLIC MARKET MONITORING SYSTEM</strong></h3>
+                        <p>publicmarketmonitoring@gmail.com</p>
                     </div>
+                    <!-- <img src="logo2.png" alt="Logo" class="logo right"> -->
+                </div>
 
-                    <div class="header-bottom container">
-                        <div class="row">
-                            <div class="col-md-6"><strong>Application Type:</strong> STALL APPLICATION</div>
-                            <div class="col-md-6"><strong>Application Status:</strong> New</div>
-                            <div class="col-md-6"><strong>Date Submitted:</strong> 02/14/2025</div>
-                            <div class="col-md-6"><strong>Application Form Number:</strong> NSA006106</div>
-                        </div>
+                <div class="header-bottom container">
+                    <div class="row">
+                        <div class="col-md-6"><strong>Application Type:</strong> STALL APPLICATION</div>
+                        <div class="col-md-6"><strong>Application Status:</strong> New</div>
+                        <div class="col-md-6"><strong>Date Submitted:</strong> 02/14/2025</div>
+                        <div class="col-md-6"><strong>Application Form Number:</strong> NSA006106</div>
+                    </div>
+                </div>
+            </div>
+
+            <form action="" id="marketSelectionForm">
+                <div class="form-section">Select Market</div>
+                <!-- Market Dropdown -->
+                <div class="mb-3 form-group">
+                    <label for="market">Market:</label>
+                    <select class="form-select" id="market" name="market" onchange="getStallData()" required>
+                        <option value="" disabled selected>-- Select Market --</option>
+                    </select>
+                    <span id="market_address"></span>
+                </div>
+
+                <!-- Section and Stall (side by side) -->
+                <div class="row">
+                    <div class="col form-group">
+                        <label for="section">Section:</label>
+                        <select class="form-select" id="section" name="section" onchange="getStallData()">
+                            <option value="" disabled selected>-- Select Section --</option>
+                        </select>
+                    </div>
+                    <div class="col form-group">
+                        <label for="stall">Stall Number:</label>
+                        <select class="form-select" id="stall" name="stall" required>
+                            <option value="" disabled selected>-- Select Stall Number --</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="stallInfo"></div>
+                <div id="message"></div>
+                <button type="button" class="form-button" id="marketBtn">Next</button>
+            </form>
+
+            <form class="d-none" id="stallApplicationForm" method="POST" action="">
+                <!-- Personal Information -->
+
+                <div class="form-section">Selected Market</div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label>Market: <small class="error-message"></small></label>
+                        <input class="form-control" id="marketInput" value="" data-market-id="" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Section: <small class="error-message"></small></label>
+                        <input class="form-control" id="sectionInput" value="" data-section-id="" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Stall No.: <small class="error-message"></small></label>
+                        <input class="form-control" id="stallInput" value="" data-stall-id="" disabled>
                     </div>
                 </div>
 
-                <!-- Personal Information -->
                 <div class="form-section">Personal Information</div>
+
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label>Email: <small class="error-message"></small></label>
@@ -141,7 +189,7 @@ if (empty($_SESSION['csrf_token'])) {
                         <input type="email" class="form-control" name="alt_email">
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Contact Number: <small class="error-message"></small></label>
+                        <label> Number: <small class="error-message"></small></label>
                         <input type="tel" class="form-control" name="contact_no">
                     </div>
                 </div>
@@ -239,7 +287,7 @@ if (empty($_SESSION['csrf_token'])) {
                     </div>
                 </div>
 
-                <button type="submit" class="form-button">Submit Application</button>
+                <button type="submit" class="form-button" id="submitBtn">Submit Application</button>
 
             </form>
         </div>
@@ -251,10 +299,66 @@ if (empty($_SESSION['csrf_token'])) {
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
 
-    <script>
-        document.getElementById("stallApplicationForm").addEventListener("submit", function(event) {
-            let isValid = true;
 
+    <script>
+        // Theme
+        const application = document.querySelector('.application');
+        themeToggleButton.addEventListener("click", () => {
+            application.classList.toggle("dark");
+            application.classList.toggle("light");
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.getElementById("submitBtn").addEventListener("click", validateForm);
+            document.getElementById("marketBtn").addEventListener("click", handleMarketSelection);
+
+        });
+
+        function handleMarketSelection() {
+            const marketVal = document.getElementById("market").value;
+            const sectionVal = document.getElementById("section").value;
+            const stallVal = document.getElementById("stall").value;
+
+            let marketTxt = getSelectedText("market");
+            let sectionTxt = getSelectedText("section");
+            let stallTxt = getSelectedText("stall");
+
+            const nextForm = document.getElementById("stallApplicationForm");
+            const currentForm = document.getElementById("marketSelectionForm");
+
+            const marketInput = document.getElementById("marketInput");
+            const sectionInput = document.getElementById("sectionInput");
+            const stallInput = document.getElementById("stallInput");
+
+            if (marketVal !== "" && sectionVal !== "" && stallVal !== "") {
+
+                marketInput.value = marketTxt;
+                sectionInput.value = sectionTxt;
+                stallInput.value = stallTxt;
+
+                marketInput.dataset.marketId = marketVal;
+                sectionInput.dataset.sectionId = sectionVal;
+                stallInput.dataset.stallId = stallVal;
+
+                nextForm.classList.remove('d-none');
+                currentForm.classList.add('d-none');
+
+            }
+        }
+
+        function getSelectedText(selectId) {
+            const selectElement = document.getElementById(selectId);
+            if (selectElement.selectedIndex !== -1) {
+                return selectElement.options[selectElement.selectedIndex].text;
+            }
+            return "Not selected";
+        }
+
+        function validateForm(event) {
+            let isValid = true;
             const inputs = document.querySelectorAll("input");
 
             inputs.forEach(input => {
@@ -267,7 +371,6 @@ if (empty($_SESSION['csrf_token'])) {
                 if (input.value.trim() === "") {
                     input.classList.add("error");
                     errorMessage.textContent = "*";
-
                     isValid = false;
                 } else {
                     input.classList.remove("error");
@@ -278,72 +381,139 @@ if (empty($_SESSION['csrf_token'])) {
             if (!isValid) {
                 event.preventDefault();
             }
-        });
+        }
     </script>
 
-    <!-- <script>
+    <script>
         let locationsData; // Store the fetched data for later use
 
-        // Theme
-        const application = document.querySelector('.application');
-        themeToggleButton.addEventListener("click", () => {
-            application.classList.toggle("dark");
-            application.classList.toggle("light");
-        });
-
-        // checks the stall number option
+        // Shows the stall info upon choosing a stall
+        // And hiding it upon selecting another market or section 
         document.addEventListener('DOMContentLoaded', function() {
+            const marketSelect = document.getElementById('market')
             const stallSelect = document.getElementById('stall');
-            const stallInfo = document.getElementById('stallInfo');
-            stallSelect.addEventListener('change', showStallInfo);
-        });
-
-        // checks the section option
-        document.addEventListener('DOMContentLoaded', function() {
             const sectionSelect = document.getElementById('section');
             const stallInfo = document.getElementById('stallInfo');
 
+            getMarkets();
+            getSections();
+
+            stallSelect.addEventListener('change', showStallInfo);
             sectionSelect.addEventListener('change', function() {
-                stallInfo.innerHTML = 'Select a stall number to view information.';
+                stallInfo.innerHTML = '';
             });
+
+            marketSelect.addEventListener('change', function() {
+                stallInfo.innerHTML = '';
+                showMarketAddress();
+            });
+
+
+
+
         });
 
-        document.getElementById('application_form').addEventListener('submit', function(event) {
-            event.preventDefault();
 
-            const formData = new FormData(this);
+        function showStallInfo() {
+            const stallSelect = document.getElementById('stall');
+            const selectedOption = stallSelect.options[stallSelect.selectedIndex];
 
-            fetch('../actions/application_action.php', {
-                    method: 'POST',
-                    body: formData
-                })
+            const dataInfo = selectedOption.getAttribute('data-info') || 'Rental Fee: N/A, Stall Size: N/A';
+
+            // Parsing the data-info string
+            const infoArray = dataInfo.split(', ');
+            const rentalFee = infoArray[0] ? infoArray[0].split(': ')[1] : 'N/A';
+            const stallSize = infoArray[1] ? infoArray[1].split(': ')[1] : 'N/A';
+
+            // Update the stallInfo section with a table
+            const stallInfo = `
+            <div class="card custom-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Stall Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-label">Rental Fee</span>
+                                <span class="info-value">₱${rentalFee}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-label">Stall Size</span>
+                                <span class="info-value">${stallSize} sqm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+            document.getElementById('stallInfo').innerHTML = stallInfo;
+        }
+
+        function getStallData() {
+            const marketId = document.getElementById('market').value;
+            const sectionId = document.getElementById('section').value;
+
+            // Only make the request if both market and section are selected
+            if (marketId && sectionId) {
+                setStallData(marketId, sectionId);
+            }
+        }
+
+        function setStallData(marketId, sectionId) {
+
+            fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
                 .then(response => response.json())
                 .then(data => {
+                    let stallSelect = document.getElementById('stall');
+                    let message = document.getElementById('message');
 
-                    if (data.success) {
-                        // document.getElementById('responseModalLabel').textContent = 'Message';
-                        document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-                        document.getElementById('responseModalBody').classList.remove('text-danger');
-                        document.getElementById('responseModalBody').classList.add('text-success');
-                    } else {
-                        // document.getElementById('responseModalLabel').textContent = 'Error';
-                        document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-                        document.getElementById('responseModalBody').classList.remove('text-success');
-                        document.getElementById('responseModalBody').classList.add('text-danger');
+                    if (data.success === false) {
+                        message.innerHTML = `<p style="color: #d32f2f"><strong>${data.message}</strong></p>`;
+                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+                        return;
                     }
 
-                    // Show the modal
-                    const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
-                    responseModal.show();
-
+                    message.innerHTML = '';
+                    stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+                    data.forEach(stall => {
+                        let option = document.createElement('option');
+                        option.value = stall.id;
+                        option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);
+                        option.text = stall.stall_number;
+                        stallSelect.appendChild(option);
+                    });
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
-                });
-        });
+                .catch(error => console.error('Error fetching stalls:', error));
+        }
 
-        window.onload = function() {
+        function showMarketAddress() {
+            const marketSelect = document.getElementById('market');
+            const marketAddressElement = document.getElementById('market_address');
+
+            if (!marketSelect || !marketAddressElement) {
+                console.error("Market select or market address element not found.");
+                return;
+            }
+
+            const selectedOption = marketSelect.options[marketSelect.selectedIndex];
+            const selectedId = selectedOption.value;
+
+            if (!selectedId) {
+                marketAddressElement.innerText = '';
+                return;
+            }
+
+            if (!Array.isArray(locationsData)) {
+                console.error("locationsData is not defined or not an array.");
+                return;
+            }
+
+            const selectedLocation = locationsData.find(location => location.id == selectedId);
+            marketAddressElement.innerText = selectedLocation ? selectedLocation.market_address : '';
+        }
+
+        function getMarkets() {
             fetch('../actions/get_market.php')
                 .then(response => {
                     if (!response.ok) {
@@ -365,8 +535,9 @@ if (empty($_SESSION['csrf_token'])) {
                     console.error('Error fetching market locations:', error);
                     alert('Failed to load market locations. Please try again later.');
                 });
+        }
 
-            // Load market sections on page load
+        function getSections() {
             fetch('../actions/get_section.php')
                 .then(response => {
                     if (!response.ok) {
@@ -388,76 +559,77 @@ if (empty($_SESSION['csrf_token'])) {
                     console.error('Error fetching market locations:', error);
                     alert('Failed to load market locations. Please try again later.');
                 });
-        };
+        }
 
-        // Display address based on selected market location
-        document.getElementById('market').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const selectedId = selectedOption.value;
-            const selectedLocation = locationsData.find(location => location.id == selectedId);
-            document.getElementById('market_address').innerText = selectedLocation ? selectedLocation.market_address : '';
+
+
+        document.getElementById("stallApplicationForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = this;
+            const formData = new FormData(form);
+
+            console.log("Form Data:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            // // Submit form data via AJAX
+            // fetch("submit_application.php", {
+            //         method: "POST",
+            //         body: formData
+            //     })
+            //     .then(response => response.json()) // Expecting JSON response
+            //     .then(data => {
+            //         if (data.success) {
+            //             alert("Application submitted successfully!");
+            //             form.reset(); // Reset form after successful submission
+            //         } else {
+            //             alert("Error: " + data.message);
+            //         }
+            //     })
+            //     .catch(error => {
+            //         console.error("Error:", error);
+            //         alert("An error occurred while submitting the application.");
+            //     });
         });
 
-        // Function to load stalls based on selected market and section
-        function loadStallsWithSection() {
-            const marketId = document.getElementById('market').value;
-            const sectionId = document.getElementById('section').value;
 
-            // Only make the request if both market and section are selected
-            if (marketId && sectionId) {
-                loadStalls(marketId, sectionId);
-            }
-        }
+        // document.getElementById('application_form').addEventListener('submit', function(event) {
+        //     event.preventDefault();
 
-        function loadStalls(marketId, sectionId) {
-            // Fetch stalls based on market_id and section_id
-            fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
-                .then(response => response.json())
-                .then(data => {
-                    let stallSelect = document.getElementById('stall');
-                    stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
-                    data.forEach(stall => {
-                        let option = document.createElement('option');
-                        option.value = stall.id;
-                        option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);
-                        option.text = stall.stall_number;
-                        stallSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching stalls:', error));
-        }
+        //     const formData = new FormData(this);
 
-        function showStallInfo() {
-            const stallSelect = document.getElementById('stall');
-            const selectedOption = stallSelect.options[stallSelect.selectedIndex];
+        //     fetch('../actions/application_action.php', {
+        //             method: 'POST',
+        //             body: formData
+        //         })
+        //         .then(response => response.json())
+        //         .then(data => {
 
-            const dataInfo = selectedOption.getAttribute('data-info') || 'Rental Fee: N/A, Stall Size: N/A';
+        //             if (data.success) {
+        //                 // document.getElementById('responseModalLabel').textContent = 'Message';
+        //                 document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
+        //                 document.getElementById('responseModalBody').classList.remove('text-danger');
+        //                 document.getElementById('responseModalBody').classList.add('text-success');
+        //             } else {
+        //                 // document.getElementById('responseModalLabel').textContent = 'Error';
+        //                 document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
+        //                 document.getElementById('responseModalBody').classList.remove('text-success');
+        //                 document.getElementById('responseModalBody').classList.add('text-danger');
+        //             }
 
-            // Parsing the data-info string
-            const infoArray = dataInfo.split(', ');
-            const rentalFee = infoArray[0] ? infoArray[0].split(': ')[1] : 'N/A';
-            const stallSize = infoArray[1] ? infoArray[1].split(': ')[1] : 'N/A';
+        //             // Show the modal
+        //             const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
+        //             responseModal.show();
 
-            // Update the stallInfo section with a table
-            const stallInfo = `
-            <table class="table table-striped table-borderless table-hover custom-table dark">
-            <thead>
-                <tr>
-                    <th>Rental Fee</th>
-                    <th>Stall Size</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>${rentalFee}</td>
-                    <td>${stallSize}</td>
-                </tr>
-            </tbody>
-            </table>
-            `;
-            document.getElementById('stallInfo').innerHTML = stallInfo;
-        }
-    </script> -->
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //             document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+        //         });
+        // });
+    </script>
 
 
 
