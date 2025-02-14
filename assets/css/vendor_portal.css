@@ -1,7 +1,7 @@
 @import url("main.css");
 
 .divide {
-  border-left: 3px solid #ffc107;
+  border-left: 3px solid var(--bs-warning);
 }
 .profile.light {
   background-color: #003366;
