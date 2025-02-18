@@ -1,4 +1,5 @@
 @import url("main.css");
+
 .form-header {
   color: #003366; /* Dark blue */
   padding: 20px;
@@ -98,12 +99,14 @@ p {
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 12px 25px;
-  width: 20%;
+  padding: 10px;
+  flex: 1;
+  width: 100px;
+  max-width: 200px;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 20px auto;
+  margin: 10px auto;
 }
 .form-button:hover {
   background-color: #002447;
@@ -126,6 +129,23 @@ select {
   color: #d32f2f !important;
   font-size: 0.85rem !important;
   display: inline !important;
+}
+
+#mobileError {
+  color: #d32f2f !important;
+  font-size: 0.85rem !important;
+}
+#zipError {
+  color: #d32f2f !important;
+  font-size: 0.85rem !important;
+}
+#emailError {
+  color: #d32f2f !important;
+  font-size: 0.85rem !important;
+}
+#altEmailError {
+  color: #d32f2f !important;
+  font-size: 0.85rem !important;
 }
 
 .dropdown-wrapper {

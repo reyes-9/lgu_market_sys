@@ -105,6 +105,14 @@
                         <th>Application Id</th>
                         <td>${app.id}</td>
                     </tr>
+
+                    ${app.application_number !== null ? `
+                    <tr>
+                        <th>Application Number</th>
+                        <td>${app.application_number}</td>
+                    </tr>
+                    ` : ""}
+
                      ${app.ext_duration !== null ? `
                     <tr>
                          <th>Extension Duration</th>
@@ -312,7 +320,7 @@
                 .then(json => {
                     const data = json.data.map(item => ({
                         ...item,
-                        application_type: capitalizeWords(item.application_type) // Capitalize application_type
+                        application_type: capitalizeWords(item.application_type)
                     }));
                     const totalPages = json.pagination.total_pages;
                     generateCards(data);

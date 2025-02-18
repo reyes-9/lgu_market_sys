@@ -73,6 +73,7 @@ try {
                 CONCAT(h.first_name, ' ', h.last_name) AS full_name,
                 app.id,
                 app.application_type,
+                app.application_number,
                 app.ext_duration,
                 app.status,
                 app.created_at

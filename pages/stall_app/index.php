@@ -7,7 +7,9 @@
     <title>Stall Application - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
     <link rel="stylesheet" href="../../assets/css/stall_app.css">
+    <link rel="stylesheet" href="../../assets/css/toast.css">
     <?php include '../../includes/cdn-resources.php'; ?>
+
 </head>
 <?php
 session_start();
@@ -18,6 +20,7 @@ if (empty($_SESSION['csrf_token'])) {
 ?>
 
 <body class="body light">
+    <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
 
     <!-- NAVBAR -->
     <?php include '../../includes/nav.php'; ?>
@@ -27,80 +30,6 @@ if (empty($_SESSION['csrf_token'])) {
     <div class="content-wrapper">
 
         <?php include '../../includes/menu.php'; ?>
-
-        <div class="container-fluid px-5 d-none">
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-6">
-                    <div class="container shadow rounded-3 p-5 application light">
-                        <h2 class="text-center mb-4">Stall Application</h2>
-
-                        <!-- Response Modal -->
-                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
-                            <div class="modal-dialog  modal-dialog-centered">
-                                <div class="modal-content text-center">
-                                    <i class="bi bi-check-circle-fill icon-animation"></i>
-                                    <div class="modal-body" id="responseModalBody">
-                                        <!-- Message content will go here -->
-                                    </div>
-                                    <div class="text-center text-secondary">
-
-                                        <p>Click anywhere to continue.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <form id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                            <input type="hidden" name="application_type" value="stall">
-
-                            <!-- Market Dropdown -->
-                            <!-- <div class="mb-3">
-                                <label for="market">Market:</label>
-                                <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
-                                    <option value="" disabled selected>-- Select Market --</option>
-                                </select>
-                                <span id="market_address"></span>
-                            </div> -->
-
-                            <!-- Section and Stall (side by side) -->
-                            <!-- <div class="row mb-3">
-                                <div class="col">
-                                    <label for="section">Section:</label>
-                                    <select class="form-select" id="section" name="section" onchange="loadStallsWithSection()">
-                                        <option value="" disabled selected>-- Select Section --</option>
-                                    </select>
-                                </div>
-                                <div class="col">
-                                    <label for="stall">Stall Number:</label>
-                                    <select class="form-select" id="stall" name="stall" required>
-                                        <option value="" disabled selected>-- Select Stall Number --</option>
-                                    </select>
-                                </div>
-                            </div> -->
-
-                            <!-- Stall Info -->
-                            <!-- <div id="stallInfo" class="stall-info mb-3">
-                                Select a stall number to view information.
-                            </div> -->
-
-                            <!-- QC ID and Current ID (side by side) -->
-                            <!-- <div class="row mb-3">
-                                <div class="col">
-                                    <label for="documents">Upload Required Documents:</label>
-                                    <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
-                                </div>
-                            </div> -->
-                            <br>
-                            <!-- Submit Button -->
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-warning">Submit Application</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <div class="form-container">
@@ -121,8 +50,8 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="row">
                         <div class="col-md-6"><strong>Application Type:</strong> STALL APPLICATION</div>
                         <div class="col-md-6"><strong>Application Status:</strong> New</div>
-                        <div class="col-md-6"><strong>Date Submitted:</strong> 02/14/2025</div>
-                        <div class="col-md-6"><strong>Application Form Number:</strong> NSA006106</div>
+                        <div class="col-md-6"><strong>Date Submitted:</strong> <span id="current_date"></span> </div>
+                        <div class="col-md-6"><strong>Application Form Number:</strong> <span id="app_number"></span></div>
                     </div>
                 </div>
             </div>
@@ -131,8 +60,8 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="form-section">Select Market</div>
                 <!-- Market Dropdown -->
                 <div class="mb-3 form-group">
-                    <label for="market">Market:</label>
-                    <select class="form-select" id="market" name="market" onchange="getStallData()" required>
+                    <label for="market">Market: <small class="error-message"></small></label>
+                    <select class="form-select" id="market" onchange="getStallData()" required>
                         <option value="" disabled selected>-- Select Market --</option>
                     </select>
                     <span id="market_address"></span>
@@ -141,14 +70,14 @@ if (empty($_SESSION['csrf_token'])) {
                 <!-- Section and Stall (side by side) -->
                 <div class="row">
                     <div class="col form-group">
-                        <label for="section">Section:</label>
-                        <select class="form-select" id="section" name="section" onchange="getStallData()">
+                        <label for="section">Section: <small class="error-message"></small></label>
+                        <select class="form-select" id="section" onchange="getStallData()">
                             <option value="" disabled selected>-- Select Section --</option>
                         </select>
                     </div>
                     <div class="col form-group">
-                        <label for="stall">Stall Number:</label>
-                        <select class="form-select" id="stall" name="stall" required>
+                        <label for="stall">Stall Number: <small class="error-message"></small></label>
+                        <select class="form-select" id="stall" required>
                             <option value="" disabled selected>-- Select Stall Number --</option>
                         </select>
                     </div>
@@ -158,22 +87,23 @@ if (empty($_SESSION['csrf_token'])) {
                 <button type="button" class="form-button" id="marketBtn">Next</button>
             </form>
 
-            <form class="d-none" id="stallApplicationForm" method="POST" action="">
-                <!-- Personal Information -->
 
+            <form class="d-none" id="detailsForm" method="POST" action="">
+                <!-- Personal Information -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <div class="form-section">Selected Market</div>
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label>Market: <small class="error-message"></small></label>
-                        <input class="form-control" id="marketInput" value="" data-market-id="" disabled>
+                        <input class="form-control" id="marketInput" name="market" value="" data-market-id="" readonly>
                     </div>
                     <div class="form-group col-md-4">
                         <label>Section: <small class="error-message"></small></label>
-                        <input class="form-control" id="sectionInput" value="" data-section-id="" disabled>
+                        <input class="form-control" id="sectionInput" name="section" value="" data-section-id="" readonly>
                     </div>
                     <div class="form-group col-md-4">
                         <label>Stall No.: <small class="error-message"></small></label>
-                        <input class="form-control" id="stallInput" value="" data-stall-id="" disabled>
+                        <input class="form-control" id="stallInput" name="stall" value="" data-stall-id="" readonly>
                     </div>
                 </div>
 
@@ -183,14 +113,17 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="form-group col-md-4">
                         <label>Email: <small class="error-message"></small></label>
                         <input type="email" class="form-control" id="email" name="email">
+                        <small id="emailError" class="d-none">Invalid email format.</small>
                     </div>
                     <div class="form-group col-md-4">
                         <label>Alternate Email: <small class="error-message"></small></label>
-                        <input type="email" class="form-control" name="alt_email">
+                        <input type="email" class="form-control" id="altEmail" name="alt_email">
+                        <small id="altEmailError" class="d-none">Invalid email format.</small>
                     </div>
                     <div class="form-group col-md-4">
-                        <label> Number: <small class="error-message"></small></label>
-                        <input type="tel" class="form-control" name="contact_no">
+                        <label>Mobile Number: <small class="error-message"></small></label>
+                        <input type="tel" class="form-control" id="mobile" name="contact_no">
+                        <small id="mobileError" class="d-none">Mobile number must be exactly 11 digits.</small>
                     </div>
                 </div>
 
@@ -225,10 +158,13 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="form-group col-md-4 position-relative">
                         <label>Civil Status <small class="error-message"></small></label>
                         <div class="dropdown-wrapper">
-                            <select class="form-control" name="status">
+                            <select class="form-control" name="civil_status">
                                 <option value="">Select</option>
                                 <option value="Single">Single</option>
                                 <option value="Married">Married</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Separated">Separated</option>
                             </select>
                             <i class="bi bi-chevron-down dropdown-icon"></i>
                         </div>
@@ -274,7 +210,8 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="row mt-2">
                     <div class="form-group col-md-4">
                         <label>Zip Code: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="zip_code">
+                        <input type="text" class="form-control" id="zipcode" name="zip_code">
+                        <small id="zipError" class="d-none">ZIP code must be exactly 4 digits.</small>
                     </div>
                 </div>
 
@@ -287,18 +224,63 @@ if (empty($_SESSION['csrf_token'])) {
                     </div>
                 </div>
 
-                <button type="submit" class="form-button" id="submitBtn">Submit Application</button>
+                <div class="container d-flex  justify-content-center gap-5">
+                    <button type="button" class="form-button" onclick="switchForm('detailsForm', 'marketSelectionForm')">Back</button>
+                    <button type="button" class="form-button" id="detailsBtn">Next</button>
+                </div>
+
 
             </form>
+
+            <form class="d-none" id="documentUploadForm" method="POST" action="upload_documents.php" enctype="multipart/form-data">
+                <div class="form-section">Upload Documents</div>
+
+                <!-- Proof of Residency -->
+                <div class="form-group">
+                    <label>Proof of Residency (Utility Bill, Barangay Certificate, etc.) <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="proofResidency" name="proof_residency" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="proofResidencyError"></small>
+                </div>
+
+                <!-- Valid ID Selection -->
+                <div class="form-group">
+                    <label>Valid ID Type <small class="text-danger">*</small></label>
+                    <select class="form-control" id="validIdType" name="valid_id_type">
+                        <option value="">Select Valid ID</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Drivers_license">Driver’s License</option>
+                        <option value="Umid">UMID</option>
+                        <option value="SSS">SSS ID</option>
+                        <option value="GSIS">GSIS ID</option>
+                        <option value="PRC">PRC ID</option>
+                        <option value="Postal">Postal ID</option>
+                        <option value="Voters">Voter’s ID</option>
+                        <option value="Philhealth">PhilHealth ID</option>
+                        <option value="TIN">TIN ID</option>
+                        <option value="National_Id">PhilSys National ID</option>
+                    </select>
+                </div>
+
+                <!-- Valid ID Upload -->
+                <div class="form-group">
+                    <label>Upload Valid ID <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="validIdFile" name="valid_id_file" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="validIdError"></small>
+                </div>
+                <input type="hidden" id="applicationNumber" name="application_number" value="">
+
+
+
+                <div class="container d-flex  justify-content-center gap-5">
+                    <button type="button" class="form-button" onclick="switchForm('documentUploadForm', 'detailsForm')">Back</button>
+                    <button type="submit" class="form-button" id="submitApplication">Submit Documents</button>
+                </div>
+            </form>
         </div>
-
-
-
     </div>
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-
 
     <script>
         // Theme
@@ -308,33 +290,181 @@ if (empty($_SESSION['csrf_token'])) {
             application.classList.toggle("light");
         });
     </script>
-
+    <script src="../../assets/js/toast.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            document.getElementById("submitBtn").addEventListener("click", validateForm);
             document.getElementById("marketBtn").addEventListener("click", handleMarketSelection);
+            document.getElementById("detailsBtn").addEventListener("click", validateDetailsForm);
+            getCurrentDate();
 
         });
+        document.getElementById("documentUploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            if (!validateDocumentsForm()) {
+                console.log("Document Upload Failed.");
+                return;
+            }
+
+            const documentForm = this;
+            const detailsForm = document.getElementById("detailsForm");
+            const formData = new FormData(documentForm);
+            const fields = ["market", "section", "stall"];
+
+            // Append market, section, and stall IDs directly to FormData
+            fields.forEach(field => {
+                let input = document.getElementById(field + "Input");
+                let fieldValue = input.getAttribute("data-" + field + "-id");
+
+                if (fieldValue) {
+                    formData.append(field + "_id", fieldValue);
+                }
+            });
+
+            // Append detailsForm data
+            new FormData(detailsForm).forEach((value, key) => {
+                if (!formData.has(key)) {
+                    formData.append(key, value);
+                }
+            });
+
+            console.log("Combined Form Data:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            fetch("../actions/submit_stall_app.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayToast("Your application has been submitted successfully!", "success");
+                        documentForm.reset();
+                        detailsForm.reset();
+                    } else {
+                        displayToast("An error occurred while submitting the application", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    displayToast("An error occurred while submitting the application", "error");
+                });
+        });
+
+        // Function to generate and submit application form
+        function generateAndSubmitApplication() {
+            // Function to fetch the last application ID from the server
+            function getLastApplicationId() {
+                return $.ajax({
+                    url: '../actions/get_last_app_id.php', // Endpoint to get the last application ID
+                    type: 'GET',
+                    dataType: 'json'
+                });
+            }
+
+            // Function to generate application number
+            function generateApplicationNumber(lastApplicationId) {
+                let currentDate = new Date();
+                let formattedDate = currentDate.getFullYear() +
+                    ("0" + (currentDate.getMonth() + 1)).slice(-2) +
+                    ("0" + currentDate.getDate()).slice(-2); // YYYYMMDD format
+
+                let applicationNumber = "APP-" + formattedDate + "-" + String(lastApplicationId + 1).padStart(6, '0');
+                return applicationNumber;
+            }
+
+            // When the page loads, generate the application number
+            getLastApplicationId().done(function(response) {
+                // Assuming the response contains the last application ID
+                let lastApplicationId = response.last_application_id; // Example: 123
+                let applicationNumber = generateApplicationNumber(lastApplicationId);
+                document.getElementById('app_number').textContent = applicationNumber;
+
+                // Set the generated application number in the input field
+                $('#applicationNumber').val(applicationNumber);
+
+                // Handle form submission
+                $('#c').submit(function(e) {
+                    e.preventDefault();
+
+                    // Get the application number
+                    let applicationNumber = $('#applicationNumber').val();
+
+                    // Send the form data to the server for saving
+                    $.ajax({
+                        url: 'submit_stall_app.php',
+                        type: 'POST',
+                        data: {
+                            application_number: applicationNumber
+                        },
+                        contentType: 'application/x-www-form-urlencoded',
+                        success: function(response) {
+                            alert(response.message);
+                        }
+                    });
+                });
+            }).fail(function() {
+                console.error('Error fetching last application ID');
+            });
+        }
+
+        // Call the function to generate and submit the application
+        $(document).ready(function() {
+            generateAndSubmitApplication();
+        });
+
+        function switchForm(hideFormId, showFormId) {
+            document.getElementById(hideFormId).classList.add("d-none");
+            document.getElementById(showFormId).classList.remove("d-none");
+        }
 
         function handleMarketSelection() {
-            const marketVal = document.getElementById("market").value;
-            const sectionVal = document.getElementById("section").value;
-            const stallVal = document.getElementById("stall").value;
+            const marketSelect = document.getElementById("market");
+            const sectionSelect = document.getElementById("section");
+            const stallSelect = document.getElementById("stall");
+
+            const marketVal = marketSelect.value;
+            const sectionVal = sectionSelect.value;
+            const stallVal = stallSelect.value;
 
             let marketTxt = getSelectedText("market");
             let sectionTxt = getSelectedText("section");
             let stallTxt = getSelectedText("stall");
 
-            const nextForm = document.getElementById("stallApplicationForm");
-            const currentForm = document.getElementById("marketSelectionForm");
+            const detailsForm = document.getElementById("detailsForm");
+            const marketForm = document.getElementById("marketSelectionForm");
 
             const marketInput = document.getElementById("marketInput");
             const sectionInput = document.getElementById("sectionInput");
             const stallInput = document.getElementById("stallInput");
 
-            if (marketVal !== "" && sectionVal !== "" && stallVal !== "") {
+            let isValid = true;
 
+            if (marketVal === "") {
+                marketSelect.classList.add("error");
+                isValid = false;
+            } else {
+                marketSelect.classList.remove("error");
+            }
+
+            if (sectionVal === "") {
+                sectionSelect.classList.add("error");
+                isValid = false;
+            } else {
+                sectionSelect.classList.remove("error");
+            }
+
+            if (stallVal === "") {
+                stallSelect.classList.add("error");
+                isValid = false;
+            } else {
+                stallSelect.classList.remove("error");
+            }
+
+            if (isValid) {
                 marketInput.value = marketTxt;
                 sectionInput.value = sectionTxt;
                 stallInput.value = stallTxt;
@@ -343,9 +473,10 @@ if (empty($_SESSION['csrf_token'])) {
                 sectionInput.dataset.sectionId = sectionVal;
                 stallInput.dataset.stallId = stallVal;
 
-                nextForm.classList.remove('d-none');
-                currentForm.classList.add('d-none');
-
+                detailsForm.classList.remove('d-none');
+                marketForm.classList.add('d-none');
+            } else {
+                displayToast("Please complete all required fields", "error");
             }
         }
 
@@ -357,9 +488,18 @@ if (empty($_SESSION['csrf_token'])) {
             return "Not selected";
         }
 
-        function validateForm(event) {
+        function validateDetailsForm() {
             let isValid = true;
-            const inputs = document.querySelectorAll("input");
+            const detailsForm = document.getElementById("detailsForm");
+            const documentForm = document.getElementById("documentUploadForm");
+            const inputs = detailsForm.querySelectorAll("input, select");
+            const mobileError = document.getElementById("mobileError");
+            const zipError = document.getElementById("zipError");
+            const emailInput = document.getElementById("email");
+            const altEmailInput = document.getElementById("altEmail");
+            const emailError = document.getElementById("emailError");
+            const altEmailError = document.getElementById("altEmailError");
+
 
             inputs.forEach(input => {
                 const parentDiv = input.closest(".form-group");
@@ -372,23 +512,185 @@ if (empty($_SESSION['csrf_token'])) {
                     input.classList.add("error");
                     errorMessage.textContent = "*";
                     isValid = false;
+                    console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
                 } else {
                     input.classList.remove("error");
                     errorMessage.textContent = "";
                 }
             });
 
-            if (!isValid) {
-                event.preventDefault();
+            if (!isMobileValid()) {
+                isValid = false;
+                mobileError.classList.remove("d-none");
+            } else {
+                mobileError.classList.add("d-none");
+
             }
+
+            if (!isZipValid()) {
+                isValid = false;
+                zipError.classList.remove("d-none");
+            } else {
+                zipError.classList.add("d-none")
+            }
+
+            const emailValidation = isEmailValid(emailInput.value, altEmailInput.value);
+            console.log("EMAIL", emailValidation.emailValid);
+            console.log("ALT EMAIL", emailValidation.altEmailValid);
+
+            if (!emailValidation.emailValid) {
+                isValid = false;
+                emailError.classList.remove("d-none");
+            } else {
+                emailError.classList.add("d-none");
+            }
+
+            if (!emailValidation.altEmailValid) {
+                isValid = false;
+                altEmailError.classList.remove("d-none");
+            } else {
+                altEmailError.classList.add("d-none");
+            }
+
+
+            console.log("Mobile Valid:", isMobileValid());
+            console.log("Zip Valid:", isZipValid());
+            console.log("Final isValid:", isValid);
+
+            if (isValid) {
+                console.log("Form is valid, switching view...");
+                documentForm.classList.remove('d-none');
+                detailsForm.classList.add('d-none');
+            } else {
+                displayToast("Please complete all required fields", "error");
+            }
+        }
+
+        function isMobileValid() {
+            const mobileInput = document.getElementById("mobile");
+            const mobileValue = mobileInput.value.trim();
+            if (/^\d{11}$/.test(mobileValue)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function isZipValid() {
+            const zipInput = document.getElementById("zipcode");
+            const zipValue = zipInput.value.trim();
+            if (/^\d{4}$/.test(zipValue)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function isEmailValid(email, altEmail) {
+            const emailResult = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+            const altEmailResult = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(altEmail);
+
+            return {
+                emailValid: emailResult,
+                altEmailValid: altEmailResult
+            };
+        }
+
+        function validateFile(input, errorElement) {
+            const file = input.files[0]; // Get file
+            const allowedFormats = ["application/pdf", "image/jpeg", "image/png"];
+
+            if (!file) {
+                errorElement.textContent = "File is required.";
+                return false;
+            }
+
+            if (!allowedFormats.includes(file.type)) {
+                errorElement.textContent = "Invalid file type. Only PDF, JPG, JPEG, and PNG allowed.";
+                input.value = ""; // Reset input
+                return false;
+            }
+
+            errorElement.textContent = ""; // Clear error if valid
+            return true;
+        }
+
+        function validateSelect(input) {
+            if (input.value.trim() === "") {
+                input.classList.add("error");
+                return false;
+            } else {
+                input.classList.remove("error");
+                return true;
+            }
+        }
+
+        function validateFile(inputElement, errorElement) {
+            if (!inputElement || !inputElement.files[0]) {
+                errorElement.textContent = "Please upload a file.";
+                return false;
+            }
+
+            const file = inputElement.files[0];
+            const allowedTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/jpeg", "image/png"];
+            const maxFileSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(file.type)) {
+                errorElement.textContent = `Invalid file type: ${file.name}. Allowed types: PDF, DOCX, JPG, PNG.`;
+                return false;
+            }
+
+            if (file.size > maxFileSize) {
+                errorElement.textContent = `File too large: ${file.name}. Maximum size is 5MB.`;
+                return false;
+            }
+
+            errorElement.textContent = ""; // Clear error if valid
+            return true;
+        }
+
+        function validateDocumentsForm() {
+            const proofResidencyInput = document.getElementById("proofResidency");
+            const validIdFileInput = document.getElementById("validIdFile");
+            const validIdTypeInput = document.getElementById("validIdType");
+
+            const proofResidencyError = document.getElementById("proofResidencyError");
+            const validIdError = document.getElementById("validIdError");
+
+            let isValid = true;
+
+            if (!validateFile(proofResidencyInput, proofResidencyError)) {
+                isValid = false;
+            }
+
+            if (!validateFile(validIdFileInput, validIdError)) {
+                isValid = false;
+            }
+
+            if (!validateSelect(validIdTypeInput)) {
+                isValid = false;
+            }
+
+            if (!isValid) {
+                displayToast("Please complete all required fields", "error");
+            }
+
+            return isValid; // Return true if valid, false otherwise
+        }
+
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Adds leading zero if necessary
+            const day = String(today.getDate()).padStart(2, '0'); // Adds leading zero if necessary
+            const dateHTML = document.getElementById('current_date');
+            dateHTML.textContent = `${year}-${month}-${day}`;
         }
     </script>
 
     <script>
         let locationsData; // Store the fetched data for later use
 
-        // Shows the stall info upon choosing a stall
-        // And hiding it upon selecting another market or section 
         document.addEventListener('DOMContentLoaded', function() {
             const marketSelect = document.getElementById('market')
             const stallSelect = document.getElementById('stall');
@@ -408,11 +710,7 @@ if (empty($_SESSION['csrf_token'])) {
                 showMarketAddress();
             });
 
-
-
-
         });
-
 
         function showStallInfo() {
             const stallSelect = document.getElementById('stall');
@@ -560,78 +858,7 @@ if (empty($_SESSION['csrf_token'])) {
                     alert('Failed to load market locations. Please try again later.');
                 });
         }
-
-
-
-        document.getElementById("stallApplicationForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const form = this;
-            const formData = new FormData(form);
-
-            console.log("Form Data:");
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
-            // // Submit form data via AJAX
-            // fetch("submit_application.php", {
-            //         method: "POST",
-            //         body: formData
-            //     })
-            //     .then(response => response.json()) // Expecting JSON response
-            //     .then(data => {
-            //         if (data.success) {
-            //             alert("Application submitted successfully!");
-            //             form.reset(); // Reset form after successful submission
-            //         } else {
-            //             alert("Error: " + data.message);
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error("Error:", error);
-            //         alert("An error occurred while submitting the application.");
-            //     });
-        });
-
-
-        // document.getElementById('application_form').addEventListener('submit', function(event) {
-        //     event.preventDefault();
-
-        //     const formData = new FormData(this);
-
-        //     fetch('../actions/application_action.php', {
-        //             method: 'POST',
-        //             body: formData
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-
-        //             if (data.success) {
-        //                 // document.getElementById('responseModalLabel').textContent = 'Message';
-        //                 document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-        //                 document.getElementById('responseModalBody').classList.remove('text-danger');
-        //                 document.getElementById('responseModalBody').classList.add('text-success');
-        //             } else {
-        //                 // document.getElementById('responseModalLabel').textContent = 'Error';
-        //                 document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-        //                 document.getElementById('responseModalBody').classList.remove('text-success');
-        //                 document.getElementById('responseModalBody').classList.add('text-danger');
-        //             }
-
-        //             // Show the modal
-        //             const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
-        //             responseModal.show();
-
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //             document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
-        //         });
-        // });
     </script>
-
-
 
 </body>
 

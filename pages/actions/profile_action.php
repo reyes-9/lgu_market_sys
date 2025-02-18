@@ -2,10 +2,10 @@
 session_start();
 require_once '../../includes/config.php';
 
-$account_id = $_SESSION['user_id']; 
+$account_id = $_SESSION['user_id'];
 
 try {
-    $stmt_user = $pdo->prepare("SELECT name, bio, email, birthdate, address, contact FROM profiles WHERE account_id = :account_id");
+    $stmt_user = $pdo->prepare("SELECT name, email, birthdate, address, contact FROM users WHERE account_id = :account_id");
     $stmt_user->execute([':account_id' => $account_id]);
     $users = $stmt_user->fetchAll(PDO::FETCH_ASSOC);
 
@@ -58,12 +58,11 @@ exit();
 
 
 
-
 // FUNCTIONS
 function checkAccountExistence($pdo, $account_id)
 {
-    // Check if the account_id already exists in the profiles table
-    $stmt = $pdo->prepare("SELECT account_id FROM profiles WHERE account_id = :account_id");
+    // Check if the account_id already exists in the users table
+    $stmt = $pdo->prepare("SELECT account_id FROM users WHERE account_id = :account_id");
     $stmt->execute([':account_id' => $account_id]);
     $accountExists = $stmt->fetchColumn();
     return $accountExists;
@@ -96,7 +95,7 @@ function getStall($pdo, $stall_id)
 //         exit();
 //     }
 
-//     $stmt = $pdo->prepare("INSERT INTO profiles (account_id, name, email, birthdate, address, contact) VALUES (:account_id, :name, :email, :birthdate, :address, :contact)");
+//     $stmt = $pdo->prepare("INSERT INTO users (account_id, name, email, birthdate, address, contact) VALUES (:account_id, :name, :email, :birthdate, :address, :contact)");
 //     if ($stmt->execute([':account_id' => $account_id, ':name' => $name, ':email' => $email, ':birthdate' => $birthdate, ':address' => $address, ':contact' => $contact])) {
 //         echo "Profile created successfully.";
 //         header('Location: profile.php');
@@ -117,7 +116,7 @@ function getStall($pdo, $stall_id)
 //         exit();
 //     }
 
-//     $stmt = $pdo->prepare("UPDATE profiles SET name = :name, bio = :bio WHERE account_id = :account_id");
+//     $stmt = $pdo->prepare("UPDATE users SET name = :name, bio = :bio WHERE account_id = :account_id");
 //     if ($stmt->execute([':account_id' => $account_id, ':name' => $name, ':bio' => $bio])) {
 //         echo "Profile updated successfully.";
 //         header('Location: edit.php');

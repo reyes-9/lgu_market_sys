@@ -6,7 +6,7 @@ $notifications = [
     'application' => [
         'submitted' => [
             'type' => '',
-            'message' => 'Your application for %s is submitted successfully.',
+            'message' => 'Your application for %s has been successfully submitted. Your Application Form Number is: %s.'
         ],
         'approved' => [
             'type' => 'Application Approved',

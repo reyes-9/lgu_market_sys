@@ -1,0 +1,17 @@
+.toast-error {
+  background-color: var(--bs-danger-bg-subtle) !important;
+  color: var(--bs-danger-text-emphasis) !important;
+  padding: 0.5rem 0.5rem !important;
+  font-size: 1rem !important;
+  width: 350px;
+  height: auto;
+}
+
+.toast-success {
+  background-color: var(--bs-success-bg-subtle) !important;
+  color: var(--bs-success-text-emphasis) !important;
+  padding: 0.5rem 0.5rem !important;
+  font-size: 1rem !important;
+  width: 350px;
+  height: auto;
+}
