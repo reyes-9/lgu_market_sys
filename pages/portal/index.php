@@ -197,8 +197,6 @@
 
     });
 
-
-
     function fetchNotifications() {
       fetch('../actions/notifications.php')
         .then(response => response.json())

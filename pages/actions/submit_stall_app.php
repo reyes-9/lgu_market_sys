@@ -4,97 +4,142 @@ include_once "notifications.php";
 include "validate_document.php";
 include "upload_document.php";
 include "upload_application.php";
+include "get_user_info.php";
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+try {
 
-$account_id = $_SESSION['user_id'];
+    $pdo->beginTransaction();
 
-$response = ['success' => false, 'message' => '', 'errors' => []];
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
 
-// Validate Form Data
-$data = $_POST;
-$errors = validateApplicationData($data);
-$documentErrors = validateDocuments($_FILES);
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        http_response_code(403);
+        exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
+    }
 
-if (!empty($errors) || !empty($documentErrors)) {
-    $response['message'] = "Validation failed.";
-    $response['errors'] = array_merge($errors, $documentErrors);
-    http_response_code(400);
+
+    if (!isset($_SESSION['user_id'])) {
+        http_response_code(401);
+        echo json_encode(["success" => false, "message" => "Unauthorized access."]);
+        exit;
+    }
+
+    $account_id = $_SESSION['user_id'];
+    $response = ['success' => false, 'message' => '', 'errors' => []];
+
+    // Validate Form Data
+    $data = $_POST;
+    $errors = validateApplicationData($data);
+    $documentErrors = validateDocuments($_FILES);
+
+    if (!empty($errors) || !empty($documentErrors)) {
+        $response['message'] = "Validation failed.";
+        $response['errors'] = array_merge($errors, $documentErrors);
+        http_response_code(400);
+        echo json_encode($response);
+        exit();
+    }
+
+    $application_number = $data['application_number'];
+
+    // Process Address
+    $addressParts = [
+        $data['house_no'],
+        $data['street'],
+        $data['barangay'],
+        $data['city'],
+        $data['province'],
+        $data['zip_code']
+    ];
+
+    $fullAddress = implode(', ', array_filter($addressParts));
+    $userInfo = getUserInfo($pdo, $account_id, $data['first_name'], $data['middle_name'], $data['last_name']);
+
+    if ($userInfo) {
+        $isApplicantInserted = insertApplicant(
+            $pdo,
+            $account_id,
+            $data['first_name'],
+            $data['last_name'],
+            $data['middle_name'],
+            $data['sex'],
+            $data['email'],
+            $data['alt_email'],
+            $data['contact_no'],
+            $data['civil_status'],
+            $data['nationality'],
+            $fullAddress
+        );
+    } else {
+        echo json_encode(["error" => "User not found"]);
+        exit();
+    }
+
+    if (is_array($isApplicantInserted) && !$isApplicantInserted['success']) {
+        http_response_code(500);
+        $response['message'] = "Failed to insert applicant.";
+        $response['errors'][] = "Database Error: " . $isApplicantInserted['error'];
+        echo json_encode($response);
+        exit();
+    }
+
+    // Insert Application
+    $applicationId = uploadApplication(
+        $pdo,
+        $application_number,
+        $account_id,
+        intval($data['stall_id']),
+        intval($data['section_id']),
+        intval($data['market_id']),
+        'stall'
+    );
+
+    if (!$applicationId || !is_numeric($applicationId)) {
+        $response['message'] = "Failed to submit application.";
+        $response['errors'][] = "Database error: Unable to submit application.";
+        http_response_code(500);
+        echo json_encode($response);
+        exit();
+    }
+
+    // Upload Documents
+    $proofResidencyUpload = uploadDocument($pdo, 'proof_residency', $applicationId, "Proof of Residency", 'uploads/');
+    $validIdFileUpload = uploadDocument($pdo, 'valid_id_file', $applicationId, $data['valid_id_type'], 'uploads/');
+
+    if (!$proofResidencyUpload['success'] || !$validIdFileUpload['success']) {
+        $response['message'] = "Failed to upload files.";
+        $response['errors'][] = "Error uploading documents.";
+        http_response_code(500);
+        echo json_encode($response);
+        exit();
+    }
+
+    $pdo->commit();
+    // Success Response
+    $response['success'] = true;
+    $response['message'] = "Application submitted successfully.";
+    $type = 'Stall Application';
+    $message = sprintf('Your application for %s has been successfully submitted. Your Application Form Number is: %s.', $type, $application_number);
+
+    insertNotification($pdo, $account_id, $type, $message, 'unread');
+    echo json_encode($response);
+    exit();
+} catch (Exception $e) {
+    // Rollback if any error occurs
+    $pdo->rollBack();
+
+    // Log error and return response
+    error_log("Transaction failed: " . $e->getMessage());
+    http_response_code(500);
+    $response['success'] = false;
+    $response['message'] = "An error occurred. Please try again.";
+    $response['errors'][] = $e->getMessage();
     echo json_encode($response);
     exit();
 }
 
-$application_number = $data['application_number'];
-
-// Process Address
-$fullAddress = trim($data['house_no'] . ' ' . $data['street'] . ', ' .
-    $data['barangay'] . ', ' . $data['city'] . ', ' .
-    $data['province'] . ' ' . $data['zip_code']);
-
-// Insert Applicant
-$isApplicantInserted = insertApplicant(
-    $pdo,
-    $account_id,
-    $data['first_name'],
-    $data['last_name'],
-    $data['sex'],
-    $data['email'],
-    $data['alt_email'],
-    $data['contact_no'],
-    $data['civil_status'],
-    $data['nationality'],
-    $fullAddress
-);
-if (is_array($isApplicantInserted) && !$isApplicantInserted['success']) {
-    http_response_code(500);
-    $response['message'] = "Failed to insert applicant.";
-    $response['errors'][] = "Database Error: " . $isApplicantInserted['error'];
-    echo json_encode($response);
-    exit;
-}
-
-// Insert Application
-$applicationId = uploadApplication(
-    $pdo,
-    $application_number,
-    $account_id,
-    intval($data['stall_id']),
-    intval($data['section_id']),
-    intval($data['market_id']),
-    'stall'
-);
-
-if (!$applicationId || !is_numeric($applicationId)) {
-    $response['message'] = "Failed to submit application.";
-    $response['errors'][] = "Database error: Unable to submit application.";
-    http_response_code(500);
-    echo json_encode($response);
-    exit();
-}
-
-// Upload Documents
-$proofResidencyUpload = uploadDocument($pdo, 'proof_residency', $applicationId, "Proof of Residency", 'uploads/');
-$validIdFileUpload = uploadDocument($pdo, 'valid_id_file', $applicationId, $data['valid_id_type'], 'uploads/');
-
-if (!$proofResidencyUpload['success'] || !$validIdFileUpload['success']) {
-    $response['message'] = "Failed to upload files.";
-    $response['errors'][] = "Error uploading documents.";
-    http_response_code(500);
-    echo json_encode($response);
-    exit();
-}
-
-// Success Response
-$response['success'] = true;
-$response['message'] = "Application submitted successfully.";
-$type = 'Stall Application';
-$message = sprintf('Your application for %s has been successfully submitted. Your Application Form Number is: %s.', $type, $application_number);
-
-insertNotification($pdo, $account_id, $type, $message, 'unread');
-echo json_encode($response);
-exit();
 
 
 function validateApplicationData($data)

@@ -59,6 +59,7 @@ if (empty($_SESSION['csrf_token'])) {
             <form action="" id="marketSelectionForm">
                 <div class="form-section">Select Market</div>
                 <!-- Market Dropdown -->
+                <small> <strong>Note:</strong> Only available stalls are displayed for selection.</small>
                 <div class="mb-3 form-group">
                     <label for="market">Market: <small class="error-message"></small></label>
                     <select class="form-select" id="market" onchange="getStallData()" required>
@@ -135,6 +136,7 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="form-group col-md-4">
                         <label>Middle Name: <small class="error-message"></small></label>
                         <input type="text" class="form-control" name="middle_name">
+                        <small>Type N/A if you don't have middle name</small>
                     </div>
                     <div class="form-group col-md-4">
                         <label>Last Name: <small class="error-message"></small></label>
@@ -232,18 +234,18 @@ if (empty($_SESSION['csrf_token'])) {
 
             </form>
 
-            <form class="d-none" id="documentUploadForm" method="POST" action="upload_documents.php" enctype="multipart/form-data">
+            <form class="d-none" id="documentUploadForm" method="POST" enctype="multipart/form-data">
                 <div class="form-section">Upload Documents</div>
 
                 <!-- Proof of Residency -->
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label>Proof of Residency (Utility Bill, Barangay Certificate, etc.) <small class="text-danger">*</small></label>
                     <input type="file" class="form-control" id="proofResidency" name="proof_residency" accept=".pdf, .jpg, .jpeg, .png">
                     <small class="error-message" id="proofResidencyError"></small>
                 </div>
 
                 <!-- Valid ID Selection -->
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label>Valid ID Type <small class="text-danger">*</small></label>
                     <select class="form-control" id="validIdType" name="valid_id_type">
                         <option value="">Select Valid ID</option>
@@ -262,7 +264,7 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
 
                 <!-- Valid ID Upload -->
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label>Upload Valid ID <small class="text-danger">*</small></label>
                     <input type="file" class="form-control" id="validIdFile" name="valid_id_file" accept=".pdf, .jpg, .jpeg, .png">
                     <small class="error-message" id="validIdError"></small>
@@ -297,6 +299,7 @@ if (empty($_SESSION['csrf_token'])) {
             document.getElementById("marketBtn").addEventListener("click", handleMarketSelection);
             document.getElementById("detailsBtn").addEventListener("click", validateDetailsForm);
             getCurrentDate();
+            generateAndSubmitApplication();
 
         });
         document.getElementById("documentUploadForm").addEventListener("submit", function(event) {
@@ -410,11 +413,6 @@ if (empty($_SESSION['csrf_token'])) {
                 console.error('Error fetching last application ID');
             });
         }
-
-        // Call the function to generate and submit the application
-        $(document).ready(function() {
-            generateAndSubmitApplication();
-        });
 
         function switchForm(hideFormId, showFormId) {
             document.getElementById(hideFormId).classList.add("d-none");
@@ -596,25 +594,6 @@ if (empty($_SESSION['csrf_token'])) {
             };
         }
 
-        function validateFile(input, errorElement) {
-            const file = input.files[0]; // Get file
-            const allowedFormats = ["application/pdf", "image/jpeg", "image/png"];
-
-            if (!file) {
-                errorElement.textContent = "File is required.";
-                return false;
-            }
-
-            if (!allowedFormats.includes(file.type)) {
-                errorElement.textContent = "Invalid file type. Only PDF, JPG, JPEG, and PNG allowed.";
-                input.value = ""; // Reset input
-                return false;
-            }
-
-            errorElement.textContent = ""; // Clear error if valid
-            return true;
-        }
-
         function validateSelect(input) {
             if (input.value.trim() === "") {
                 input.classList.add("error");
@@ -752,14 +731,12 @@ if (empty($_SESSION['csrf_token'])) {
             const marketId = document.getElementById('market').value;
             const sectionId = document.getElementById('section').value;
 
-            // Only make the request if both market and section are selected
             if (marketId && sectionId) {
                 setStallData(marketId, sectionId);
             }
         }
 
         function setStallData(marketId, sectionId) {
-
             fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
                 .then(response => response.json())
                 .then(data => {
@@ -772,9 +749,19 @@ if (empty($_SESSION['csrf_token'])) {
                         return;
                     }
 
+                    // Filter unavailable stalls (not 'available')
+                    let availableStalls = data.available_stalls || [];
+
+                    if (availableStalls.length === 0) {
+                        message.innerHTML = `<p style="color: #d32f2f"><strong>There are no available stalls available in this section</strong></p>`;
+                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+                        return;
+                    }
+
                     message.innerHTML = '';
                     stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
-                    data.forEach(stall => {
+
+                    availableStalls.forEach(stall => {
                         let option = document.createElement('option');
                         option.value = stall.id;
                         option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);

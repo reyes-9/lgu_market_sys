@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transfer Stall Application - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../../images/favicon_192.png">
-    <link rel="stylesheet" href="../../assets/css/stall.css">
+    <link rel="stylesheet" href="../../assets/css/stall_app.css">
+    <link rel="stylesheet" href="../../assets/css/toast.css">
     <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
@@ -28,25 +29,26 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 
-<body class="body light">
+<body class="body dark">
+    <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
 
     <?php include '../../includes/nav.php'; ?>
 
+    <!-- 
     <div class="content-wrapper">
-        <?php include '../../includes/menu.php'; ?>
+       
 
         <div class="container-fluid px-5">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-6">
                     <div class="container shadow rounded-3 pt-5 px-5 application light">
 
-                        <!-- Response Modal -->
                         <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
                             <div class="modal-dialog  modal-dialog-centered">
                                 <div class="modal-content text-center">
                                     <i class="bi bi-check-circle-fill icon-animation"></i>
                                     <div class="modal-body" id="responseModalBody">
-                                        <!-- Message content will go here -->
+                                 
                                     </div>
                                     <div class="text-center text-secondary">
                                         <p>Click anywhere to continue.</p>
@@ -72,9 +74,10 @@ if (empty($_SESSION['csrf_token'])) {
                         </div>
 
                         <form class="pt-2" id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                            <input type="hidden" name="csrf_token" value="<?php //echo htmlspecialchars($_SESSION['csrf_token']); 
+                                                                            ?>">
 
-                            <!-- Market Dropdown -->
+                    
                             <div class="mb-3">
                                 <label for="market">Market:</label>
                                 <select class="form-select" id="market" name="market" onchange="loadStallsWithSection()" required>
@@ -82,7 +85,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 </select>
                             </div>
 
-                            <!-- Section and Stall (side by side) -->
+                       
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="section">Section:</label>
@@ -98,15 +101,15 @@ if (empty($_SESSION['csrf_token'])) {
                                 </div>
                             </div>
 
-                            <!-- Stall Info -->
+                    
                             <div id="stallInfo" class="stall-info mb-3">
                                 Select a stall number to view information.
                             </div>
 
-                            <!-- Application Type Fields -->
+                           
                             <div id="application_fields" class="conditional-fields mb-3"></div>
 
-                            <!-- QC ID and Current ID -->
+                           
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="qc_id_photo">QC ID Photo (Back to Back):</label>
@@ -120,7 +123,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 </div>
                             </div>
                             <br>
-                            <!-- Submit Button -->
+                          
                             <div class="text-end pb-4">
                                 <button type="submit" class="btn btn-warning">Submit Application</button>
                             </div>
@@ -129,190 +132,1091 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
             </div>
         </div>
+    </div> -->
+
+    <!-- <div id="application_fields" class="conditional-fields mb-3"></div>  
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="qc_id_photo">QC ID Photo (Back to Back):</label>
+                    <input type="file" class="form-control" id="qc_id_photo" name="documents[]" multiple required>
+                    <input type="hidden" id="qc_id_names" name="qc_id" value="QC ID">
+                </div>
+                <div class="col">
+                    <label for="current_id_picture">Current ID Picture:</label>
+                    <input type="file" class="form-control" id="current_id_picture" name="documents[]" multiple required>
+                    <input type="hidden" id="current_id_names" name="current_id" value="Current ID Picture">
+                </div>
+            </div>
+            <br>
+        
+            <div class="text-end pb-4">
+                <button type="submit" class="btn btn-warning">Submit Application</button>
+            </div>
+    </div> -->
+
+
+
+    <div class="content-wrapper">
+        <?php include '../../includes/menu.php'; ?>
+        <div class="form-container">
+
+            <div class="form-header">
+                <div class="header-top">
+                    <!-- <img src="logo1.png" alt="Logo" class="logo left"> -->
+                    <div class="header-text">
+                        <h3>Republic of the Philippines</h3>
+                        <h2>QUEZON CITY</h2>
+                        <h3><strong>PUBLIC MARKET MONITORING SYSTEM</strong></h3>
+                        <p>publicmarketmonitoring@gmail.com</p>
+                    </div>
+                    <!-- <img src="logo2.png" alt="Logo" class="logo right"> -->
+                </div>
+
+                <div class="header-bottom container">
+                    <div class="row">
+                        <div class="col-md-6"><strong>Application Type:</strong> STALL TRANSFER/SUCCESSION</div>
+                        <div class="col-md-6"><strong>Application Status:</strong> New</div>
+                        <div class="col-md-6"><strong>Date Submitted:</strong> <span id="current_date"></span> </div>
+                        <div class="col-md-6"><strong>Application Form Number:</strong> <span id="app_number"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Modal -->
+            <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center">
+                        <i class="bi bi-check-circle-fill icon-animation"></i>
+                        <div class="modal-body" id="responseModalBody">
+                            <!-- Message content will go here -->
+                        </div>
+                        <div class="text-center text-secondary">
+                            <p>Click anywhere to continue.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-center mb-4">Transfer Stall Application</h2>
+
+
+            <div class="mb-3">
+                <form action="" id="transferTypeForm">
+                    <div class="form-section">Transfer Type</div>
+                    <div class="form-group">
+
+                        <label class="mx-3">Select transfer type: <small class="error-message"></small></label>
+
+                        <input type="radio" class="btn-check" id="transfer" name="application_type" value="Transfer">
+                        <label class="btn btn-outline-primary mx-2" id="transferLbl" for="transfer">Transfer</label>
+
+                        <input type="radio" class="btn-check" id="succession" name="application_type" value="Succession">
+                        <label class="btn btn-outline-primary mx-2" id="successionLbl" for="succession">Succession</label>
+                    </div>
+                </form>
+            </div>
+
+            <form class="pt-2" id="marketSelectionForm">
+
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                <div class="form-section">Select Market</div>
+                <!-- Market Dropdown -->
+                <small> <strong>Note:</strong> Only occupied stalls are displayed for selection.</small>
+                <div class="mb-3 form-group">
+                    <label for="market">Market: <small class="error-message"></small></label>
+                    <select class="form-select" id="market" onchange="getStallData()" required>
+                        <option value="" disabled selected>-- Select Market --</option>
+                    </select>
+                    <span id="market_address"></span>
+                </div>
+
+                <!-- Section and Stall (side by side) -->
+                <div class="row">
+                    <div class="col form-group">
+                        <label for="section">Section: <small class="error-message"></small></label>
+                        <select class="form-select" id="section" onchange="getStallData()">
+                            <option value="" disabled selected>-- Select Section --</option>
+                        </select>
+                    </div>
+                    <div class="col form-group">
+                        <label for="stall">Stall Number: <small class="error-message"></small></label>
+                        <select class="form-select" id="stall" required>
+                            <option value="" disabled selected>-- Select Stall Number --</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="stallInfo"></div>
+                <div id="message"></div>
+                <button type="button" class="form-button" id="marketBtn">Next</button>
+            </form>
+
+            <form class="d-none" id="transferDetailsForm">
+
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+                <div class="form-section">Transfer Details</div>
+                <!-- Reason for Transfer (Optional) -->
+                <div class="form-group mb-3">
+                    <label for="transfer_reason">Reason for Transfer:</label>
+                    <textarea class="form-control" id="transfer_reason" name="transfer_reason" rows="3" placeholder="Provide the reason for transferring the stall (optional)"></textarea>
+                </div>
+
+                <!-- Current Stall Owner Information (Optional) -->
+                <div class="row mt-2">
+                    <div class="form-group"> <label for="">(Current Stall Owner Name)</label> </div>
+                    <div class="form-group col-md-4">
+                        <label>First Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="current_first_name">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Middle Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="current_middle_name">
+                        <small>Type N/A if you don't have middle name</small>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Last Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="current_last_name">
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="current_owner_id">Current Stall Owner ID:<small class="error-message"></small></label>
+                    <input type="text" class="form-control" name="current_owner_id" />
+                </div>
+
+                <!-- New Stall Owner Information -->
+                <div class="form-section">New Owner Personal Information</div>
+                <div class="row mt-2" id="newOwnerInfoTransfer">
+
+                </div>
+
+                <!-- Submit Button -->
+                <div class="container d-flex  justify-content-center gap-5">
+                    <button type="button" class="form-button" onclick="switchForm('transferDeatilsForm', 'marketSelectionForm')">Back</button>
+                    <button type="button" class="form-button" id="transferDetailsBtn">Next</button>
+                </div>
+            </form>
+
+            <form class="d-none" id="transferDocumentsForm" enctype="multipart/form-data">
+                <div class="form-section">Current Owner Documents</div>
+                <div class="form-group mb-3">
+                    <label>Deed of Transfer (Photo) <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="deedOfTransfer" name="deed_of_transfer" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="deedOfTransferError"></small>
+                </div>
+                <div class="form-group">
+                    <label>Valid ID Type <small class="text-danger">*</small></label>
+                    <select class="form-control" id="currOwnerValidIdType" name="valid_id_type_curr">
+                        <option value="">Select Valid ID</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Drivers_license">Driver’s License</option>
+                        <option value="Umid">UMID</option>
+                        <option value="SSS">SSS ID</option>
+                        <option value="GSIS">GSIS ID</option>
+                        <option value="PRC">PRC ID</option>
+                        <option value="Postal">Postal ID</option>
+                        <option value="Voters">Voter’s ID</option>
+                        <option value="Philhealth">PhilHealth ID</option>
+                        <option value="TIN">TIN ID</option>
+                        <option value="National_Id">PhilSys National ID</option>
+                    </select>
+                </div>
+
+                <!-- Valid ID Upload -->
+                <div class="form-group mb-3">
+                    <label>Valid ID <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="currOwnerValidIdFile" name="valid_id_file_curr" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="currOwnerValidIdFIleError"></small>
+                </div>
+
+                <div class="form-section">New Owner Documents</div>
+
+                <div class="form-group mb-3">
+                    <label>Barangay Clearance (Photo) <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="barangayClearanceTransfer" name="barangay_clearance_transfer" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="barangayClearanceTransferError"></small>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Community Tax Certificate / Cedula (Photo) <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="communityTaxCertTransfer" name="community_tax_cert_transfer" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="communityTaxCertTransferError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Valid ID Type <small class="text-danger">*</small></label>
+                    <select class="form-control" id="newOwnerValidIdType" name="valid_id_type_new">
+                        <option value="">Select Valid ID</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Drivers_license">Driver’s License</option>
+                        <option value="Umid">UMID</option>
+                        <option value="SSS">SSS ID</option>
+                        <option value="GSIS">GSIS ID</option>
+                        <option value="PRC">PRC ID</option>
+                        <option value="Postal">Postal ID</option>
+                        <option value="Voters">Voter’s ID</option>
+                        <option value="Philhealth">PhilHealth ID</option>
+                        <option value="TIN">TIN ID</option>
+                        <option value="National_Id">PhilSys National ID</option>
+                    </select>
+                </div>
+
+                <!-- Valid ID Upload -->
+                <div class="form-group mb-3">
+                    <label>Upload Valid ID <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="newOwnerValidIdFile" name="valid_id_file_new" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="newOwnerValidIdFIleError"></small>
+                </div>
+
+                <input type="hidden" id="applicationNumber" name="application_number" value="">
+
+                <!-- Submit Button -->
+                <div class="container d-flex  justify-content-center gap-5">
+                    <button type="button" class="form-button" onclick="switchForm('transferDocumentsForm', 'transferDetailsForm')">Back</button>
+                    <button type="submit" class="form-button" id="transferDetailsBtn">Submit</button>
+                </div>
+            </form>
+
+            <form class="d-none" id="successionDetailsForm">
+
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+                <!-- Deceased Owner Information -->
+                <div class="form-section">Deceased Owner Information</div>
+                <div class="row mt-2">
+                    <div class="form-group"> <label for="">(Deceased Owner Name)</label> </div>
+                    <div class="form-group col-md-4">
+                        <label>First Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="deceased_first_name">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Middle Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="deceased_middle_name">
+                        <small>Type N/A if you don't have middle name</small>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Last Name: <small class="error-message"></small></label>
+                        <input type="text" class="form-control" name="deceased_last_name">
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="deceased_owner_id">Deceased Stall Owner ID:<small class="error-message"></small></label>
+                    <input type="text" class="form-control" name="deceased_owner_id" />
+                </div>
+
+                <!-- Successor Information -->
+                <div class="form-section">Successor Personal Information</div>
+                <div class="row mt-2" id="newOwnerInfoSuccession">
+
+                </div>
+
+                <!-- Relationship to Deceased (Optional) -->
+                <div class="mb-3">
+                    <label for="relationship_to_deceased">Relationship to Deceased (Optional):</label>
+                    <input type="text" class="form-control" id="relationship_to_deceased" name="relationship_to_deceased" placeholder="Enter the relationship to the deceased (if applicable)" />
+                </div>
+
+                <!-- Submit Button -->
+                <div class="container d-flex  justify-content-center gap-5">
+                    <button type="button" class="form-button" onclick="switchForm('successionDetailsForm', 'marketSelectionForm')">Back</button>
+                    <button type="button" class="form-button" id="successionDetailsBtn">Next</button>
+                </div>
+            </form>
+
+            <form class="d-none" id="successionDocumentsForm" enctype="multipart/form-data">
+
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+                <div class="form-group mb-3">
+                    <label for="death_certificate">Death Certificate of the Deceased Stall Owner:</label>
+                    <input type="file" class="form-control" id="deathCert" name="death_cert" accept=".pdf, .jpg, .jpeg, .png" />
+                    <small class="error-message" id="deathCertError"></small>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="death_certificate">Proof of Relationship (of new owner):</label>
+                    <input type="file" class="form-control" id="proofOfRelationship" name="proof_of_relationship" accept=".pdf, .jpg, .jpeg, .png" />
+                    <small class="error-message" id="proofOfRelationshipError"></small>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Upload Barangay Clearance (Photo) <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="barangayClearanceSuccession" name="barangay_clearance_succession" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="barangayClearanceSuccessionError"></small>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Upload Community Tax Certificate / Cedula (Photo) <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="communityTaxCertSuccession" name="community_tax_cert_succession" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="communityTaxCertSuccessionError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Valid ID Type <small class="text-danger">*</small></label>
+                    <select class="form-control" id="successionValidIdType" name="valid_id_type_succession">
+                        <option value="">Select Valid ID</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Drivers_license">Driver’s License</option>
+                        <option value="Umid">UMID</option>
+                        <option value="SSS">SSS ID</option>
+                        <option value="GSIS">GSIS ID</option>
+                        <option value="PRC">PRC ID</option>
+                        <option value="Postal">Postal ID</option>
+                        <option value="Voters">Voter’s ID</option>
+                        <option value="Philhealth">PhilHealth ID</option>
+                        <option value="TIN">TIN ID</option>
+                        <option value="National_Id">PhilSys National ID</option>
+                    </select>
+                </div>
+
+                <!-- Valid ID Upload -->
+                <div class="form-group mb-3">
+                    <label>Upload Valid ID <small class="text-danger">*</small></label>
+                    <input type="file" class="form-control" id="successionValidIdFile" name="valid_id_file_succession" accept=".pdf, .jpg, .jpeg, .png">
+                    <small class="error-message" id="successionValidIdFileError"></small>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="container d-flex  justify-content-center gap-5">
+                    <button type="button" class="form-button" onclick="switchForm('successionDocumentsForm', 'successionDetailsForm')">Back</button>
+                    <button type="submit" class="form-button" id="successionDetailsBtn">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
+
+
+
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-    <script>
-        let locationsData;
+    <script src="../../assets/js/toast.js"></script>
 
-        document.getElementById('application_form').addEventListener('submit', function(event) {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const appType = "";
+            const transferForm = document.getElementById("transferDocumentsForm");
+            const successionForm = document.getElementById("successionDocumentsForm");
+
+            document.getElementById("marketBtn").addEventListener("click", handleMarketSelection);
+            document.getElementById("transferDetailsBtn").addEventListener("click", validateDetailsForm);
+            document.getElementById("successionDetailsBtn").addEventListener("click", validateDetailsForm);
+            getCurrentDate();
+
+            if (transferForm) {
+                transferForm.addEventListener("submit", handleDocumentFormSubmission);
+            }
+            if (successionForm) {
+                successionForm.addEventListener("submit", handleDocumentFormSubmission);
+            }
+
+            generateAndSubmitApplication();
+
+        });
+
+        function handleDocumentFormSubmission(event) {
             event.preventDefault();
 
-            const formData = new FormData(this);
+            const documentForm = event.target;
+            const appType = document.querySelector('input[name="application_type"]:checked')?.value;
 
-            fetch('../actions/application_action.php', {
-                    method: 'POST',
+            if (!appType) {
+                displayToast("Please select an application type", "error");
+                return;
+            }
+
+            // Validate documents based on application type
+            if (typeof validateDocumentsForm === "function" && !validateDocumentsForm(appType)) {
+                console.log("Document Upload Failed.");
+                return;
+            }
+
+            const formData = new FormData(documentForm);
+            formData.append("application_type", appType);
+            const fields = ["market", "section", "stall"];
+
+            // Append market, section, and stall IDs directly to FormData
+            fields.forEach(field => {
+                let input = document.getElementById(field + "Input");
+                let fieldValue = input?.getAttribute("data-" + field + "-id");
+                if (fieldValue) {
+                    formData.append(field + "_id", fieldValue);
+                }
+            });
+
+            // Append application number to FormData
+            let applicationNumber = document.getElementById('applicationNumber').value;
+            formData.append("application_number", applicationNumber);
+
+            // Determine detailsForm and URL
+            let detailsForm;
+            if (appType === "Transfer") {
+                detailsForm = document.getElementById("transferDetailsForm");
+            } else if (appType === "Succession") {
+                detailsForm = document.getElementById("successionDetailsForm");
+            } else {
+                displayToast("Invalid application type", "error");
+                return;
+            }
+
+            // Ensure detailsForm exists before appending data
+            if (detailsForm) {
+                new FormData(detailsForm).forEach((value, key) => {
+                    if (!formData.has(key)) {
+                        formData.append(key, value);
+                    }
+                });
+            }
+
+            console.log("Combined Form Data:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            // Submit the form via AJAX
+            fetch("../actions/submit_transfer_app.php", {
+                    method: "POST",
                     body: formData
                 })
-
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-
                     if (data.success) {
-                        document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-                        document.getElementById('responseModalBody').classList.remove('text-danger');
-                        document.getElementById('responseModalBody').classList.add('text-success');
+                        displayToast("Your application has been submitted successfully!", "success");
+                        documentForm.reset();
+                        if (detailsForm) detailsForm.reset();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     } else {
-                        document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-                        document.getElementById('responseModalBody').classList.remove('text-success');
-                        document.getElementById('responseModalBody').classList.add('text-danger');
+                        displayToast(data.message || "An error occurred while submitting the application", "error");
                     }
-
-                    // Show the modal
-                    const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
-                    responseModal.show();
-
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+                    console.error("Error:", error);
+                    displayToast("An error occurred while submitting the application", "error");
                 });
-        });
+        }
 
-        // Theme
-        const application = document.querySelector('.application');
-        themeToggleButton.addEventListener("click", () => {
-            application.classList.toggle("dark");
-            application.classList.toggle("light");
-        });
+        function switchForm(hideFormId, showFormId) {
+            document.getElementById(hideFormId).classList.add("d-none");
+            document.getElementById(showFormId).classList.remove("d-none");
+        }
 
-        function showSection() {
-            // Clear previous inputs
-            const form = document.getElementById('application_fields');
-            form.innerHTML = '';
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Adds leading zero if necessary
+            const day = String(today.getDate()).padStart(2, '0'); // Adds leading zero if necessary
+            const dateHTML = document.getElementById('current_date');
+            dateHTML.textContent = `${year}-${month}-${day}`;
+        }
 
-            // Get the selected radio button value
-            const selectedValue = document.querySelector('input[name="application_type"]:checked').value;
+        function generateAndSubmitApplication() {
+            // Function to fetch the last application ID from the server
+            function getLastApplicationId() {
+                return $.ajax({
+                    url: '../actions/get_last_app_id.php', // Endpoint to get the last application ID
+                    type: 'GET',
+                    dataType: 'json'
+                });
+            }
 
-            // Create input fields based on the selected option
-            if (selectedValue === 'transfer') {
-                form.innerHTML = `
-                            
-                                <h5>For Transfer</h5>
-                                <label for="transfer_documents">Deed Of Transfer:</label>
-                                <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
-                                <input type="hidden" id="transfer" name="application_type" value="stall transfer">
-                                
+            // Function to generate application number
+            function generateApplicationNumber(lastApplicationId) {
+                let currentDate = new Date();
+                let formattedDate = currentDate.getFullYear() +
+                    ("0" + (currentDate.getMonth() + 1)).slice(-2) +
+                    ("0" + currentDate.getDate()).slice(-2); // YYYYMMDD format
 
-                `;
-            } else if (selectedValue === 'succession') {
-                form.innerHTML = `
+                let applicationNumber = "APP-" + formattedDate + "-" + String(lastApplicationId + 1).padStart(6, '0');
+                return applicationNumber;
+            }
 
-                                <h5>For Succession</h5>
-                                <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
-                                <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
-                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
-                                <input type="hidden" id="succession" name="application_type" value="stall succession">
-                `;
+            // When the page loads, generate the application number
+            getLastApplicationId().done(function(response) {
+                // Assuming the response contains the last application ID
+                let lastApplicationId = response.last_application_id; // Example: 123
+                let applicationNumber = generateApplicationNumber(lastApplicationId);
+                document.getElementById('app_number').textContent = applicationNumber;
+
+                // Set the generated application number in the input field
+                $('#applicationNumber').val(applicationNumber);
+
+                // Handle form submission
+                $('#c').submit(function(e) {
+                    e.preventDefault();
+
+                    // Get the application number
+                    let applicationNumber = $('#applicationNumber').val();
+
+                    // Send the form data to the server for saving
+                    $.ajax({
+                        url: 'submit_stall_app.php',
+                        type: 'POST',
+                        data: {
+                            application_number: applicationNumber
+                        },
+                        contentType: 'application/x-www-form-urlencoded',
+                        success: function(response) {
+                            alert(response.message);
+                        }
+                    });
+                });
+            }).fail(function() {
+                console.error('Error fetching last application ID');
+            });
+        }
+
+        function getSelectedText(selectId) {
+            const selectElement = document.getElementById(selectId);
+            if (selectElement.selectedIndex !== -1) {
+                return selectElement.options[selectElement.selectedIndex].text;
+            }
+            return "Not selected";
+        }
+
+        function handleMarketSelection() {
+            const marketSelect = document.getElementById("market");
+            const sectionSelect = document.getElementById("section");
+            const stallSelect = document.getElementById("stall");
+
+            const marketVal = marketSelect.value;
+            const sectionVal = sectionSelect.value;
+            const stallVal = stallSelect.value;
+
+            const selectedValue = document.querySelector('input[name="application_type"]:checked');
+            const transferLabel = document.getElementById("transferLbl");
+            const successionLabel = document.getElementById("successionLbl");
+
+            let isValid = true;
+
+            if (!selectedValue) {
+                transferLabel.classList.add("error");
+                successionLabel.classList.add("error");
+                isValid = false;
+            } else {
+                transferLabel.classList.remove("error");
+                successionLabel.classList.remove("error");
+                appType = selectedValue.value;
+            }
+
+            if (marketVal === "") {
+                marketSelect.classList.add("error");
+                isValid = false;
+            } else {
+                marketSelect.classList.remove("error");
+            }
+
+            if (sectionVal === "") {
+                sectionSelect.classList.add("error");
+                isValid = false;
+            } else {
+                sectionSelect.classList.remove("error");
+            }
+
+            if (stallVal === "") {
+                stallSelect.classList.add("error");
+                isValid = false;
+            } else {
+                stallSelect.classList.remove("error");
+            }
+
+            if (isValid) {
+
+                console.log("Selected application type:", selectedValue.value);
+                const transferDetailsForm = document.getElementById("transferDetailsForm");
+                const marketForm = document.getElementById("marketSelectionForm");
+                const transferTypeForm = document.getElementById("transferTypeForm");
+                const newOwnerInfoTransferId = document.getElementById("newOwnerInfoTransfer").id;
+                const newOwnerInfoSuccessionId = document.getElementById("newOwnerInfoSuccession").id;
+
+                if (selectedValue.value === "Transfer") {
+                    updateForm(transferDetailsForm, [marketForm, transferTypeForm], newOwnerInfoTransferId, marketVal, sectionVal, stallVal);
+                } else if (selectedValue.value === "Succession") {
+                    updateForm(successionDetailsForm, [marketForm, transferTypeForm], newOwnerInfoSuccessionId, marketVal, sectionVal, stallVal);
+                }
+
+            } else {
+                displayToast("Please complete all required fields", "error");
             }
         }
 
-        // checks the stall number option
-        document.addEventListener('DOMContentLoaded', function() {
-            const stallSelect = document.getElementById('stall');
-            const stallInfo = document.getElementById('stallInfo');
-            stallSelect.addEventListener('change', showStallInfo);
-        });
+        function updateForm(showForm, hideForms, userInfoFormId, marketVal, sectionVal, stallVal) {
+            // Check if the form is a details form
+            const isDetailsForm = showForm.id === "transferDetailsForm" || showForm.id === "successionDetailsForm";
 
-        // checks the section option
+            if (isDetailsForm) {
+                const existingRow = document.getElementById("marketInfoRow");
+                if (existingRow) {
+                    existingRow.remove();
+                }
+
+                const marketInfoRow = document.createElement("div");
+                marketInfoRow.classList.add("row");
+                marketInfoRow.id = "marketInfoRow";
+                marketInfoRow.innerHTML = `
+            <div class="form-section">Market Details</div>
+            <div class="form-group col-md-4">
+                <label>Market: <small class="error-message"></small></label>
+                <input class="form-control" id="marketInput" name="market" value="" data-market-id="" readonly>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Section: <small class="error-message"></small></label>
+                <input class="form-control" id="sectionInput" name="section" value="" data-section-id="" readonly>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Stall No.: <small class="error-message"></small></label>
+                <input class="form-control" id="stallInput" name="stall" value="" data-stall-id="" readonly>
+            </div>
+            `;
+
+                let marketTxt = getSelectedText("market");
+                let sectionTxt = getSelectedText("section");
+                let stallTxt = getSelectedText("stall");
+
+                // Show the selected form and prepend the market info row
+                showForm.classList.remove("d-none");
+                showForm.prepend(marketInfoRow);
+
+                const marketInput = document.getElementById("marketInput");
+                const sectionInput = document.getElementById("sectionInput");
+                const stallInput = document.getElementById("stallInput");
+
+                marketInput.value = marketTxt;
+                sectionInput.value = sectionTxt;
+                stallInput.value = stallTxt;
+
+                marketInput.dataset.marketId = marketVal;
+                sectionInput.dataset.sectionId = sectionVal;
+                stallInput.dataset.stallId = stallVal;
+            } else {
+                // Show the selected form without adding the market info row
+                showForm.classList.remove("d-none");
+            }
+
+            // Hide other forms
+            hideForms.forEach(form => form.classList.add("d-none"));
+
+            if (userInfoFormId && userInfoFormId.trim() !== "") {
+                displayUserInfoForm(userInfoFormId);
+            }
+        }
+
+        function displayUserInfoForm(formId) {
+            document.getElementById(formId).innerHTML = `
+            <div class="row">
+            <div class="form-group col-md-4">
+                <label>Email: <small class="error-message"></small></label>
+                <input type="email" class="form-control" id="email" name="email">
+                <small id="emailError" class="d-none">Invalid email format.</small>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Alternate Email: <small class="error-message"></small></label>
+                <input type="email" class="form-control" id="altEmail" name="alt_email">
+                <small id="altEmailError" class="d-none">Invalid email format.</small>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Mobile Number: <small class="error-message"></small></label>
+                <input type="tel" class="form-control" id="mobile" name="contact_no">
+                <small id="mobileError" class="d-none">Mobile number must be exactly 11 digits.</small>
+            </div>
+            </div>
+
+         <div class="row mt-2">
+            <div class="form-group col-md-4">
+                <label>First Name: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="first_name">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Middle Name: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="middle_name">
+                <small>Type N/A if you don't have middle name</small>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Last Name: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="last_name">
+            </div>
+            </div>
+
+          <div class="row mt-2">
+            <div class="form-group col-md-4 position-relative">
+                <label>Sex: <small class="error-message"></small></label>
+                <div class="dropdown-wrapper">
+                    <select class="form-control" name="sex">
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <i class="bi bi-chevron-down dropdown-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group col-md-4 position-relative">
+                <label>Civil Status <small class="error-message"></small></label>
+                <div class="dropdown-wrapper">
+                    <select class="form-control" name="civil_status">
+                        <option value="">Select</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="Divorced">Divorced</option>
+                        <option value="Separated">Separated</option>
+                    </select>
+                    <i class="bi bi-chevron-down dropdown-icon"></i>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Nationality: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="nationality" value="Filipino">
+            </div>
+           </div>
+
+            <!-- Address Information -->
+         <div class="form-section">Address</div>
+         <div class="row">
+            <div class="form-group col-md-4">
+                <label>House Number: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="house_no">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Street: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="street">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Subdivision: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="subdivision">
+            </div>
+         </div>
+
+          <div class="row mt-2">
+            <div class="form-group col-md-4">
+                <label>Province: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="province">
+            </div>
+            <div class="form-group col-md-4">
+                <label>City: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="city">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Barangay: <small class="error-message"></small></label>
+                <input type="text" class="form-control" name="barangay">
+             </div>
+         </div>
+
+         <div class="row mt-2">
+            <div class="form-group col-md-4">
+                <label>Zip Code: <small class="error-message"></small></label>
+                <input type="text" class="form-control" id="zipcode" name="zip_code">
+                <small id="zipError" class="d-none">ZIP code must be exactly 4 digits.</small>
+                </div>
+            </div>
+          `;
+        }
+
+        function isMobileValid() {
+            const mobileInput = document.getElementById("mobile");
+            const mobileValue = mobileInput.value.trim();
+            if (/^\d{11}$/.test(mobileValue)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function isZipValid() {
+            const zipInput = document.getElementById("zipcode");
+            const zipValue = zipInput.value.trim();
+            if (/^\d{4}$/.test(zipValue)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function isEmailValid(email, altEmail) {
+            const emailResult = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+            const altEmailResult = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(altEmail);
+
+            return {
+                emailValid: emailResult,
+                altEmailValid: altEmailResult
+            };
+        }
+
+        function validateDetailsForm() {
+            let isValid = true;
+
+            const selectedRadio = document.querySelector('input[name="application_type"]:checked');
+
+            const transferDetailsForm = document.getElementById("transferDetailsForm");
+            const transferDocumentsForm = document.getElementById("transferDocumentsForm");
+            const transferInputs = transferDetailsForm.querySelectorAll("input, select");
+
+            const successionDetailsForm = document.getElementById("successionDetailsForm");
+            const successionDocumentsForm = document.getElementById("successionDocumentsForm");
+            const successionInputs = successionDetailsForm.querySelectorAll("input, select");
+
+            const zipError = document.getElementById("zipError");
+            const emailInput = document.getElementById("email");
+            const altEmailInput = document.getElementById("altEmail");
+            const emailError = document.getElementById("emailError");
+            const altEmailError = document.getElementById("altEmailError");
+
+
+            if (selectedRadio.value === "Transfer") {
+                transferInputs.forEach(input => {
+                    const parentDiv = input.closest(".form-group");
+                    if (!parentDiv) return;
+
+                    const errorMessage = parentDiv.querySelector(".error-message");
+                    if (!errorMessage) return;
+
+                    if (input.value.trim() === "") {
+                        input.classList.add("error");
+                        errorMessage.textContent = "*";
+                        isValid = false;
+                        console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
+                    } else {
+                        input.classList.remove("error");
+                        errorMessage.textContent = "";
+                    }
+                });
+            } else if (selectedRadio.value === "Succession") {
+                successionInputs.forEach(input => {
+                    const parentDiv = input.closest(".form-group");
+                    if (!parentDiv) return;
+
+                    const errorMessage = parentDiv.querySelector(".error-message");
+                    if (!errorMessage) return;
+
+                    if (input.value.trim() === "") {
+                        input.classList.add("error");
+                        errorMessage.textContent = "*";
+                        isValid = false;
+                        console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
+                    } else {
+                        input.classList.remove("error");
+                        errorMessage.textContent = "";
+                    }
+                });
+            }
+
+            if (!isMobileValid()) {
+                isValid = false;
+                mobileError.classList.remove("d-none");
+            } else {
+                mobileError.classList.add("d-none");
+            }
+            if (!isZipValid()) {
+                isValid = false;
+                zipError.classList.remove("d-none");
+            } else {
+                zipError.classList.add("d-none")
+            }
+
+            const emailValidation = isEmailValid(emailInput.value, altEmailInput.value);
+            console.log("EMAIL", emailValidation.emailValid);
+            console.log("ALT EMAIL", emailValidation.altEmailValid);
+
+            if (!emailValidation.emailValid) {
+                isValid = false;
+                emailError.classList.remove("d-none");
+            } else {
+                emailError.classList.add("d-none");
+            }
+
+            if (!emailValidation.altEmailValid) {
+                isValid = false;
+                altEmailError.classList.remove("d-none");
+            } else {
+                altEmailError.classList.add("d-none");
+            }
+
+
+            console.log("Mobile Valid:", isMobileValid());
+            console.log("Zip Valid:", isZipValid());
+            console.log("Final isValid:", isValid);
+
+
+            if (isValid) {
+                console.log("Form is valid, switching view...");
+
+                if (selectedRadio.value === "Transfer") {
+                    updateForm(transferDocumentsForm, [transferDetailsForm], "", "", "", "");
+                } else if (selectedRadio.value === "Succession") {
+                    updateForm(successionDocumentsForm, [successionDetailsForm], "", "", "", "");
+                } else {
+                    alert("No option selected.");
+                }
+            } else {
+                displayToast("Please complete all required fields", "error");
+            }
+        }
+
+        function validateFile(inputElement, errorElement) {
+
+            console.log("Input Element:", inputElement);
+            console.log("Error Element:", errorElement);
+            if (!inputElement || !inputElement.files[0]) {
+                errorElement.textContent = "Please upload a file.";
+                console.log("Error: Please upload a file."); // Debugging log
+                return false;
+            }
+
+            const file = inputElement.files[0];
+            const allowedTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/jpeg", "image/png"];
+            const maxFileSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(file.type)) {
+                errorElement.textContent = `Invalid file type: ${file.name}. Allowed types: PDF, DOCX, JPG, PNG.`;
+                return false;
+            }
+
+            if (file.size > maxFileSize) {
+                errorElement.textContent = `File too large: ${file.name}. Maximum size is 5MB.`;
+                return false;
+            }
+
+            errorElement.textContent = ""; // Clear error if valid
+            return true;
+        }
+
+        function validateSelect(input) {
+
+            console.log("Input:", input);
+
+            if (input.value.trim() === "") {
+                input.classList.add("error");
+                return false;
+            } else {
+                input.classList.remove("error");
+                return true;
+            }
+        }
+
+        function validateDocumentsForm(type) {
+
+            let isValid = true;
+
+
+            if (type === "Transfer") {
+
+                const deedOfTransferInput = document.getElementById("deedOfTransfer");
+                const currOwnerValidIdTypeInput = document.getElementById("currOwnerValidIdType");
+                const currOwnerValidIdFileInput = document.getElementById("currOwnerValidIdFile");
+                const barangayClearanceTransferInput = document.getElementById("barangayClearanceTransfer");
+                const communityTaxCertTransferInput = document.getElementById("communityTaxCertTransfer");
+                const newOwnerValidIdTypeInput = document.getElementById("newOwnerValidIdType");
+                const newOwnerValidIdFileInput = document.getElementById("newOwnerValidIdFile");
+
+                const deedOfTransferError = document.getElementById("deedOfTransferError");
+                const currOwnerValidIdFIleError = document.getElementById("currOwnerValidIdFIleError");
+                const barangayClearanceTransferError = document.getElementById("barangayClearanceTransferError");
+                const communityTaxCertTransferError = document.getElementById("communityTaxCertTransferError");
+                const newOwnerValidIdFIleError = document.getElementById("newOwnerValidIdFIleError");
+
+
+                if (!validateFile(deedOfTransferInput, deedOfTransferError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(currOwnerValidIdFileInput, currOwnerValidIdFIleError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(barangayClearanceTransferInput, barangayClearanceTransferError)) {
+                    isValid = false;
+                }
+                if (!validateFile(communityTaxCertTransferInput, communityTaxCertTransferError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(newOwnerValidIdFileInput, newOwnerValidIdFIleError)) {
+                    isValid = false;
+                }
+
+                if (!validateSelect(currOwnerValidIdTypeInput)) {
+                    isValid = false;
+                }
+
+                if (!validateSelect(newOwnerValidIdTypeInput)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    displayToast("Please complete all required fields", "error");
+                }
+            }
+            if (type === "Succession") {
+
+                const death_cert = document.getElementById("deathCert");
+                const proofOfRelationship = document.getElementById("proofOfRelationship");
+                const barangayClearanceSuccession = document.getElementById("barangayClearanceSuccession");
+                const communityTaxCertSuccession = document.getElementById("communityTaxCertSuccession");
+                const successionValidIdType = document.getElementById("successionValidIdType");
+                const successionValidIdFile = document.getElementById("successionValidIdFile");
+
+                const deathCertError = document.getElementById("deathCertError");
+                const proofOfRelationshipError = document.getElementById("proofOfRelationshipError");
+                const barangayClearanceSuccessionError = document.getElementById("barangayClearanceSuccessionError");
+                const communityTaxCertSuccessionError = document.getElementById("communityTaxCertSuccessionError");
+                const successionValidIdFileError = document.getElementById("successionValidIdFileError");
+
+                if (!validateFile(death_cert, deathCertError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(proofOfRelationship, proofOfRelationshipError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(barangayClearanceSuccession, barangayClearanceSuccessionError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(communityTaxCertSuccession, communityTaxCertSuccessionError)) {
+                    isValid = false;
+                }
+
+                if (!validateFile(successionValidIdFile, successionValidIdFileError)) {
+                    isValid = false;
+                }
+
+                if (!validateSelect(successionValidIdType)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    displayToast("Please complete all required fields", "error");
+                }
+
+            }
+
+            return isValid; // Return true if valid, false otherwise
+        }
+    </script>
+
+    <script>
+        let locationsData; // Store the fetched data for later use
+
         document.addEventListener('DOMContentLoaded', function() {
+            const marketSelect = document.getElementById('market')
+            const stallSelect = document.getElementById('stall');
             const sectionSelect = document.getElementById('section');
             const stallInfo = document.getElementById('stallInfo');
 
+            getMarkets();
+            getSections();
+
+            stallSelect.addEventListener('change', showStallInfo);
             sectionSelect.addEventListener('change', function() {
-                stallInfo.innerHTML = 'Select a stall number to view information.';
+                stallInfo.innerHTML = '';
             });
+
+            marketSelect.addEventListener('change', function() {
+                stallInfo.innerHTML = '';
+                showMarketAddress();
+            });
+
         });
-
-        window.onload = function() {
-            fetch('../actions/get_market.php')
-                .then(response => response.json())
-                .then(data => {
-                    locationsData = data;
-                    let marketLocationSelect = document.getElementById('market');
-                    data.forEach(location => {
-                        let option = document.createElement('option');
-                        option.value = location.id;
-                        option.text = location.market_name;
-                        marketLocationSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching market locations:', error);
-                    alert('Failed to load market locations. Please try again later.');
-                });
-
-            fetch('../actions/get_section.php')
-                .then(response => response.json())
-                .then(data => {
-                    let sectionSelect = document.getElementById('section');
-                    data.forEach(section => {
-                        let option = document.createElement('option');
-                        option.value = section.id;
-                        option.text = section.section_name;
-                        sectionSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching market locations:', error);
-                    alert('Failed to load market locations. Please try again later.');
-                });
-        };
-
-        document.getElementById('market').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const selectedId = selectedOption.value;
-            const selectedLocation = locationsData.find(location => location.id == selectedId);
-            document.getElementById('market_address').innerText = selectedLocation ? selectedLocation.market_address : '';
-        });
-
-        function loadStallsWithSection() {
-            const marketId = document.getElementById('market').value;
-            const sectionId = document.getElementById('section').value;
-
-            if (marketId && sectionId) {
-                loadStalls(marketId, sectionId);
-            }
-        }
-
-        function loadStalls(marketId, sectionId) {
-            fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
-                .then(response => response.json())
-                .then(data => {
-
-                    if (data.message && data.message.length > 0) {
-                        const response = data.message;
-                        const stallOptions = document.getElementById('stall');
-
-                        for (let i = stallOptions.options.length - 1; i > 0; i--) {
-                            stallOptions.remove(i);
-                        }
-
-                        document.getElementById('stall_message').textContent = response;
-
-                    } else {
-                        let option = document.createElement('option');
-                        let stallSelect = document.getElementById('stall');
-                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
-                        data.forEach(stall => {
-                            option.value = stall.id;
-                            option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);
-                            option.text = stall.stall_number;
-                            stallSelect.appendChild(option);
-                        });
-                        document.getElementById('stall_message').textContent = ''; // Clear the message if none exists
-                    }
-                })
-                .catch(error => console.error('Error fetching stalls:', error));
-        }
-
 
         function showStallInfo() {
             const stallSelect = document.getElementById('stall');
@@ -327,6 +1231,343 @@ if (empty($_SESSION['csrf_token'])) {
 
             // Update the stallInfo section with a table
             const stallInfo = `
+            <div class="card custom-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Stall Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-label">Rental Fee</span>
+                                <span class="info-value">₱${rentalFee}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-label">Stall Size</span>
+                                <span class="info-value">${stallSize} sqm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+            document.getElementById('stallInfo').innerHTML = stallInfo;
+        }
+
+        function getStallData() {
+            const marketId = document.getElementById('market').value;
+            const sectionId = document.getElementById('section').value;
+
+            // Only make the request if both market and section are selected
+            if (marketId && sectionId) {
+                setStallData(marketId, sectionId);
+            }
+        }
+
+        function setStallData(marketId, sectionId) {
+            fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
+                .then(response => response.json())
+                .then(data => {
+                    let stallSelect = document.getElementById('stall');
+                    let message = document.getElementById('message');
+
+                    if (data.success === false) {
+                        message.innerHTML = `<p style="color: #d32f2f"><strong>${data.message}</strong></p>`;
+                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+                        return;
+                    }
+
+                    // Filter unavailable stalls (not 'available')
+                    let unavailableStalls = data.unavailable_stalls || [];
+
+                    if (unavailableStalls.length === 0) {
+                        message.innerHTML = `<p style="color: #d32f2f"><strong>There are no occupied stalls available in this section</strong></p>`;
+                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+                        return;
+                    }
+
+                    message.innerHTML = '';
+                    stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+
+                    unavailableStalls.forEach(stall => {
+                        let option = document.createElement('option');
+                        option.value = stall.id;
+                        option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);
+                        option.text = stall.stall_number;
+                        stallSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching stalls:', error));
+        }
+
+        function showMarketAddress() {
+            const marketSelect = document.getElementById('market');
+            const marketAddressElement = document.getElementById('market_address');
+
+            if (!marketSelect || !marketAddressElement) {
+                console.error("Market select or market address element not found.");
+                return;
+            }
+
+            const selectedOption = marketSelect.options[marketSelect.selectedIndex];
+            const selectedId = selectedOption.value;
+
+            if (!selectedId) {
+                marketAddressElement.innerText = '';
+                return;
+            }
+
+            if (!Array.isArray(locationsData)) {
+                console.error("locationsData is not defined or not an array.");
+                return;
+            }
+
+            const selectedLocation = locationsData.find(location => location.id == selectedId);
+            marketAddressElement.innerText = selectedLocation ? selectedLocation.market_address : '';
+        }
+
+        function getMarkets() {
+            fetch('../actions/get_market.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    locationsData = data; // Store data globally
+                    let marketLocationSelect = document.getElementById('market');
+                    data.forEach(location => {
+                        let option = document.createElement('option');
+                        option.value = location.id;
+                        option.text = location.market_name;
+                        marketLocationSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching market locations:', error);
+                    alert('Failed to load market locations. Please try again later.');
+                });
+        }
+
+        function getSections() {
+            fetch('../actions/get_section.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let sectionSelect = document.getElementById('section');
+                    data.forEach(section => {
+                        let option = document.createElement('option');
+                        option.value = section.id;
+                        option.text = section.section_name;
+                        sectionSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching market locations:', error);
+                    alert('Failed to load market locations. Please try again later.');
+                });
+        }
+    </script>
+
+    <!-- <script>
+            let locationsData;
+
+            document.getElementById('application_form').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+
+                fetch('../actions/application_action.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+
+                        if (data.success) {
+                            document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
+                            document.getElementById('responseModalBody').classList.remove('text-danger');
+                            document.getElementById('responseModalBody').classList.add('text-success');
+                        } else {
+                            document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
+                            document.getElementById('responseModalBody').classList.remove('text-success');
+                            document.getElementById('responseModalBody').classList.add('text-danger');
+                        }
+
+                        // Show the modal
+                        const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
+                        responseModal.show();
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+                    });
+            });
+
+            // Theme
+            const application = document.querySelector('.application');
+            themeToggleButton.addEventListener("click", () => {
+                application.classList.toggle("dark");
+                application.classList.toggle("light");
+            });
+
+            function showSection() {
+                // Clear previous inputs
+                const form = document.getElementById('application_fields');
+                form.innerHTML = '';
+
+                // Get the selected radio button value
+                const selectedValue = document.querySelector('input[name="application_type"]:checked').value;
+
+                // Create input fields based on the selected option
+                if (selectedValue === 'transfer') {
+                    form.innerHTML = `
+                            
+                                <h5>For Transfer</h5>
+                                <label for="transfer_documents">Deed Of Transfer:</label>
+                                <input type="file" class="form-control" id="transfer_documents" name="documents[]" multiple required>
+                                <input type="hidden" id="transfer_names" name="transfer" value="Deed Of Transfer">
+                                <input type="hidden" id="transfer" name="application_type" value="stall transfer">
+                                
+
+                `;
+                } else if (selectedValue === 'succession') {
+                    form.innerHTML = `
+
+                                <h5>For Succession</h5>
+                                <label for="succession_documents">Affidavit of Incapacitated Adjudicated Stallholder:</label>
+                                <input type="file" class="form-control" id="succession_documents" name="documents[]" multiple required>
+                                <input type="hidden" id="succession_names" name="succession" value="Affidavit of Incapacitated Adjudicated Stallholder">
+                                <input type="hidden" id="succession" name="application_type" value="stall succession">
+                `;
+                }
+            }
+
+            // checks the stall number option
+            document.addEventListener('DOMContentLoaded', function() {
+                const stallSelect = document.getElementById('stall');
+                const stallInfo = document.getElementById('stallInfo');
+                stallSelect.addEventListener('change', showStallInfo);
+            });
+
+            // checks the section option
+            document.addEventListener('DOMContentLoaded', function() {
+                const sectionSelect = document.getElementById('section');
+                const stallInfo = document.getElementById('stallInfo');
+
+                sectionSelect.addEventListener('change', function() {
+                    stallInfo.innerHTML = 'Select a stall number to view information.';
+                });
+            });
+
+            window.onload = function() {
+                fetch('../actions/get_market.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        locationsData = data;
+                        let marketLocationSelect = document.getElementById('market');
+                        data.forEach(location => {
+                            let option = document.createElement('option');
+                            option.value = location.id;
+                            option.text = location.market_name;
+                            marketLocationSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching market locations:', error);
+                        alert('Failed to load market locations. Please try again later.');
+                    });
+
+                fetch('../actions/get_section.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        let sectionSelect = document.getElementById('section');
+                        data.forEach(section => {
+                            let option = document.createElement('option');
+                            option.value = section.id;
+                            option.text = section.section_name;
+                            sectionSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching market locations:', error);
+                        alert('Failed to load market locations. Please try again later.');
+                    });
+            };
+
+            document.getElementById('market').addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const selectedId = selectedOption.value;
+                const selectedLocation = locationsData.find(location => location.id == selectedId);
+                document.getElementById('market_address').innerText = selectedLocation ? selectedLocation.market_address : '';
+            });
+
+            function loadStallsWithSection() {
+                const marketId = document.getElementById('market').value;
+                const sectionId = document.getElementById('section').value;
+
+                if (marketId && sectionId) {
+                    loadStalls(marketId, sectionId);
+                }
+            }
+
+            function loadStalls(marketId, sectionId) {
+                fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        if (data.message && data.message.length > 0) {
+                            const response = data.message;
+                            const stallOptions = document.getElementById('stall');
+
+                            for (let i = stallOptions.options.length - 1; i > 0; i--) {
+                                stallOptions.remove(i);
+                            }
+
+                            document.getElementById('stall_message').textContent = response;
+
+                        } else {
+                            let option = document.createElement('option');
+                            let stallSelect = document.getElementById('stall');
+                            stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
+                            data.forEach(stall => {
+                                option.value = stall.id;
+                                option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);
+                                option.text = stall.stall_number;
+                                stallSelect.appendChild(option);
+                            });
+                            document.getElementById('stall_message').textContent = ''; // Clear the message if none exists
+                        }
+                    })
+                    .catch(error => console.error('Error fetching stalls:', error));
+            }
+
+
+            function showStallInfo() {
+                const stallSelect = document.getElementById('stall');
+                const selectedOption = stallSelect.options[stallSelect.selectedIndex];
+
+                const dataInfo = selectedOption.getAttribute('data-info') || 'Rental Fee: N/A, Stall Size: N/A';
+
+                // Parsing the data-info string
+                const infoArray = dataInfo.split(', ');
+                const rentalFee = infoArray[0] ? infoArray[0].split(': ')[1] : 'N/A';
+                const stallSize = infoArray[1] ? infoArray[1].split(': ')[1] : 'N/A';
+
+                // Update the stallInfo section with a table
+                const stallInfo = `
             <table class="table table-striped table-borderless table-hover custom-table dark">
             <thead>
                 <tr>
@@ -342,9 +1583,9 @@ if (empty($_SESSION['csrf_token'])) {
             </tbody>
             </table>
             `;
-            document.getElementById('stallInfo').innerHTML = stallInfo;
-        }
-    </script>
+                document.getElementById('stallInfo').innerHTML = stallInfo;
+            }
+    </script> -->
 </body>
 
 </html>

@@ -101,41 +101,38 @@ function getNotifications($pdo, $account_id)
     header('Content-Type: application/json');
 
     try {
-        $query = "SELECT message, type, status, created_at FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC";
+        $query = "SELECT message, type, status, created_at FROM notifications WHERE account_id = :account_id ORDER BY created_at DESC";
         $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':user_id', $account_id, PDO::PARAM_INT);
+        $stmt->bindParam(':account_id', $account_id, PDO::PARAM_INT);
         $stmt->execute();
 
         $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Check if notifications are returned
         if (empty($notifications)) {
             echo json_encode(['status' => 'success', 'notifications' => []]); // Empty array if no notifications found
         } else {
             echo json_encode(['status' => 'success', 'notifications' => $notifications]);
         }
     } catch (PDOException $e) {
-        // Return error as JSON
 
         echo json_encode(['status' => 'error', 'message' => 'Failed to fetch notifications']);
     }
 }
 
-function insertNotification($pdo, $user_id, $type, $message, $status = 'unread')
+function insertNotification($pdo, $account_id, $type, $message, $status = 'unread')
 {
     try {
-        $query = "INSERT INTO notifications (user_id, type, message, status, created_at) 
-                  VALUES (:user_id, :type, :message, :status, NOW())";
+        $query = "INSERT INTO notifications (account_id, type, message, status, created_at) 
+                  VALUES (:account_id, :type, :message, :status, NOW())";
 
         $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':account_id', $account_id, PDO::PARAM_INT);
         $stmt->bindParam(':type', $type, PDO::PARAM_STR);
         $stmt->bindParam(':message', $message, PDO::PARAM_STR);
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
 
         return $stmt->execute();
     } catch (PDOException $e) {
-        // Handle error
         return false;
     }
 }
@@ -143,13 +140,13 @@ function insertNotification($pdo, $user_id, $type, $message, $status = 'unread')
 function markAllAsRead($pdo, $account_id)
 {
     try {
-        $query = "UPDATE notifications SET status = 'read' WHERE user_id = :id";
+        $query = "UPDATE notifications SET status = 'read' WHERE account_id = :account_id";
         $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':id', $account_id, PDO::PARAM_INT);
+        $stmt->bindParam(':account_id', $account_id, PDO::PARAM_INT);
 
         return $stmt->execute();
     } catch (PDOException $e) {
-        // Handle error
+
         return false;
     }
 }
@@ -163,7 +160,7 @@ function markAsRead($pdo, $account_id)
 
         return $stmt->execute();
     } catch (PDOException $e) {
-        // Handle error
+
         return false;
     }
 }
