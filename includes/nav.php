@@ -125,8 +125,6 @@ $currentPage = basename($_SERVER['REQUEST_URI']);
 <!-- JavaScript -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        console.log(getComputedStyle(document.querySelector('.top-nav')).height);
-
 
         // Notifications
         let notificationBell = document.getElementById("notificationBell");

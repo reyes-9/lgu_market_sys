@@ -46,8 +46,6 @@
           <div class="mt-5 text-end">
             <a href="/lgu_market_sys/pages/stall_extend" class="btn btn-warning m-2">Stall Extension Application</a>
             <a href="/lgu_market_sys/pages/helper_app" class="btn btn-warning m-2">Add Helper Application</a>
-            <a href="#" class="btn btn-warning m-2 disabled">Market Fees</a>
-            <a href="#" class="btn btn-warning m-2 disabled">Violations</a>
           </div>
         </div>
       </div>
@@ -58,18 +56,6 @@
   <?php include '../../includes/theme.php'; ?>
 
   <script>
-    // Theme
-    // const profile = document.querySelector('.profile');
-    // const divide = document.querySelector('.divide');
-    // const table = document.querySelector('.custom-table');
-
-    // themeToggleButton.addEventListener("click", () => {
-    //   profile.classList.toggle("dark");
-    //   profile.classList.toggle("light");
-    //   table.classList.toggle('dark');
-    //   table.classList.toggle('light');
-    // });
-
     // Fetch the user data from the backend
     document.addEventListener('DOMContentLoaded', function() {
       fetch('../actions/profile_action.php')

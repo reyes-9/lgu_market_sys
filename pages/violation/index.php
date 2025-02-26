@@ -133,7 +133,6 @@
                 .then(data => {
                     const tableBody = document.getElementById("violationsTableBody");
                     tableBody.innerHTML = "";
-                    console.log(data);
 
                     data.data
                         .filter(row =>
@@ -190,8 +189,6 @@
                     event.preventDefault();
 
                     const selectedValue = this.dataset.value;
-
-                    console.log(selectedValue);
 
                     filterOptions.forEach(opt => opt.classList.remove('disabled'));
                     this.classList.add('disabled');

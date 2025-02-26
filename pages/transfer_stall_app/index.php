@@ -14,7 +14,6 @@
 <style>
     .dynamic-section {
         display: none;
-        /* Initially hidden */
     }
 </style>
 <script>
@@ -29,7 +28,7 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 
-<body class="body dark">
+<body class="body light">
     <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
 
     <?php include '../../includes/nav.php'; ?>
@@ -311,7 +310,7 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="death_certificate">Proof of Relationship (of new owner):</label>
+                    <label for="death_certificate">Proof of Relationship (new owner):</label>
                     <input type="file" class="form-control" id="proofOfRelationship" name="proof_of_relationship" accept=".pdf, .jpg, .jpeg, .png" />
                     <small class="error-message" id="proofOfRelationshipError"></small>
                 </div>
@@ -361,9 +360,6 @@ if (empty($_SESSION['csrf_token'])) {
         </div>
     </div>
 
-
-
-
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
     <script src="../../assets/js/toast.js"></script>
@@ -386,7 +382,7 @@ if (empty($_SESSION['csrf_token'])) {
                 successionForm.addEventListener("submit", handleDocumentFormSubmission);
             }
 
-            generateAndSubmitApplication();
+            generateAndSetAppNumber();
 
         });
 
@@ -403,7 +399,6 @@ if (empty($_SESSION['csrf_token'])) {
 
             // Validate documents based on application type
             if (typeof validateDocumentsForm === "function" && !validateDocumentsForm(appType)) {
-                console.log("Document Upload Failed.");
                 return;
             }
 
@@ -444,11 +439,6 @@ if (empty($_SESSION['csrf_token'])) {
                 });
             }
 
-            console.log("Combined Form Data:");
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
             // Submit the form via AJAX
             fetch("../actions/submit_transfer_app.php", {
                     method: "POST",
@@ -487,11 +477,11 @@ if (empty($_SESSION['csrf_token'])) {
             dateHTML.textContent = `${year}-${month}-${day}`;
         }
 
-        function generateAndSubmitApplication() {
+        function generateAndSetAppNumber() {
             // Function to fetch the last application ID from the server
             function getLastApplicationId() {
                 return $.ajax({
-                    url: '../actions/get_last_app_id.php', // Endpoint to get the last application ID
+                    url: '../actions/get_last_app_id.php',
                     type: 'GET',
                     dataType: 'json'
                 });
@@ -525,18 +515,6 @@ if (empty($_SESSION['csrf_token'])) {
                     // Get the application number
                     let applicationNumber = $('#applicationNumber').val();
 
-                    // Send the form data to the server for saving
-                    $.ajax({
-                        url: 'submit_stall_app.php',
-                        type: 'POST',
-                        data: {
-                            application_number: applicationNumber
-                        },
-                        contentType: 'application/x-www-form-urlencoded',
-                        success: function(response) {
-                            alert(response.message);
-                        }
-                    });
                 });
             }).fail(function() {
                 console.error('Error fetching last application ID');
@@ -598,8 +576,6 @@ if (empty($_SESSION['csrf_token'])) {
             }
 
             if (isValid) {
-
-                console.log("Selected application type:", selectedValue.value);
                 const transferDetailsForm = document.getElementById("transferDetailsForm");
                 const marketForm = document.getElementById("marketSelectionForm");
                 const transferTypeForm = document.getElementById("transferTypeForm");
@@ -851,7 +827,6 @@ if (empty($_SESSION['csrf_token'])) {
                         input.classList.add("error");
                         errorMessage.textContent = "*";
                         isValid = false;
-                        console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
                     } else {
                         input.classList.remove("error");
                         errorMessage.textContent = "";
@@ -869,7 +844,6 @@ if (empty($_SESSION['csrf_token'])) {
                         input.classList.add("error");
                         errorMessage.textContent = "*";
                         isValid = false;
-                        console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
                     } else {
                         input.classList.remove("error");
                         errorMessage.textContent = "";
@@ -891,8 +865,6 @@ if (empty($_SESSION['csrf_token'])) {
             }
 
             const emailValidation = isEmailValid(emailInput.value, altEmailInput.value);
-            console.log("EMAIL", emailValidation.emailValid);
-            console.log("ALT EMAIL", emailValidation.altEmailValid);
 
             if (!emailValidation.emailValid) {
                 isValid = false;
@@ -908,15 +880,7 @@ if (empty($_SESSION['csrf_token'])) {
                 altEmailError.classList.add("d-none");
             }
 
-
-            console.log("Mobile Valid:", isMobileValid());
-            console.log("Zip Valid:", isZipValid());
-            console.log("Final isValid:", isValid);
-
-
             if (isValid) {
-                console.log("Form is valid, switching view...");
-
                 if (selectedRadio.value === "Transfer") {
                     updateForm(transferDocumentsForm, [transferDetailsForm], "", "", "", "");
                 } else if (selectedRadio.value === "Succession") {
@@ -931,11 +895,8 @@ if (empty($_SESSION['csrf_token'])) {
 
         function validateFile(inputElement, errorElement) {
 
-            console.log("Input Element:", inputElement);
-            console.log("Error Element:", errorElement);
             if (!inputElement || !inputElement.files[0]) {
                 errorElement.textContent = "Please upload a file.";
-                console.log("Error: Please upload a file."); // Debugging log
                 return false;
             }
 
@@ -958,8 +919,6 @@ if (empty($_SESSION['csrf_token'])) {
         }
 
         function validateSelect(input) {
-
-            console.log("Input:", input);
 
             if (input.value.trim() === "") {
                 input.classList.add("error");
@@ -1068,7 +1027,7 @@ if (empty($_SESSION['csrf_token'])) {
 
             }
 
-            return isValid; // Return true if valid, false otherwise
+            return isValid;
         }
     </script>
 

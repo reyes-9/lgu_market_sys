@@ -42,43 +42,8 @@ try {
         exit();
     }
 
+
     $application_number = $data['application_number'];
-
-    // Process Address
-    $addressParts = [
-        $data['house_no'],
-        $data['street'],
-        $data['barangay'],
-        $data['city'],
-        $data['province'],
-        $data['zip_code']
-    ];
-
-    $fullAddress = implode(', ', array_filter($addressParts));
-
-    $helperResponse = insertHelper(
-        $pdo,
-        $data['stall_id'],
-        $account_id,
-        $data['first_name'],
-        $data['last_name'],
-        $data['middle_name'],
-        $data['sex'],
-        $data['email'],
-        $data['alt_email'],
-        $data['contact_no'],
-        $data['civil_status'],
-        $data['nationality'],
-        $fullAddress
-    );
-
-    if (!$helperResponse['success']) {
-        http_response_code(500); // Internal Server Error
-        echo json_encode(["error" => "Failed to insert helper", "details" => $helperResponse['error']]);
-        exit();
-    }
-
-    $helperId = $helperResponse['id'];
 
     $userInfo = getUserInfo($pdo, $account_id, $data['owner_first_name'], $data['owner_middle_name'], $data['owner_last_name']);
 
@@ -111,7 +76,8 @@ try {
         exit();
     }
 
-    // Insert Application
+
+    // Step 1: Insert Application First (Extension ID is NULL for now)
     $applicationId = uploadApplication(
         $pdo,
         $application_number,
@@ -119,11 +85,12 @@ try {
         intval($data['stall_id']),
         intval($data['section_id']),
         intval($data['market_id']),
-        'helper',
-        $helperId
+        'stall extension',
+        NULL // Placeholder for extension_id
     );
 
     if (!$applicationId || !is_numeric($applicationId)) {
+
         $response['message'] = "Failed to submit application.";
         $response['errors'][] = "Database error: Unable to submit application.";
         http_response_code(500);
@@ -131,13 +98,31 @@ try {
         exit();
     }
 
-    // Upload Documents
-    $letterAuthorizationUpload = uploadDocument($pdo, 'letter_authorization', $applicationId, "Letter of Authorization");
-    $validIdFileUpload = uploadDocument($pdo, 'valid_id_file', $applicationId, $data['valid_id_type']);
-    $barangayClearanceUpload = uploadDocument($pdo, 'barangay_clearance', $applicationId, "Barangay Clearance");
-    $proofResidencyUpload = uploadDocument($pdo, 'proof_of_residency', $applicationId, "Proof of Residency");
+    $duration = $data['duration'];
+    // Step 2: Insert into Extensions using the newly created Application ID
+    $extensionResponse = insertExtension(
+        $pdo,
+        $applicationId, // Now we have the correct application_id
+        $duration
+    );
+    if (!$extensionResponse['success']) {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(["error" => "Failed to insert extension", "details" => $extensionResponse['error']]);
+        exit();
+    }
 
-    if (!$letterAuthorizationUpload['success'] || !$proofResidencyUpload['success'] || !$barangayClearanceUpload['success'] || !$validIdFileUpload['success']) {
+    $extensionId = $extensionResponse['id'];
+
+    // Step 3: Update the Application to Set the Extension ID
+    $updateStmt = $pdo->prepare("UPDATE applications SET extension_id = :extension_id WHERE id = :application_id");
+    $updateStmt->execute([':extension_id' => $extensionId, ':application_id' => $applicationId]);
+
+
+    // Upload Documents
+    $currentIdPhotoUpload = uploadDocument($pdo, 'current_id_photo', $applicationId, "Current Id Photo");
+    $proofOfPaymentUpload = uploadDocument($pdo, 'proof_of_payment', $applicationId, "Proof of Payment");
+
+    if (!$currentIdPhotoUpload['success'] || !$proofOfPaymentUpload['success']) {
         $response['message'] = "Failed to upload files.";
         $response['errors'][] = "Error uploading documents.";
         http_response_code(500);
@@ -149,7 +134,7 @@ try {
     // Success Response
     $response['success'] = true;
     $response['message'] = "Application submitted successfully.";
-    $type = 'Helper Application';
+    $type = 'Stall Extension';
     $message = sprintf('Your application for %s has been successfully submitted. Your Application Form Number is: %s.', $type, $application_number);
 
     insertNotification($pdo, $account_id, $type, $message, 'unread');
@@ -187,56 +172,9 @@ function validateApplicationData($data)
         $errors[] = "Stall is required.";
     }
 
-    // Validate Personal Information
-    if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "A valid Email is required.";
-    }
-
-    if (!empty($data['alt_email']) && !filter_var($data['alt_email'], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Alternate Email is invalid.";
-    }
-    if (empty($data['contact_no']) || !preg_match('/^\d{11}$/', trim($data['contact_no']))) {
-        $errors[] = "A valid 11-digit Contact Number is required.";
-    }
-    if (empty($data['first_name'])) {
-        $errors[] = "First Name is required.";
-    }
-    if (empty($data['last_name'])) {
-        $errors[] = "Last Name is required.";
-    }
-    if (empty($data['sex'])) {
-        $errors[] = "Sex is required.";
-    }
-    if (empty($data['civil_status'])) {
-        $errors[] = "Civil Status is required.";
-    }
-    if (empty($data['nationality'])) {
-        $errors[] = "Nationality is required.";
-    }
-
-    // Validate Address Information
-    if (empty($data['house_no'])) {
-        $errors[] = "House Number is required.";
-    }
-    if (empty($data['street'])) {
-        $errors[] = "Street is required.";
-    }
-    if (empty($data['barangay'])) {
-        $errors[] = "Barangay is required.";
-    }
-    if (empty($data['city'])) {
-        $errors[] = "City is required.";
-    }
-    if (empty($data['province'])) {
-        $errors[] = "Province is required.";
-    }
-    if (empty($data['zip_code']) || !preg_match('/^\d{4}$/', trim($data['zip_code']))) {
-        $errors[] = "A valid 4-digit Zip Code is required.";
-    }
-
-    // Validate Document Information
-    if (empty($data['valid_id_type'])) {
-        $errors[] = "Valid ID Type is required.";
+    // Validate Duration Value
+    if (empty($data['duration'])) {
+        $errors[] = "Duration is required.";
     }
 
     return $errors;
@@ -288,51 +226,27 @@ function insertApplicant(
     }
 }
 
-function insertHelper(
+function insertExtension(
     $pdo,
-    $stallId,
-    $accountId,
-    $firstName,
-    $middle_name,
-    $lastName,
-    $sex,
-    $email,
-    $altEmail,
-    $phoneNumber,
-    $civilStatus,
-    $nationality,
-    $fullAddress,
-
+    $applicationId,
+    $duration,
 ) {
     try {
         // Prepare SQL query for inserting applicant
-        $query = "INSERT INTO helper 
-            (stall_id, account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
-            civil_status, nationality, address, created_at) 
+        $query = "INSERT INTO extensions 
+            (application_id, duration, created_at) 
             VALUES 
-            (:stall_id, :account_id, :first_name, :middle_name, :last_name, :sex, :email, :alt_email, :phone_number, 
-            :civil_status, :nationality, :address, NOW())";
+            (:application_id, :duration, NOW())";
 
         $stmt = $pdo->prepare($query);
 
         // Handle null values properly
-        $stmt->bindValue(':stall_id', $stallId, PDO::PARAM_INT);
-        $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
-        $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
-        $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
-        $stmt->bindValue(':middle_name', $middle_name, PDO::PARAM_STR);
-        $stmt->bindValue(':sex', $sex, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':alt_email', !empty($altEmail) ? $altEmail : null, PDO::PARAM_STR);
-        $stmt->bindValue(':phone_number', $phoneNumber, PDO::PARAM_STR);
-        $stmt->bindValue(':civil_status', $civilStatus, PDO::PARAM_STR);
-        $stmt->bindValue(':nationality', $nationality, PDO::PARAM_STR);
-        $stmt->bindValue(':address', $fullAddress, PDO::PARAM_STR);
+        $stmt->bindValue(':application_id', $applicationId, PDO::PARAM_INT);
+        $stmt->bindValue(':duration', $duration, PDO::PARAM_STR);
 
         $stmt->execute();
-        // Get the inserted helper's ID
-        $helperId = $pdo->lastInsertId();
-        return ["success" => true, "id" => $helperId];
+        $extensionId = $pdo->lastInsertId();
+        return ["success" => true, "id" => $extensionId];
     } catch (PDOException $e) {
         error_log("Database error: " . $e->getMessage());
         return ["success" => false, "error" => $e->getMessage()];

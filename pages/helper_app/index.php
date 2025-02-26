@@ -22,99 +22,6 @@ if (empty($_SESSION['csrf_token'])) {
     <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
     <?php include '../../includes/nav.php'; ?>
 
-    <!-- <div class="content-wrapper">
-
-        <div class="container-fluid px-5">
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-6">
-                    <div class="container shadow rounded-3 p-5 application light">
-
-                
-                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
-                            <div class="modal-dialog  modal-dialog-centered">
-                                <div class="modal-content text-center">
-                                    <i class="bi bi-check-circle-fill icon-animation"></i>
-                                    <div class="modal-body" id="responseModalBody">
-                                       
-                                    </div>
-                                    <div class="text-center text-secondary">
-                                        <p>Click anywhere to continue.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h2 class="text-center mb-4">Helper Application</h2>
-
-                        <h5>Select Stall</h5>
-                        <hr>
-                        <h5 id="stall_message"></h5>
-                        <form id="application_form" action="../actions/application_action.php" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                            <input type="hidden" name="application_type" value="add helper">
-
-                            <table class="table table-striped table-borderless table-hover custom-table light">
-                                <thead>
-                                    <tr>
-                                        <th><strong>Select</strong></th>
-                                        <th><strong>Stall No.</strong></th>
-                                        <th><strong>Market</strong></th>
-                                        <th><strong>Section</strong></th>
-                                        <th><strong>Stall Size</strong></th>
-                                        <th><strong>Rental Fee</strong></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="stallsContainer">
-                                 
-                                </tbody>
-                            </table>
-
-                            <div class="row mt-4">
-                                <div class="col">
-                                    <label for="First Name">First Name:</label>
-                                    <input type="text" class="form-control" name="first_name" placeholder="Enter first name" required>
-                                </div>
-                                <div class="col">
-                                    <label for="Last Name">Last Name:</label>
-                                    <input type="text" class="form-control" name="last_name" placeholder="Enter last name" required>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col">
-                                    <label for="validIdType">Select Valid Id</label>
-                                    <select class="form-control" id="validIdType" name="valid_id_type" required>
-                                        <option value="" disabled selected>-- Select an ID --</option>
-                                        <option value="Philippine Passport">Philippine Passport</option>
-                                        <option value="Social Security System (SSS) ID">Social Security System (SSS) ID</option>
-                                        <option value="Driver’s License">Driver’s License</option>
-                                        <option value="PhilHealth ID">PhilHealth ID</option>
-                                        <option value="Taxpayer Identification Number (TIN) ID">Taxpayer Identification Number (TIN) ID</option>
-                                        <option value="Unified Multi-Purpose ID (UMID)">Unified Multi-Purpose ID (UMID)</option>
-                                        <option value="Voter’s ID">Voter’s ID</option>
-                                        <option value="Postal ID">Postal ID</option>
-                                    </select>
-                                </div>
-                                <br>
-                            </div>
-                            <div class="row my-4">
-                                <div class="col">
-                                    <div class="w-50" id="id_section">
-                                        <label for="documents"><span id="id_section_label"></span></label>
-                                        <input type="file" class="form-control" id="document" name="document" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-warning">Submit Application</button>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <div class="content-wrapper">
 
         <div class="form-container">
@@ -142,33 +49,7 @@ if (empty($_SESSION['csrf_token'])) {
 
             <form action="" id="marketSelectionForm">
                 <div class="form-section">Select Stall</div>
-                <!-- Market Dropdown -->
-                <!-- <small> <strong>Note:</strong> Only occupied stalls are displayed for selection.</small>
-                <div class="mb-3 form-group">
-                    <label for="market">Market: <small class="error-message"></small></label>
-                    <select class="form-select" id="market" onchange="getStallData()" required>
-                        <option value="" disabled selected>-- Select Market --</option>
-                    </select>
-                    <span id="market_address"></span>
-                </div> -->
 
-                <!-- Section and Stall (side by side) -->
-                <!-- <div class="row">
-                    <div class="col form-group">
-                        <label for="section">Section: <small class="error-message"></small></label>
-                        <select class="form-select" id="section" onchange="getStallData()">
-                            <option value="" disabled selected>-- Select Section --</option>
-                        </select>
-                    </div>
-                    <div class="col form-group">
-                        <label for="stall">Stall Number: <small class="error-message"></small></label>
-                        <select class="form-select" id="stall" required>
-                            <option value="" disabled selected>-- Select Stall Number --</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="stallInfo"></div>
-                <div id="message"></div> -->
                 <table class="table table-borderless table-hover">
                     <thead>
                         <tr>
@@ -405,190 +286,8 @@ if (empty($_SESSION['csrf_token'])) {
         </div>
     </div>
 
-
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-
-    <!-- 
-    <script>
-        let locationsData; // Store the fetched data for later use
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const marketSelect = document.getElementById('market')
-            const stallSelect = document.getElementById('stall');
-            const sectionSelect = document.getElementById('section');
-            const stallInfo = document.getElementById('stallInfo');
-
-            getMarkets();
-            getSections();
-
-            stallSelect.addEventListener('change', showStallInfo);
-            sectionSelect.addEventListener('change', function() {
-                stallInfo.innerHTML = '';
-            });
-
-            marketSelect.addEventListener('change', function() {
-                stallInfo.innerHTML = '';
-                showMarketAddress();
-            });
-
-        });
-
-        function showStallInfo() {
-            const stallSelect = document.getElementById('stall');
-            const selectedOption = stallSelect.options[stallSelect.selectedIndex];
-
-            const dataInfo = selectedOption.getAttribute('data-info') || 'Rental Fee: N/A, Stall Size: N/A';
-
-            // Parsing the data-info string
-            const infoArray = dataInfo.split(', ');
-            const rentalFee = infoArray[0] ? infoArray[0].split(': ')[1] : 'N/A';
-            const stallSize = infoArray[1] ? infoArray[1].split(': ')[1] : 'N/A';
-
-            // Update the stallInfo section with a table
-            const stallInfo = `
-            <div class="card custom-card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Stall Information</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="info-box">
-                                <span class="info-label">Rental Fee</span>
-                                <span class="info-value">₱${rentalFee}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-box">
-                                <span class="info-label">Stall Size</span>
-                                <span class="info-value">${stallSize} sqm</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            `;
-            document.getElementById('stallInfo').innerHTML = stallInfo;
-        }
-
-        function getStallData() {
-            const marketId = document.getElementById('market').value;
-            const sectionId = document.getElementById('section').value;
-
-            // Only make the request if both market and section are selected
-            if (marketId && sectionId) {
-                setStallData(marketId, sectionId);
-            }
-        }
-
-        function setStallData(marketId, sectionId) {
-            fetch('../actions/get_stalls.php?market_id=' + marketId + '&section_id=' + sectionId)
-                .then(response => response.json())
-                .then(data => {
-                    let stallSelect = document.getElementById('stall');
-                    let message = document.getElementById('message');
-
-                    if (data.success === false) {
-                        message.innerHTML = `<p style="color: #d32f2f"><strong>${data.message}</strong></p>`;
-                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
-                        return;
-                    }
-
-                    // Filter unavailable stalls (not 'available')
-                    let unavailableStalls = data.unavailable_stalls || [];
-
-                    if (unavailableStalls.length === 0) {
-                        message.innerHTML = `<p style="color: #d32f2f"><strong>There are no occupied stalls available in this section</strong></p>`;
-                        stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
-                        return;
-                    }
-
-                    message.innerHTML = '';
-                    stallSelect.innerHTML = '<option value="">-- Select Stall Number --</option>';
-
-                    unavailableStalls.forEach(stall => {
-                        let option = document.createElement('option');
-                        option.value = stall.id;
-                        option.setAttribute('data-info', 'Rental Fee: ' + stall.rental_fee + ', Stall Size: ' + stall.stall_size);
-                        option.text = stall.stall_number;
-                        stallSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching stalls:', error));
-        }
-
-        function showMarketAddress() {
-            const marketSelect = document.getElementById('market');
-            const marketAddressElement = document.getElementById('market_address');
-
-            if (!marketSelect || !marketAddressElement) {
-                console.error("Market select or market address element not found.");
-                return;
-            }
-
-            const selectedOption = marketSelect.options[marketSelect.selectedIndex];
-            const selectedId = selectedOption.value;
-
-            if (!selectedId) {
-                marketAddressElement.innerText = '';
-                return;
-            }
-
-            if (!Array.isArray(locationsData)) {
-                console.error("locationsData is not defined or not an array.");
-                return;
-            }
-
-            const selectedLocation = locationsData.find(location => location.id == selectedId);
-            marketAddressElement.innerText = selectedLocation ? selectedLocation.market_address : '';
-        }
-
-        function getMarkets() {
-            fetch('../actions/get_market.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    locationsData = data; // Store data globally
-                    let marketLocationSelect = document.getElementById('market');
-                    data.forEach(location => {
-                        let option = document.createElement('option');
-                        option.value = location.id;
-                        option.text = location.market_name;
-                        marketLocationSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching market locations:', error);
-                    alert('Failed to load market locations. Please try again later.');
-                });
-        }
-
-        function getSections() {
-            fetch('../actions/get_section.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    let sectionSelect = document.getElementById('section');
-                    data.forEach(section => {
-                        let option = document.createElement('option');
-                        option.value = section.id;
-                        option.text = section.section_name;
-                        sectionSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching market locations:', error);
-                    alert('Failed to load market locations. Please try again later.');
-                });
-        }
-    </script> -->
     <script src="../../assets/js/toast.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -605,7 +304,6 @@ if (empty($_SESSION['csrf_token'])) {
             event.preventDefault();
 
             if (!validateDocumentsForm()) {
-                console.log("Document Upload Failed.");
                 return;
             }
 
@@ -624,10 +322,7 @@ if (empty($_SESSION['csrf_token'])) {
                 }
             });
 
-            logFormData(formData);
-
             submitFormData(formData, documentForm, detailsForm);
-            event.preventDefault();
         }
 
         function appendFormData(formData, fields) {
@@ -641,13 +336,6 @@ if (empty($_SESSION['csrf_token'])) {
             });
         }
 
-        function logFormData(formData) {
-            console.log("Combined Form Data:");
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-        }
-
         function submitFormData(formData, documentForm, detailsForm) {
             fetch("../actions/submit_helper_app.php", {
                     method: "POST",
@@ -659,6 +347,9 @@ if (empty($_SESSION['csrf_token'])) {
                         displayToast("Your application has been submitted successfully!", "success");
                         documentForm.reset();
                         detailsForm.reset();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     } else {
                         displayToast("An error occurred while submitting the application", "error");
                     }
@@ -684,8 +375,6 @@ if (empty($_SESSION['csrf_token'])) {
 
             const marketSelected = isMarketSelected();
 
-            console.log(marketSelected);
-
             if (!marketSelected) {
                 displayToast("Please complete all required fields", "error");
                 return;
@@ -709,7 +398,6 @@ if (empty($_SESSION['csrf_token'])) {
             const selectedRadio = document.querySelector('input[name="selected_stall_id"]:checked');
 
             if (!selectedRadio) {
-                console.log("No stall selected.");
                 return false;
             }
 
@@ -743,10 +431,8 @@ if (empty($_SESSION['csrf_token'])) {
                     rental_fee: tds[5].textContent.trim()
                 };
 
-                console.log("Selected Stall Details:", stallDetails);
                 return stallDetails; // Return the object if needed
             } else {
-                console.log("No stall selected.");
                 return null;
             }
         }
@@ -774,7 +460,6 @@ if (empty($_SESSION['csrf_token'])) {
                     input.classList.add("error");
                     errorMessage.textContent = "*";
                     isValid = false;
-                    console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
                 } else {
                     input.classList.remove("error");
                     errorMessage.textContent = "";
@@ -797,8 +482,6 @@ if (empty($_SESSION['csrf_token'])) {
             }
 
             const emailValidation = isEmailValid(emailInput.value, altEmailInput.value);
-            console.log("EMAIL", emailValidation.emailValid);
-            console.log("ALT EMAIL", emailValidation.altEmailValid);
 
             if (!emailValidation.emailValid) {
                 isValid = false;
@@ -814,13 +497,7 @@ if (empty($_SESSION['csrf_token'])) {
                 altEmailError.classList.add("d-none");
             }
 
-
-            console.log("Mobile Valid:", isMobileValid());
-            console.log("Zip Valid:", isZipValid());
-            console.log("Final isValid:", isValid);
-
             if (isValid) {
-                console.log("Form is valid, switching view...");
                 documentForm.classList.remove('d-none');
                 detailsForm.classList.add('d-none');
             } else {
@@ -1000,32 +677,11 @@ if (empty($_SESSION['csrf_token'])) {
     </script>
 
     <script>
-        // // Valid Id Selection
-        // const validIdType = document.getElementById('validIdType');
-        // const idSection = document.getElementById('id_section');
-        // const idSectionLabel = document.getElementById('id_section_label');
-
-        // validIdType.addEventListener('change', function() {
-        //     const selectedValue = validIdType.value;
-
-        //     if (selectedValue) {
-        //         idSection.style.display = 'block'; // Show the ID section
-        //         idSectionLabel.textContent = `Upload ${validIdType.options[validIdType.selectedIndex].text}`;
-        //     } else {
-        //         idSection.style.display = 'none'; // Hide the ID section if no valid option is selected
-        //         idSectionLabel.textContent = '';
-        //     }
-        // });
-
-
-        // Fetch the user data from the backend
-        // let isMarketSelected = false;
         document.addEventListener('DOMContentLoaded', function() {
             fetch('../actions/profile_action.php')
                 .then(response => response.json())
                 .then(data => {
 
-                    console.log(data);
                     const stallsContainer = document.getElementById('stallsContainer');
                     let ownerIdInput = document.getElementById('ownerId');
                     let ownerFirstNameInput = document.getElementById("ownerFirstName");
@@ -1035,7 +691,7 @@ if (empty($_SESSION['csrf_token'])) {
                     let middleName;
                     let lastName;
 
-                    stallsContainer.innerHTML = ''; // Clear previous entries
+                    stallsContainer.innerHTML = '';
 
                     if (!data.stalls || data.stalls.length === 0) {
                         document.getElementById('stall_message').textContent = 'No stalls available.';
@@ -1058,7 +714,7 @@ if (empty($_SESSION['csrf_token'])) {
 
 
                         data.stalls.forEach((stall, index) => {
-                            const row = document.createElement('tr'); // Only one <tr> element
+                            const row = document.createElement('tr');
                             row.innerHTML = `
                         <td>
                             <label class="radio-modern">
@@ -1073,7 +729,6 @@ if (empty($_SESSION['csrf_token'])) {
                         <td>${stall.rental_fee}</td>
                     `;
                             stallsContainer.appendChild(row);
-
                             // Add click event listener to each row
                             row.addEventListener("click", function() {
                                 // Remove 'table-active' from all rows
@@ -1085,7 +740,6 @@ if (empty($_SESSION['csrf_token'])) {
                                 if (radio) {
                                     radio.checked = true;
                                     row.classList.add("table-active"); // Highlight the selected row
-                                    console.log("Selected Stall Id:", radio.value);
                                 }
                             });
                         });
@@ -1095,44 +749,6 @@ if (empty($_SESSION['csrf_token'])) {
                     console.error('Error fetching data:', error);
                 });
         });
-
-
-
-        // document.getElementById('application_form').addEventListener('submit', function(event) {
-        //     event.preventDefault(); // Prevent default form submission
-
-        //     const formData = new FormData(this); // Create FormData object
-        //     for (const [key, value] of formData.entries()) {
-        //         console.log(`${key}:`, value);
-        //     }
-
-        //     fetch('../actions/application_action.php', {
-        //             method: 'POST',
-        //             body: formData
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-
-        //             if (data.success) {
-        //                 document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-        //                 document.getElementById('responseModalBody').classList.remove('text-danger');
-        //                 document.getElementById('responseModalBody').classList.add('text-success');
-        //             } else {
-        //                 document.getElementById('responseModalBody').innerHTML = data.messages.join('<br>');
-        //                 document.getElementById('responseModalBody').classList.remove('text-success');
-        //                 document.getElementById('responseModalBody').classList.add('text-danger');
-        //             }
-
-        //             // Show the modal
-        //             const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
-        //             responseModal.show();
-
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //             document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
-        //         });
-        // });
     </script>
 
 </body>

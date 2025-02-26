@@ -71,7 +71,6 @@
 
                 e.preventDefault();
                 fetchData(page);
-                console.log(page);
             }
         });
 
@@ -82,8 +81,7 @@
 
         function generateCards(data) {
             const container = document.querySelector('.row.g-5');
-            container.innerHTML = ''; // Clear existing cards
-
+            container.innerHTML = '';
             data.forEach((app, index) => {
                 const delay = index * 0.1;
                 const card = `
@@ -101,10 +99,6 @@
                 </span>
                 <h4 class="my-4"><strong>${app.application_type} Application</strong></h4>
                 <table class="table">
-                    <tr>
-                        <th>Application Id</th>
-                        <td>${app.id}</td>
-                    </tr>
 
                     ${app.application_number !== null ? `
                     <tr>
@@ -113,10 +107,10 @@
                     </tr>
                     ` : ""}
 
-                     ${app.ext_duration !== null ? `
+                     ${app.extension_duration !== null ? `
                     <tr>
                          <th>Extension Duration</th>
-                         <td>${app.ext_duration} Month/s</td>
+                         <td>${app.extension_duration}</td>
                     </tr>
                      ` : ""}
 
@@ -338,8 +332,6 @@
                 if (event.target.classList.contains("confirmWithdraw")) {
                     let appId = event.target.dataset.id;
                     let appName = event.target.dataset.app_name;
-                    console.log("Application Name:", appName);
-                    console.log("Withdrawing application ID:", appId);
 
                     fetch("../actions/track_action.php", {
                             method: "POST",
@@ -353,8 +345,6 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-
-                            console.log(data);
 
                             if (data.success) {
                                 document.getElementById('responseModalBody').innerHTML = data.message.join('<br>');

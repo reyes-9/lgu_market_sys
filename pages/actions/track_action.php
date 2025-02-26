@@ -71,16 +71,17 @@ try {
                 sec.section_name AS section_name, 
                 m.market_name AS market_name,
                 CONCAT(h.first_name, ' ', h.last_name) AS full_name,
+                e.duration AS extension_duration,
                 app.id,
                 app.application_type,
                 app.application_number,
-                app.ext_duration,
                 app.status,
                 app.created_at
             FROM applications app
             JOIN stalls s ON app.stall_id = s.id    
             JOIN sections sec ON app.section_id = sec.id
             JOIN market_locations m ON app.market_id = m.id
+            LEFT JOIN extensions e ON app.extension_id = e.id
             LEFT JOIN helper h ON app.helper_id = h.id
             WHERE app.account_id = :account_id
             AND app.status != 'Withdrawn'

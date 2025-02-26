@@ -144,20 +144,7 @@
   <?php include '../../includes/theme.php'; ?>
 
   <script>
-    // Theme
-    // const profile = document.querySelector('.profile');
-    // const divide = document.querySelector('.divide');
-    // const table = document.querySelector('.custom-table');
-
-    // themeToggleButton.addEventListener("click", () => {
-    //   profile.classList.toggle("dark");
-    //   profile.classList.toggle("light");
-    //   divide.classList.toggle('dark');
-    //   divide.classList.toggle('light');
-    //   table.classList.toggle('dark');
-    //   table.classList.toggle('light');
-    // });
-
+  
     var notifcation_section = document.getElementById('notificationsSection');
     var profile_section = document.getElementById('profileCard');
 
@@ -181,7 +168,7 @@
     });
   </script>
   <script>
-    // Fetch user data and notifications after DOM is loaded
+
     document.addEventListener('DOMContentLoaded', function() {
 
       fetchUser();
@@ -266,14 +253,12 @@
     function renderNotifications(notifications) {
       const notificationList = document.getElementById('notificationList');
 
-      // let unread = false;
-      notificationList.innerHTML = ""; // Clear previous notifications
+      notificationList.innerHTML = ""; 
 
       notifications.forEach(notification => {
         const notificationItem = document.createElement('li');
         notificationItem.classList.add("list-group-item", "position-relative");
 
-        // If notification is unread, add the 'unread' class
         if (notification.status === "unread") {
           notificationItem.classList.add("unread");
 

@@ -62,8 +62,8 @@ try {
             $pdo,
             $account_id,
             $data['first_name'],
-            $data['last_name'],
             $data['middle_name'],
+            $data['last_name'],
             $data['sex'],
             $data['email'],
             $data['alt_email'],
@@ -220,6 +220,7 @@ function insertApplicant(
     $pdo,
     $accountId,
     $firstName,
+    $middleName,
     $lastName,
     $sex,
     $email,
@@ -232,10 +233,10 @@ function insertApplicant(
     try {
         // Prepare SQL query for inserting applicant
         $query = "INSERT INTO applicants 
-            (account_id, first_name, last_name, sex, email, alt_email, phone_number, 
+            (account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
             civil_status, nationality, address, created_at) 
             VALUES 
-            (:account_id, :first_name, :last_name, :sex, :email, :alt_email, :phone_number, 
+            (:account_id, :first_name, :middle_name,:last_name, :sex, :email, :alt_email, :phone_number, 
             :civil_status, :nationality, :address, NOW())";
 
         $stmt = $pdo->prepare($query);
@@ -243,6 +244,7 @@ function insertApplicant(
         // Handle null values properly
         $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
         $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
+        $stmt->bindValue(':middle_name', $middleName, PDO::PARAM_STR);
         $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
         $stmt->bindValue(':sex', $sex, PDO::PARAM_STR);
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);

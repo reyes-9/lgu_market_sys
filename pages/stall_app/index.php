@@ -294,7 +294,6 @@ if (empty($_SESSION['csrf_token'])) {
             event.preventDefault();
 
             if (!validateDocumentsForm()) {
-                console.log("Document Upload Failed.");
                 return;
             }
 
@@ -319,11 +318,6 @@ if (empty($_SESSION['csrf_token'])) {
                     formData.append(key, value);
                 }
             });
-
-            console.log("Combined Form Data:");
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
 
             fetch("../actions/submit_stall_app.php", {
                     method: "POST",
@@ -497,7 +491,7 @@ if (empty($_SESSION['csrf_token'])) {
                     input.classList.add("error");
                     errorMessage.textContent = "*";
                     isValid = false;
-                    console.log(`Invalid Input: ${input.name} | Value: "${input.value}"`);
+
                 } else {
                     input.classList.remove("error");
                     errorMessage.textContent = "";
@@ -520,8 +514,6 @@ if (empty($_SESSION['csrf_token'])) {
             }
 
             const emailValidation = isEmailValid(emailInput.value, altEmailInput.value);
-            console.log("EMAIL", emailValidation.emailValid);
-            console.log("ALT EMAIL", emailValidation.altEmailValid);
 
             if (!emailValidation.emailValid) {
                 isValid = false;
@@ -537,13 +529,7 @@ if (empty($_SESSION['csrf_token'])) {
                 altEmailError.classList.add("d-none");
             }
 
-
-            console.log("Mobile Valid:", isMobileValid());
-            console.log("Zip Valid:", isZipValid());
-            console.log("Final isValid:", isValid);
-
             if (isValid) {
-                console.log("Form is valid, switching view...");
                 documentForm.classList.remove('d-none');
                 detailsForm.classList.add('d-none');
             } else {

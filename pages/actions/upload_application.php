@@ -1,9 +1,9 @@
 <?php
 
-function uploadApplication($pdo, $applicationNumber, $accountId, $stallId, $sectionId, $marketId, $applicationType, $helperId = null, $extDuration = null)
+function uploadApplication($pdo, $applicationNumber, $accountId, $stallId, $sectionId, $marketId, $applicationType, $helperId = null, $extensionId = null)
 {
     try {
-        $query = "INSERT INTO applications (application_number, account_id, stall_id, section_id, market_id, application_type, helper_id, ext_duration, status, created_at) 
+        $query = "INSERT INTO applications (application_number, account_id, stall_id, section_id, market_id, application_type, helper_id, extension_id, status, created_at) 
                   VALUES (:application_number, :account_id, :stall_id, :section_id, :market_id, :application_type, :helper_id, :ext_duration, 'Submitted', NOW())";
 
         $stmt = $pdo->prepare($query);
@@ -15,7 +15,7 @@ function uploadApplication($pdo, $applicationNumber, $accountId, $stallId, $sect
             ':market_id' => $marketId,
             ':application_type' => $applicationType,
             ':helper_id' => $helperId,
-            ':ext_duration' => $extDuration
+            ':ext_duration' => $extensionId
         ]);
 
         return $pdo->lastInsertId(); // Return the inserted application ID
