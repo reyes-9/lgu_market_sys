@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     const themeToggleButton = document.getElementById("theme-toggle");
     const body = document.querySelector('.body');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -35,4 +35,4 @@
         themeToggleButton.innerHTML = `<i class="bi ${icon}" ${color}></i>`;
 
     });
-</script>
+</script> -->

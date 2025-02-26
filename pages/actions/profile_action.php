@@ -15,6 +15,9 @@ try {
                     s.stall_number, 
                     s.rental_fee, 
                     s.stall_size, 
+                    s.section_id,
+                    s.market_id,
+                    s.account_id,
                     sec.section_name AS section_name, 
                     m.market_name AS market_name 
                 FROM stalls s

@@ -1,7 +1,6 @@
 html,
 body {
-  height: 100%;
-  margin: 0;
+  height: 100vh !important;
   display: flex;
   flex-direction: column;
 }
@@ -41,7 +40,7 @@ body {
 }
 
 /* Navbar styles*/
-.navbar {
+/* .navbar {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
@@ -54,9 +53,8 @@ body {
 .navbar-nav .nav-link {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-}
+} */
 
-/* Navbar Light & Dark */
 .navbar.dark {
   background-color: #020d18;
 }
@@ -153,21 +151,6 @@ footer.light {
 
 .footer-bottom p {
   margin: 0;
-}
-
-/* Theme toggle button styles */
-.btn-toggle {
-  border: none;
-  background: transparent;
-  color: #003366;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 10px;
-  transition: transform 0.3s;
-}
-
-.btn-toggle:hover {
-  transform: scale(1.1);
 }
 
 /* Disabled link styles */

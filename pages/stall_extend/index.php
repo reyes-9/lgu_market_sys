@@ -26,8 +26,6 @@ if (empty($_SESSION['csrf_token'])) {
 
     <div class="content-wrapper">
 
-        <?php include '../../includes/menu.php'; ?>
-
         <div class="container-fluid px-5">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-6">

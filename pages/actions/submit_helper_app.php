@@ -55,24 +55,49 @@ try {
     ];
 
     $fullAddress = implode(', ', array_filter($addressParts));
-    $userInfo = getUserInfo($pdo, $account_id, $data['first_name'], $data['middle_name'], $data['last_name']);
+
+    $helperResponse = insertHelper(
+        $pdo,
+        $account_id,
+        $data['first_name'],
+        $data['last_name'],
+        $data['middle_name'],
+        $data['sex'],
+        $data['email'],
+        $data['alt_email'],
+        $data['contact_no'],
+        $data['civil_status'],
+        $data['nationality'],
+        $fullAddress
+    );
+
+    if (!$helperResponse['success']) {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(["error" => "Failed to insert helper", "details" => $helperResponse['error']]);
+        exit();
+    }
+
+    $helperId = $helperResponse['id'];
+
+    $userInfo = getUserInfo($pdo, $account_id, $data['owner_first_name'], $data['owner_middle_name'], $data['owner_last_name']);
 
     if ($userInfo) {
         $isApplicantInserted = insertApplicant(
             $pdo,
             $account_id,
-            $data['first_name'],
-            $data['last_name'],
-            $data['middle_name'],
-            $data['sex'],
-            $data['email'],
-            $data['alt_email'],
-            $data['contact_no'],
-            $data['civil_status'],
-            $data['nationality'],
-            $fullAddress
+            $userInfo['first_name'],
+            $userInfo['last_name'],
+            $userInfo['middle_name'],
+            $userInfo['sex'],
+            $userInfo['email'],
+            $userInfo['alt_email'],
+            $userInfo['contact_no'],
+            $userInfo['civil_status'],
+            $userInfo['nationality'],
+            $userInfo['address']
         );
     } else {
+        http_response_code(404);
         echo json_encode(["error" => "User not found"]);
         exit();
     }
@@ -93,7 +118,8 @@ try {
         intval($data['stall_id']),
         intval($data['section_id']),
         intval($data['market_id']),
-        'stall'
+        'helper',
+        $helperId
     );
 
     if (!$applicationId || !is_numeric($applicationId)) {
@@ -105,10 +131,12 @@ try {
     }
 
     // Upload Documents
-    $proofResidencyUpload = uploadDocument($pdo, 'proof_residency', $applicationId, "Proof of Residency");
+    $letterAuthorizationUpload = uploadDocument($pdo, 'letter_authorization', $applicationId, "Letter of Authorization");
     $validIdFileUpload = uploadDocument($pdo, 'valid_id_file', $applicationId, $data['valid_id_type']);
+    $barangayClearanceUpload = uploadDocument($pdo, 'barangay_clearance', $applicationId, "Barangay Clearance");
+    $proofResidencyUpload = uploadDocument($pdo, 'proof_of_residency', $applicationId, "Proof of Residency");
 
-    if (!$proofResidencyUpload['success'] || !$validIdFileUpload['success']) {
+    if (!$letterAuthorizationUpload['success'] || !$proofResidencyUpload['success'] || !$barangayClearanceUpload['success'] || !$validIdFileUpload['success']) {
         $response['message'] = "Failed to upload files.";
         $response['errors'][] = "Error uploading documents.";
         http_response_code(500);
@@ -124,6 +152,7 @@ try {
     $message = sprintf('Your application for %s has been successfully submitted. Your Application Form Number is: %s.', $type, $application_number);
 
     insertNotification($pdo, $account_id, $type, $message, 'unread');
+    http_response_code(201);
     echo json_encode($response);
     exit();
 } catch (Exception $e) {
@@ -204,11 +233,6 @@ function validateApplicationData($data)
         $errors[] = "A valid 4-digit Zip Code is required.";
     }
 
-    // Validate Market Information
-    if (empty($data['market_items'])) {
-        $errors[] = "Market Items field is required.";
-    }
-
     // Validate Document Information
     if (empty($data['valid_id_type'])) {
         $errors[] = "Valid ID Type is required.";
@@ -220,6 +244,7 @@ function insertApplicant(
     $pdo,
     $accountId,
     $firstName,
+    $middle_name,
     $lastName,
     $sex,
     $email,
@@ -232,10 +257,10 @@ function insertApplicant(
     try {
         // Prepare SQL query for inserting applicant
         $query = "INSERT INTO applicants 
-            (account_id, first_name, last_name, sex, email, alt_email, phone_number, 
+            (account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
             civil_status, nationality, address, created_at) 
             VALUES 
-            (:account_id, :first_name, :last_name, :sex, :email, :alt_email, :phone_number, 
+            (:account_id, :first_name, :middle_name, :last_name, :sex, :email, :alt_email, :phone_number, 
             :civil_status, :nationality, :address, NOW())";
 
         $stmt = $pdo->prepare($query);
@@ -244,6 +269,7 @@ function insertApplicant(
         $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
         $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
         $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
+        $stmt->bindValue(':middle_name', $middle_name, PDO::PARAM_STR);
         $stmt->bindValue(':sex', $sex, PDO::PARAM_STR);
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->bindValue(':alt_email', !empty($altEmail) ? $altEmail : null, PDO::PARAM_STR);
@@ -255,6 +281,55 @@ function insertApplicant(
         $stmt->execute();
 
         return ["success" => true];
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return ["success" => false, "error" => $e->getMessage()];
+    }
+}
+
+function insertHelper(
+    $pdo,
+    $accountId,
+    $firstName,
+    $middle_name,
+    $lastName,
+    $sex,
+    $email,
+    $altEmail,
+    $phoneNumber,
+    $civilStatus,
+    $nationality,
+    $fullAddress,
+
+) {
+    try {
+        // Prepare SQL query for inserting applicant
+        $query = "INSERT INTO helper 
+            (account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
+            civil_status, nationality, address, created_at) 
+            VALUES 
+            (:account_id, :first_name, :middle_name, :last_name, :sex, :email, :alt_email, :phone_number, 
+            :civil_status, :nationality, :address, NOW())";
+
+        $stmt = $pdo->prepare($query);
+
+        // Handle null values properly
+        $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
+        $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
+        $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
+        $stmt->bindValue(':middle_name', $middle_name, PDO::PARAM_STR);
+        $stmt->bindValue(':sex', $sex, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+        $stmt->bindValue(':alt_email', !empty($altEmail) ? $altEmail : null, PDO::PARAM_STR);
+        $stmt->bindValue(':phone_number', $phoneNumber, PDO::PARAM_STR);
+        $stmt->bindValue(':civil_status', $civilStatus, PDO::PARAM_STR);
+        $stmt->bindValue(':nationality', $nationality, PDO::PARAM_STR);
+        $stmt->bindValue(':address', $fullAddress, PDO::PARAM_STR);
+
+        $stmt->execute();
+        // Get the inserted helper's ID
+        $helperId = $pdo->lastInsertId();
+        return ["success" => true, "id" => $helperId];
     } catch (PDOException $e) {
         error_log("Database error: " . $e->getMessage());
         return ["success" => false, "error" => $e->getMessage()];

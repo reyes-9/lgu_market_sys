@@ -29,9 +29,6 @@ if (empty($_SESSION['csrf_token'])) {
 
     <div class="content-wrapper">
 
-        <?php include '../../includes/menu.php'; ?>
-
-
         <div class="form-container">
 
             <div class="form-header">
@@ -283,15 +280,6 @@ if (empty($_SESSION['csrf_token'])) {
 
     <?php include '../../includes/footer.php'; ?>
     <?php include '../../includes/theme.php'; ?>
-
-    <script>
-        // Theme
-        const application = document.querySelector('.application');
-        themeToggleButton.addEventListener("click", () => {
-            application.classList.toggle("dark");
-            application.classList.toggle("light");
-        });
-    </script>
     <script src="../../assets/js/toast.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -497,7 +485,6 @@ if (empty($_SESSION['csrf_token'])) {
             const altEmailInput = document.getElementById("altEmail");
             const emailError = document.getElementById("emailError");
             const altEmailError = document.getElementById("altEmailError");
-
 
             inputs.forEach(input => {
                 const parentDiv = input.closest(".form-group");

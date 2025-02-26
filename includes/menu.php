@@ -1,4 +1,8 @@
 <style>
+    .nav {
+        z-index: 1050 !important;
+    }
+
     .nav-link.menu {
         transition: background-color 0.3s ease, color 0.3s ease;
         color: #008080;
@@ -23,6 +27,7 @@
 </style>
 <?php
 $currentPage = basename($_SERVER['REQUEST_URI']);
+include 'cdn-resources.php';
 ?>
 <nav class="nav nav-pills nav-fill m-5">
     <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>

@@ -15,7 +15,7 @@
   <?php include '../../includes/nav.php'; ?>
 
   <div class="content-wrapper">
-    <?php include '../../includes/menu.php'; ?>
+
     <div class="container-fluid">
       <div class="row m-5 p-5 shadow rounded-3 profile light w-5">
 
@@ -59,16 +59,16 @@
 
   <script>
     // Theme
-    const profile = document.querySelector('.profile');
-    const divide = document.querySelector('.divide');
-    const table = document.querySelector('.custom-table');
+    // const profile = document.querySelector('.profile');
+    // const divide = document.querySelector('.divide');
+    // const table = document.querySelector('.custom-table');
 
-    themeToggleButton.addEventListener("click", () => {
-      profile.classList.toggle("dark");
-      profile.classList.toggle("light");
-      table.classList.toggle('dark');
-      table.classList.toggle('light');
-    });
+    // themeToggleButton.addEventListener("click", () => {
+    //   profile.classList.toggle("dark");
+    //   profile.classList.toggle("light");
+    //   table.classList.toggle('dark');
+    //   table.classList.toggle('light');
+    // });
 
     // Fetch the user data from the backend
     document.addEventListener('DOMContentLoaded', function() {
@@ -78,7 +78,7 @@
 
           // Handle stalls
           const stallsContainer = document.getElementById('stallsContainer');
-          stallsContainer.innerHTML = ''; // Clear previous entries
+          stallsContainer.innerHTML = '';
 
           if (!data.stalls || data.stalls.length === 0) {
             document.getElementById('stall_message').textContent = 'No stalls available.';

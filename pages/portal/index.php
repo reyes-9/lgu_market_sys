@@ -16,8 +16,6 @@
 
   <div class="content-wrapper">
 
-    <?php include '../../includes/menu.php'; ?>
-
     <div class="container-fluid">
       <div class="row m-5 p-5 shadow rounded-3 profile light">
 
@@ -54,7 +52,7 @@
             <button type="button" class="btn btn-warning position-relative" id="toggleNotifications">
               <i class="bi bi-bell-fill"></i>
 
-              <span class="position-absolute top-0 start-100 translate-middle p-2" id="notificationAlert">
+              <span class="position-absolute top-0 start-100 translate-middle p-2 " id="notificationAlert">
                 <span class="visually-hidden">New alerts</span>
               </span>
             </button>
@@ -147,18 +145,18 @@
 
   <script>
     // Theme
-    const profile = document.querySelector('.profile');
-    const divide = document.querySelector('.divide');
-    const table = document.querySelector('.custom-table');
+    // const profile = document.querySelector('.profile');
+    // const divide = document.querySelector('.divide');
+    // const table = document.querySelector('.custom-table');
 
-    themeToggleButton.addEventListener("click", () => {
-      profile.classList.toggle("dark");
-      profile.classList.toggle("light");
-      divide.classList.toggle('dark');
-      divide.classList.toggle('light');
-      table.classList.toggle('dark');
-      table.classList.toggle('light');
-    });
+    // themeToggleButton.addEventListener("click", () => {
+    //   profile.classList.toggle("dark");
+    //   profile.classList.toggle("light");
+    //   divide.classList.toggle('dark');
+    //   divide.classList.toggle('light');
+    //   table.classList.toggle('dark');
+    //   table.classList.toggle('light');
+    // });
 
     var notifcation_section = document.getElementById('notificationsSection');
     var profile_section = document.getElementById('profileCard');
