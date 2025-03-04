@@ -9,13 +9,16 @@ try {
         a.application_type, 
         a.status, 
         a.created_at,
-        ac.name AS account_name, 
-        st.stall_number ,          
+        ac.first_name,  
+        ac.middle_name,  
+        ac.last_name,  
+        CONCAT(ac.first_name, ' ', COALESCE(ac.middle_name, ''), ' ', ac.last_name) AS account_name, 
+        st.stall_number,          
         sec.section_name,     
         mk.market_name          
     FROM 
         applications a
-    LEFT JOIN profiles ac ON a.account_id = ac.account_id          
+    LEFT JOIN users ac ON a.account_id = ac.account_id          
     LEFT JOIN stalls st ON a.stall_id = st.id
     LEFT JOIN sections sec ON a.section_id = sec.id
     LEFT JOIN market_locations mk ON a.market_id = mk.id
@@ -34,18 +37,22 @@ try {
         a.application_type, 
         a.status, 
         a.created_at,
-        ac.name AS account_name,  
-        st.stall_number ,          
+        ac.first_name,  
+        ac.middle_name,  
+        ac.last_name,  
+        CONCAT(ac.first_name, ' ', COALESCE(ac.middle_name, ''), ' ', ac.last_name) AS account_name, 
+        st.stall_number,          
         sec.section_name,     
         mk.market_name           
     FROM 
         applications a
-    LEFT JOIN profiles ac ON a.account_id = ac.account_id        
+    LEFT JOIN users ac ON a.account_id = ac.account_id        
     LEFT JOIN stalls st ON a.stall_id = st.id
     LEFT JOIN sections sec ON a.section_id = sec.id
     LEFT JOIN market_locations mk ON a.market_id = mk.id
     WHERE a.application_type = :application_type
 ");
+
 
     $stmt_transfer->bindParam(':application_type', $applicationType);
     $applicationType = 'stall transfer';
@@ -54,23 +61,27 @@ try {
 
     // EXTENSION
     $stmt_extension = $pdo->prepare("
-        SELECT 
-            a.id, 
-            a.application_type, 
-            a.status, 
-            a.created_at,
-            a.ext_duration,
-            ac.name AS account_name,  
-            st.stall_number ,   
-            sec.section_name,
-            mk.market_name   
-        FROM 
-            applications a
-        LEFT JOIN profiles ac ON a.account_id = ac.account_id         
-        LEFT JOIN stalls st ON a.stall_id = st.id
-        LEFT JOIN sections sec ON a.section_id = sec.id
-        LEFT JOIN market_locations mk ON a.market_id = mk.id
-        WHERE a.application_type = :application_type
+    SELECT 
+        a.id, 
+        a.application_type, 
+        a.status, 
+        a.created_at,
+        e.duration AS ext_duration, -- Fetch duration from extensions table
+        ac.first_name,  
+        ac.middle_name,  
+        ac.last_name,  
+        CONCAT(ac.first_name, ' ', COALESCE(ac.middle_name, ''), ' ', ac.last_name) AS account_name, 
+        st.stall_number,   
+        sec.section_name,
+        mk.market_name   
+    FROM 
+        applications a
+    LEFT JOIN users ac ON a.account_id = ac.account_id         
+    LEFT JOIN stalls st ON a.stall_id = st.id
+    LEFT JOIN sections sec ON a.section_id = sec.id
+    LEFT JOIN market_locations mk ON a.market_id = mk.id
+    LEFT JOIN extensions e ON a.extension_id = e.id 
+    WHERE a.application_type = :application_type
     ");
 
     $stmt_extension->bindParam(':application_type', $applicationType);
@@ -85,23 +96,26 @@ try {
         a.application_type, 
         a.status, 
         a.created_at,
-        CONCAT(h.first_name, ' ' , h.last_name) AS helper_name,                    -- Get the helper's name from the helpers table
-        ac.name AS account_name,          -- Fetch the account name
-        st.stall_number,                  -- Stall number from the stalls table
-        sec.section_name,                 -- Section name
-        mk.market_name                    -- Market name
+        CONCAT(h.first_name, ' ', COALESCE(h.middle_name, ''), ' ' ,h.last_name) AS helper_name, 
+        ac.first_name,  
+        ac.middle_name,  
+        ac.last_name,  
+        CONCAT(ac.first_name, ' ', COALESCE(ac.middle_name, ''), ' ', ac.last_name) AS account_name,
+        st.stall_number,       
+        sec.section_name,               
+        mk.market_name                  
     FROM 
         applications a
-    LEFT JOIN profiles ac ON a.account_id = ac.account_id
-    LEFT JOIN stalls st ON a.stall_id = st.id           -- Join stalls to applications
-    LEFT JOIN helper h ON st.id = h.stall_id           -- Join helpers to stalls
+    LEFT JOIN users ac ON a.account_id = ac.account_id
+    LEFT JOIN stalls st ON a.stall_id = st.id           
+    LEFT JOIN helpers h ON st.id = h.stall_id          
     LEFT JOIN sections sec ON a.section_id = sec.id
     LEFT JOIN market_locations mk ON a.market_id = mk.id
     WHERE a.application_type = :application_type
 ");
 
     $stmt_helper->bindParam(':application_type', $applicationType);
-    $applicationType = 'add helper';
+    $applicationType = 'helper';
     $stmt_helper->execute();
     $stall_helper_results = $stmt_helper->fetchAll(PDO::FETCH_ASSOC);
 

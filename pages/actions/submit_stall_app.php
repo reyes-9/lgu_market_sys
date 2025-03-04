@@ -4,7 +4,7 @@ include_once "notifications.php";
 include "validate_document.php";
 include "upload_document.php";
 include "upload_application.php";
-include "get_user_info.php";
+include "get_user_id.php";
 
 try {
 
@@ -44,39 +44,6 @@ try {
 
     $application_number = $data['application_number'];
 
-    // Process Address
-    $addressParts = [
-        $data['house_no'],
-        $data['street'],
-        $data['barangay'],
-        $data['city'],
-        $data['province'],
-        $data['zip_code']
-    ];
-
-    $fullAddress = implode(', ', array_filter($addressParts));
-    $userInfo = getUserInfo($pdo, $account_id, $data['first_name'], $data['middle_name'], $data['last_name']);
-
-    if ($userInfo) {
-        $isApplicantInserted = insertApplicant(
-            $pdo,
-            $account_id,
-            $data['first_name'],
-            $data['middle_name'],
-            $data['last_name'],
-            $data['sex'],
-            $data['email'],
-            $data['alt_email'],
-            $data['contact_no'],
-            $data['civil_status'],
-            $data['nationality'],
-            $fullAddress
-        );
-    } else {
-        echo json_encode(["error" => "User not found"]);
-        exit();
-    }
-
     if (is_array($isApplicantInserted) && !$isApplicantInserted['success']) {
         http_response_code(500);
         $response['message'] = "Failed to insert applicant.";
@@ -101,6 +68,19 @@ try {
         $response['errors'][] = "Database error: Unable to submit application.";
         http_response_code(500);
         echo json_encode($response);
+        exit();
+    }
+
+    $userId = getUserId($pdo, $account_id, $data['first_name'], $data['middle_name'], $data['last_name']);
+
+    if ($userInfo) {
+        $isApplicantInserted = insertApplicant(
+            $pdo,
+            $userId,
+            $applicationId
+        );
+    } else {
+        echo json_encode(["error" => "User not found"]);
         exit();
     }
 
@@ -218,41 +198,21 @@ function validateApplicationData($data)
 }
 function insertApplicant(
     $pdo,
-    $accountId,
-    $firstName,
-    $middleName,
-    $lastName,
-    $sex,
-    $email,
-    $altEmail,
-    $phoneNumber,
-    $civilStatus,
-    $nationality,
-    $fullAddress
+    $userId,
+    $applicationId
 ) {
     try {
         // Prepare SQL query for inserting applicant
         $query = "INSERT INTO applicants 
-            (account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
-            civil_status, nationality, address, created_at) 
+            (user_id, application_id) 
             VALUES 
-            (:account_id, :first_name, :middle_name,:last_name, :sex, :email, :alt_email, :phone_number, 
-            :civil_status, :nationality, :address, NOW())";
+            (:user_id, :application_id, NOW())";
 
         $stmt = $pdo->prepare($query);
 
         // Handle null values properly
-        $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
-        $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
-        $stmt->bindValue(':middle_name', $middleName, PDO::PARAM_STR);
-        $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
-        $stmt->bindValue(':sex', $sex, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':alt_email', !empty($altEmail) ? $altEmail : null, PDO::PARAM_STR);
-        $stmt->bindValue(':phone_number', $phoneNumber, PDO::PARAM_STR);
-        $stmt->bindValue(':civil_status', $civilStatus, PDO::PARAM_STR);
-        $stmt->bindValue(':nationality', $nationality, PDO::PARAM_STR);
-        $stmt->bindValue(':address', $fullAddress, PDO::PARAM_STR);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':applciation_id', $applicationId, PDO::PARAM_STR);
 
         $stmt->execute();
 

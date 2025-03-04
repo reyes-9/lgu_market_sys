@@ -2,7 +2,6 @@
     /* Top Navigation Bar */
     .top-nav {
         width: 100%;
-        margin: auto;
         height: 60px !important;
         background-color: #fff;
         display: flex;
@@ -53,8 +52,6 @@
         font-size: 15px;
     }
 
-    .nav-link.menu:hover {}
-
     .nav-link.menu.active {
         background-color: #003366 !important;
         color: white;
@@ -85,32 +82,34 @@
     }
 </style>
 
-
-<!-- Top Navigation Bar -->
 <?php
-$currentPage = basename($_SERVER['REQUEST_URI']);
+$currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 ?>
 <div class="top-nav" id="topNav">
-    <a class="nav-brand light" href=" <?php echo ($currentPage == 'index.php' ? '#' : '../../index.php') ?>">
+    <a class="nav-brand light" href=" <?php echo ($currentPage == 'index.php' ||  $currentPage == 'lgu_market_sys' ? '#' : '../../index.php') ?>">
         <img src="../../images/favicon_192.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
         Public Market Monitoring System
     </a>
-    <div class="nav">
-        <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
 
-        <div class="nav-item dropdown position-relative m-0">
-            <a class="nav-link menu dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>"
-                href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Transactions
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
-                <li><a class="dropdown-item <?php echo $currentPage == 'stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stall_app">Stall Application</a></li>
-                <li><a class="dropdown-item <?php echo $currentPage == 'transfer_stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/transfer_stall_app">Transfer Stall Application</a></li>
-            </ul>
+    <?php
+    if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor') : ?>
+        <div class="nav">
+            <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
+
+            <div class="nav-item dropdown position-relative m-0">
+                <a class="nav-link menu dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>"
+                    href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Transactions
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
+                    <li><a class="dropdown-item <?php echo $currentPage == 'stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stall_app">Stall Application</a></li>
+                    <li><a class="dropdown-item <?php echo $currentPage == 'transfer_stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/transfer_stall_app">Transfer Stall Application</a></li>
+                </ul>
+            </div>
+
+            <a class="nav-link menu <?php echo $currentPage == 'stalls' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stalls">Stalls</a>
         </div>
-
-        <a class="nav-link menu <?php echo $currentPage == 'stalls' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stalls">Stalls</a>
-    </div>
+    <?php endif; ?>
 
     <div class="nav-icons">
         <i class="bi bi-brightness-high"></i>

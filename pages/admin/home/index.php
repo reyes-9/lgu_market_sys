@@ -13,38 +13,7 @@
 
 <body class="body light">
 
-  <nav class="navbar navbar-expand-lg shadow-sm light" id="navbar">
-    <div class="container">
-      <a class="navbar-brand light" href="#">
-        <img src="../favicon_192.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-        Public Market Monitoring System
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto text-light">
-          <li class="nav-item">
-            <a class="nav-link" href="http://localhost/lgu_market_sys/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#services">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">Contact Us</a>
-          </li>
-          <li class="nav-item m-1 p-1">
-            <button class="btn-toggle" id="theme-toggle">
-              <i class="bi bi-moon"></i>
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php include '../../../includes/nav.php'; ?>
 
   <!-- Toast -->
   <div class="toast-container mt-5 p-3 top-0 end-0">
@@ -142,7 +111,7 @@
             <div class="col-md-6 mb-3">
               <div class="card light shadow">
                 <div class="card-body">
-                  <h5 class="stat-title">Website Views</h5>
+                  <h5 class="stat-title">Monthly Applications</h5>
                   <canvas id="websiteViewsChart"></canvas>
                 </div>
               </div>
@@ -152,7 +121,7 @@
             <div class="col-md-6 mb-3">
               <div class="card light shadow">
                 <div class="card-body">
-                  <h5 class="stat-title">Daily Applications</h5>
+                  <h5 class="stat-title">Violations Trend</h5>
                   <canvas id="dailySalesChart"></canvas>
                 </div>
               </div>
@@ -164,148 +133,13 @@
     </div>
     <div class="row text-center">
       <div class="container">
-        <a href="../table/" class="btn btn-warning" tabindex="-1" role="button" aria-disabled="true">Go to Tables</a>
+        <a href="../table/" class="btn btn-warning" tabindex="-1" role="button" aria-disabled="true">Manage Applications</a>
       </div>
     </div>
 
   </div>
 
   <hr>
-
-  <!-- Dashboard Header -->
-  <!-- <div class="dashboard-header">
-    <h1 class="h3">Admin Dashboard</h1>
-    <button class="btn btn-primary">+ Add New Application</button>
-  </div> -->
-
-  <!-- Summary of Key Metrics -->
-  <!-- <div class="row"> -->
-  <!-- Active Vendors -->
-  <!-- <div class="col-md-3">
-      <div class="card dashboard-card bg-gradient-info">
-        <div class="card-body card-stats">
-          <i class="fas fa-user-friends card-icon"></i>
-          <div>
-            <h5 class="card-title">Active Vendors</h5>
-            <p class="stat-number">150</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-  <!-- Pending Applications -->
-  <!-- <div class="col-md-3">
-      <div class="card dashboard-card bg-gradient-warning">
-        <div class="card-body card-stats">
-          <i class="fas fa-hourglass-half card-icon"></i>
-          <div>
-            <h5 class="card-title">Pending Applications</h5>
-            <p class="stat-number">12</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-  <!-- Approved Applications -->
-  <!-- <div class="col-md-3">
-      <div class="card dashboard-card bg-gradient-success">
-        <div class="card-body card-stats">
-          <i class="fas fa-check-circle card-icon"></i>
-          <div>
-            <h5 class="card-title">Approved Applications</h5>
-            <p class="stat-number">35</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-  <!-- Rejected Applications -->
-  <!-- <div class="col-md-3">
-      <div class="card dashboard-card bg-gradient-danger">
-        <div class="card-body card-stats">
-          <i class="fas fa-times-circle card-icon"></i>
-          <div>
-            <h5 class="card-title">Rejected Applications</h5>
-            <p class="stat-number">5</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- Stalls and Feedback -->
-  <!-- <div class="row"> -->
-  <!-- Market Stalls -->
-  <!-- <div class="col-md-6">
-      <div class="card dashboard-card">
-        <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-store-alt card-icon"></i> Market Stalls</h5>
-          <p class="stat-number">Occupied: 130 | Vacant: 20</p>
-        </div>
-      </div>
-    </div> -->
-
-  <!-- Recent Feedback -->
-  <!-- <div class="col-md-6">
-      <div class="card dashboard-card">
-        <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-comment card-icon"></i> Recent Feedback</h5>
-          <ul class="list-unstyled">
-            <li>User 1: Issue with stall location</li>
-            <li>User 2: Need for more vendors</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- Recent Vendor Activities and Alerts -->
-  <!-- <div class="row"> -->
-  <!-- Recent Vendor Activities -->
-  <!-- <div class="col-md-6">
-      <div class="card dashboard-card">
-        <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-clipboard-list card-icon"></i> Recent Vendor Activities</h5>
-          <ul class="list-unstyled">
-            <li>Vendor A applied for stall transfer</li>
-            <li>Vendor B submitted a new application</li>
-          </ul>
-        </div>
-      </div>
-    </div> -->
-
-
-
-  <!-- Application Trends Chart -->
-  <!-- <div class="row">
-      <div class="col-md-12">
-        <div class="card dashboard-card chart-card">
-          <h5 class="card-title"><i class="fas fa-chart-line card-icon"></i> Application Trends</h5>
-          <canvas id="applicationsChart"></canvas>
-        </div>
-      </div>
-    </div> -->
-
-
-
-  <!-- Announcements -->
-  <!-- <div class="row">
-      <div class="col-md-12">
-        <div class="card dashboard-card">
-          <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-bullhorn card-icon"></i> Announcements</h5>
-            <ul class="announcement-list">
-              <li><i class="fas fa-exclamation-circle"></i> Public holiday on October 25th - Market will be closed.</li>
-              <li><i class="fas fa-exclamation-circle"></i> Maintenance work scheduled for next week.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-  </div> -->
-
 
   <?php include '../../../includes/footer.php'; ?>
   <?php include '../../../includes/theme.php'; ?>

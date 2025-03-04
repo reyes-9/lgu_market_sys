@@ -70,7 +70,7 @@ try {
                 s.stall_number, 
                 sec.section_name AS section_name, 
                 m.market_name AS market_name,
-                CONCAT(h.first_name, ' ', h.last_name) AS full_name,
+                CONCAT(h.first_name, ' ', COALESCE(h.middlename, ''), ' ', h.last_name) AS full_name
                 e.duration AS extension_duration,
                 app.id,
                 app.application_type,
@@ -82,7 +82,7 @@ try {
             JOIN sections sec ON app.section_id = sec.id
             JOIN market_locations m ON app.market_id = m.id
             LEFT JOIN extensions e ON app.extension_id = e.id
-            LEFT JOIN helper h ON app.helper_id = h.id
+            LEFT JOIN helpers h ON app.helper_id = h.id
             WHERE app.account_id = :account_id
             AND app.status != 'Withdrawn'
             ORDER BY app.created_at DESC

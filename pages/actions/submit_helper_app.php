@@ -306,7 +306,7 @@ function insertHelper(
 ) {
     try {
         // Prepare SQL query for inserting applicant
-        $query = "INSERT INTO helper 
+        $query = "INSERT INTO helpers 
             (stall_id, account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
             civil_status, nationality, address, created_at) 
             VALUES 

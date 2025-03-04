@@ -1,9 +1,8 @@
 <?php
 
-function getUserInfo($pdo, $account_id, $first_name, $middle_name, $last_name)
+function getUserId($pdo, $account_id, $first_name, $middle_name, $last_name)
 {
-    $query = "SELECT first_name, middle_name, last_name, email, alt_email, contact_no, 
-                     sex, civil_status, nationality, address
+    $query = "SELECT id
               FROM users 
               WHERE account_id = :account_id AND first_name = :first_name AND middle_name = :middle_name AND last_name = :last_name";
 

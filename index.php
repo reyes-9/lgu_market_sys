@@ -11,10 +11,30 @@
     <link rel="stylesheet" href="assets/css/index.css">
     <?php include 'includes/cdn-resources.php' ?>
 </head>
-<?php include 'includes/nav.php'; ?>
+<?php
+
+session_start();
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo '<script>
+            alert("Please log in to continue.");
+            window.location.href = "/lgu_market_sys/pages/actions/signup.php";
+           </script>';
+    exit();
+}
+
+// Only allow vendors
+if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' && $_SESSION['user_type'] !== 'Admin') {
+    echo '<script>
+   alert("Please log in to continue.");
+   window.location.href = "/lgu_market_sys/pages/actions/signup.php";
+  </script>';
+    exit();
+}
+?>
 
 <body class="body light">
-
+    <?php include 'includes/nav.php'; ?>
     <!-- Main content -->
     <div class="content-wrapper text-light">
         <h1>Public Market Monitoring System</h1>
@@ -22,7 +42,11 @@
 
         <div class="button-container">
             <a class="btn btn-custom" href="/lgu_market_sys/pages/feedback">Feedback Services</a>
-            <a class="btn btn-custom" href="/lgu_market_sys/pages/portal">Vendor Portal</a>
+            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'vendor'): ?>
+                <a class="btn btn-custom" href="/lgu_market_sys/pages/portal">Vendor Portal</a>
+            <?php else: ?>
+                <a class="btn btn-custom disabled" href="#" onclick="alert('Only vendors can access this page.');">Vendor Portal</a>
+            <?php endif; ?>
             <a class="btn btn-custom" href="/lgu_market_sys/pages/map">Vendor Mapping</a>
         </div>
     </div>

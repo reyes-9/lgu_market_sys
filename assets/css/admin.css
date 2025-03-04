@@ -1,11 +1,5 @@
 @import url("main.css");
 
-body {
-  background-color: rgb(245, 245, 245);
-  overflow-x: hidden;
-  height: 100vh;
-}
-
 .title.light {
   color: #212529;
 }
@@ -86,9 +80,11 @@ table thead {
   top: 0;
   z-index: 1;
 }
+
 .table-container {
   max-height: 500px;
 }
+
 .custom-table.light td {
   padding: 15px;
   background-color: #003366;
@@ -185,7 +181,6 @@ table td button {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Common Card Body Styles */
 .card-body {
   padding: 25px;
   text-align: center;
@@ -197,9 +192,18 @@ table td button {
   color: #f0f0f0 !important;
   margin-bottom: 15px;
 }
-.table-menu {
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.tables {
+  background-color: #f8f9fc;
+  color: #003366;
+  border-radius: 40px;
+  box-shadow: 0 1px 100px rgba(0, 0, 0, 0.1);
+  border: 6px solid #003366;
+  padding: 0px 50px;
+}
+
+.tables h4 {
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #003366;
 }

@@ -12,96 +12,69 @@
 </head>
 
 <body class="body light">
+    <?php include '../../../includes/nav.php'; ?>
 
-    <nav class="navbar navbar-expand-lg shadow-sm light" id="navbar">
-        <div class="container">
-            <a class="navbar-brand light" href="#">
-                <img src="../favicon_192.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-                Public Market Monitoring System
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto text-light">
-                    <li class="nav-item">
-                        <a class="nav-link" href="http://localhost/lgu_market_sys/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact Us</a>
-                    </li>
-                    <li class="nav-item m-1 p-1">
-                        <button class="btn-toggle" id="theme-toggle">
-                            <i class="bi bi-moon"></i>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
 
-    <div class="container-fluid text-center">
-        <div class="container">
+        <div class="container m-0 w-100 p-0">
             <div class="row justify-content-center mb-3">
-                <div class="col-lg-10 col-md-12 mt-5">
-                    <div class="table-menu container">
-                        <div class="row align-items-center">
-                            <!-- Title Column -->
-                            <div class="col-md-3 text-center">
-                                <div class="title">
-                                    <h2>Select Table</h2>
-                                </div>
+                <div class="table-menu container">
+                    <div class="m-3">
+                        <div class="container">
+                            <a href="../home/" class="btn btn-return" tabindex="-1" role="button" aria-disabled="true"> <i class="bi bi-arrow-left"></i> Reurn to Dashboard</a>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <!-- Title Column -->
+                        <div class="col-md-3 text-center">
+                            <div class="title">
+                                <h2>Select Table</h2>
                             </div>
-                            <div class="col-md-9">
-                                <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
-                                    <!-- Card 1 -->
-                                    <div class="col">
-                                        <div class="card-db card-stall" onclick="">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Stall Application</h5>
-                                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+                                <!-- Card 1 -->
+                                <div class="col">
+                                    <div class="card-db card-stall" onclick="">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Stall Application</h5>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Card 2 -->
-                                    <div class="col">
-                                        <div class="card-db card-transfer" onclick="window.location.href='#'">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Stall Transfer Application</h5>
-                                            </div>
+                                <!-- Card 2 -->
+                                <div class="col">
+                                    <div class="card-db card-transfer" onclick="window.location.href='#'">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Stall Transfer Application</h5>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Card 3 -->
-                                    <div class="col">
-                                        <div class="card-db card-ext" onclick="window.location.href='#'">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Stall Extension Application</h5>
-                                            </div>
+                                <!-- Card 3 -->
+                                <div class="col">
+                                    <div class="card-db card-ext" onclick="window.location.href='#'">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Stall Extension Application</h5>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Card 4 -->
-                                    <div class="col">
-                                        <div class="card-db card-helper" onclick="window.location.href='#'">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Helper Application</h5>
-                                            </div>
+                                <!-- Card 4 -->
+                                <div class="col">
+                                    <div class="card-db card-helper" onclick="window.location.href='#'">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Helper Application</h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
 
-
+                <div class="tables d-none" id="tables">
                     <!-- Stall Transfer Table -->
                     <div class="container stall-transfer d-none">
 
@@ -109,7 +82,8 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
 
-                        <h4 class="mb-3">Stall Transfer Applications Table</h4>
+                        <h4 class="text-center">Stall Transfer Applications Table</h4>
+                        <hr>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="">
 
                         </div>
@@ -125,7 +99,7 @@
                                         <th>Application Type</th>
                                         <th>Status</th>
                                         <th>Created At</th>
-                                        <th>Actions</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body-stall-transfer"></tbody>
@@ -138,7 +112,7 @@
                         <button class="btn btn-return" data-name="stallBtn">
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
-                        <h4 class="mb-3">Stall Applications Table</h4>
+                        <h4 class="text-center">Stall Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="filter-container">
 
                         </div>
@@ -154,7 +128,7 @@
                                         <th>Application Type</th>
                                         <th>Status</th>
                                         <th>Created At</th>
-                                        <th>Actions</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body-stall-app"></tbody>
@@ -167,7 +141,7 @@
                         <button class="btn btn-return" data-name="extensionBtn">
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
-                        <h4 class="mb-3">Stall Extension Applications Table</h4>
+                        <h4 class="text-center">Stall Extension Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="filter-container">
 
                         </div>
@@ -184,7 +158,7 @@
                                         <th>Extension Duration</th>
                                         <th>Status</th>
                                         <th>Created At</th>
-                                        <th>Actions</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body-stall-extension"></tbody>
@@ -197,7 +171,7 @@
                         <button class="btn btn-return" data-name="helperBtn">
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
-                        <h4 class="mb-3">Helper Applications Table</h4>
+                        <h4 class="text-center">Helper Applications Table</h4>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="filter-container">
 
                         </div>
@@ -214,7 +188,7 @@
                                         <th>Helper Name</th>
                                         <th>Status</th>
                                         <th>Created At</th>
-                                        <th>Actions</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body-stall-helper"></tbody>
@@ -222,17 +196,11 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
-
-
-    <div class="row text-center">
-        <div class="container">
-            <a href="../home/" class="btn btn-warning" tabindex="-1" role="button" aria-disabled="true">Go to Dashboard</a>
-        </div>
-    </div>
-
 
     <?php include '../../../includes/footer.php'; ?>
     <?php include '../../../includes/theme.php'; ?>
@@ -305,6 +273,8 @@
     </script>
 
     <script>
+        let tableMenu = document.querySelector(".table-menu");
+        let tables = document.getElementById("tables");
         document.addEventListener("DOMContentLoaded", function() {
 
             document.querySelector(".card-stall").addEventListener("click", function() {
@@ -337,10 +307,25 @@
                     returnToTableMenu(dataName);
                 });
             });
+
+            document.body.addEventListener("click", function(event) {
+                if (event.target.classList.contains("start-review-btn")) {
+                    const button = event.target;
+                    const applicationId = button.getAttribute("data-id");
+                    const accountName = button.getAttribute("data-account-name");
+                    const stallNumber = button.getAttribute("data-stall-number");
+                    const sectionName = button.getAttribute("data-section-name");
+                    const marketName = button.getAttribute("data-market-name");
+                    const applicationType = button.getAttribute("data-application-type");
+                    const status = button.getAttribute("data-status");
+
+                    startReview(applicationId);
+                }
+            });
         })
 
 
-        const filterOptions = ['All Applications', 'Approved', 'Submitted', 'Rejected', 'Withdrawn'];
+        const filterOptions = ['All Applications', 'Approved', 'Submitted', 'Under Review', 'Rejected', 'Withdrawn'];
 
         function createFilterButtons(type) {
             const containers = document.querySelectorAll('.filter-container');
@@ -398,15 +383,19 @@
 
             switch (type) {
                 case 'stallBtn':
+                    tables.classList.toggle("d-none");
                     stallAppDiv.classList.toggle("d-none");
                     break;
                 case 'transferBtn':
+                    tables.classList.toggle("d-none");
                     stallTransferDiv.classList.toggle("d-none");
                     break;
                 case 'extensionBtn':
+                    tables.classList.toggle("d-none");
                     stallExtensionDiv.classList.toggle("d-none");
                     break;
                 case 'helperBtn':
+                    tables.classList.toggle("d-none");
                     stallHelperDiv.classList.toggle("d-none");
                     break;
             }
@@ -415,9 +404,8 @@
 
         function showTableStall() {
 
-            let tableMenu = document.querySelector(".table-menu");
             let stallStallDiv = document.querySelector(".stall-app");
-
+            tables.classList.toggle("d-none");
             tableMenu.classList.add("d-none");
             stallStallDiv.classList.toggle("d-none");
 
@@ -425,9 +413,8 @@
 
         function showTableTransfer() {
 
-            let tableMenu = document.querySelector(".table-menu");
             let stallTransferDiv = document.querySelector(".stall-transfer");
-
+            tables.classList.toggle("d-none");
             tableMenu.classList.add("d-none");
             stallTransferDiv.classList.toggle("d-none");
 
@@ -435,9 +422,8 @@
 
         function showTableExtension() {
 
-            let tableMenu = document.querySelector(".table-menu");
             let stallExtensionDiv = document.querySelector(".stall-extend");
-
+            tables.classList.remove("d-none");
             tableMenu.classList.add("d-none");
             stallExtensionDiv.classList.toggle("d-none");
 
@@ -445,9 +431,8 @@
 
         function showTableHelper() {
 
-            let tableMenu = document.querySelector(".table-menu");
             let stallHelperDiv = document.querySelector(".stall-helper");
-
+            tables.classList.toggle("d-none");
             tableMenu.classList.add("d-none");
             stallHelperDiv.classList.toggle("d-none");
 
@@ -455,9 +440,8 @@
     </script>
 
     <script>
-  
         function fetchTableStall(filter) {
-            fetch('../../actions/admin_action.php')
+            fetch('../../actions/get_all_stalls.php')
                 .then(response => response.json())
                 .then(data => {
                     const stallTableBody = document.getElementById('table-body-stall-app');
@@ -481,17 +465,16 @@
                     <td>${row.status}</td>
                     <td>${row.created_at}</td>
                     <td>
-                        <div class="btn-group dropend">
-                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Select
+                            <button class="btn btn-sm btn-warning start-review-btn" 
+                                data-id="${row.id}" 
+                                data-account-name="${row.account_name}" 
+                                data-stall-number="${row.stall_number}" 
+                                data-section-name="${row.section_name}" 
+                                data-market-name="${row.market_name}" 
+                                data-application-type="${row.application_type}" 
+                                data-status="${row.status}">
+                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
                             </button>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" href="#">Approve</button></li>
-                                <li><button class="dropdown-item" href="#">Reject</button></li>
-                                <li><button class="dropdown-item" href="#">Delete</button></li>
-                                <li><button class="dropdown-item" href="#">View Application</button></li>
-                            </ul>
-                        </div>
                     </td>
                 `;
 
@@ -502,7 +485,7 @@
         }
 
         function fetchTableHelper(filter) {
-            fetch('../../actions/admin_action.php')
+            fetch('../../actions/get_all_stalls.php')
                 .then(response => response.json())
                 .then(data => {
                     const stallHelperTableBody = document.getElementById('table-body-stall-helper');
@@ -526,17 +509,16 @@
                         <td>${row.status}</td>
                         <td>${row.created_at}</td>
                         <td>
-                            <div class="btn-group dropend">
-                                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Select
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><button class="dropdown-item" href="#">Approve</button></li>
-                                    <li><button class="dropdown-item" href="#">Reject</button></li>
-                                    <li><button class="dropdown-item" href="#">Delete</button></li>
-                                    <li><button class="dropdown-item" href="#">View Document</button></li>
-                                </ul>
-                            </div>
+                            <button class="btn btn-sm btn-warning start-review-btn" 
+                                data-id="${row.id}" 
+                                data-account-name="${row.account_name}" 
+                                data-stall-number="${row.stall_number}" 
+                                data-section-name="${row.section_name}" 
+                                data-market-name="${row.market_name}" 
+                                data-application-type="${row.application_type}" 
+                                data-status="${row.status}">
+                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                            </button>
                         </td>
                     `;
                         stallHelperTableBody.appendChild(tr);
@@ -546,7 +528,7 @@
         }
 
         function fetchTableStallExtend(filter) {
-            fetch('../../actions/admin_action.php')
+            fetch('../../actions/get_all_stalls.php')
                 .then(response => response.json())
                 .then(data => {
                     const stallExtensionTableBody = document.getElementById('table-body-stall-extension');
@@ -569,26 +551,25 @@
                         <td>${row.status}</td>
                         <td>${row.created_at}</td>
                         <td>
-                            <div class="btn-group dropend">
-                                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Select
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><button class="dropdown-item" href="#">Approve</button></li>
-                                    <li><button class="dropdown-item" href="#">Reject</button></li>
-                                    <li><button class="dropdown-item" href="#">Delete</button></li>
-                                    <li><button class="dropdown-item" href="#">View Application</button></li>
-                                </ul>
-                            </div>
+                            <button class="btn btn-sm btn-warning start-review-btn" 
+                                data-id="${row.id}" 
+                                data-account-name="${row.account_name}" 
+                                data-stall-number="${row.stall_number}" 
+                                data-section-name="${row.section_name}" 
+                                data-market-name="${row.market_name}" 
+                                data-application-type="${row.application_type}" 
+                                data-status="${row.status}">
+                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                            </button>
                         </td>
-                    `;
+                        `;
                         stallExtensionTableBody.appendChild(tr);
                     });
                 }).catch(error => console.error('Error fetching table data:', error));
         }
 
         function fetchTableStallTransfer(filter) {
-            fetch('../../actions/admin_action.php')
+            fetch('../../actions/get_all_stalls.php')
                 .then(response => response.json())
                 .then(data => {
                     const stallTransferTableBody = document.getElementById('table-body-stall-transfer');
@@ -609,22 +590,43 @@
                         <td>${row.status}</td>
                         <td>${row.created_at}</td>
                         <td>
-                            <div class="btn-group dropend">
-                                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Select
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><button class="dropdown-item" href="#">Approve</button></li>
-                                    <li><button class="dropdown-item" href="#">Reject</button></li>
-                                    <li><button class="dropdown-item" href="#">Delete</button></li>
-                                    <li><button class="dropdown-item" href="#">View Application</button></li>
-                                </ul>
-                            </div>
+                            <button class="btn btn-sm btn-warning start-review-btn" 
+                                data-id="${row.id}" 
+                                data-account-name="${row.account_name}" 
+                                data-stall-number="${row.stall_number}" 
+                                data-section-name="${row.section_name}" 
+                                data-market-name="${row.market_name}" 
+                                data-application-type="${row.application_type}" 
+                                data-status="${row.status}">
+                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                            </button>
                         </td>
                     `;
                         stallTransferTableBody.appendChild(tr);
                     });
+                }).catch(error => console.error('Error fetching table data:', error));
+        }
+
+        function startReview(applicationId) {
+            fetch('../../actions/start_review.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        application_id: applicationId
+                    })
                 })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert("Review started!");
+                        window.location.href = `/lgu_market_sys/pages/admin/review/?id=${applicationId}`;
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
     </script>
 
