@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="images/favicon_192.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/index.css">
-    <?php include 'includes/cdn-resources.php' ?>
+    <?php include "includes\cdn-resources.php" ?>
 </head>
 <?php
 
@@ -42,7 +40,7 @@ if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' 
 
         <div class="button-container">
             <a class="btn btn-custom" href="/lgu_market_sys/pages/feedback">Feedback Services</a>
-            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'vendor'): ?>
+            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor'): ?>
                 <a class="btn btn-custom" href="/lgu_market_sys/pages/portal">Vendor Portal</a>
             <?php else: ?>
                 <a class="btn btn-custom disabled" href="#" onclick="alert('Only vendors can access this page.');">Vendor Portal</a>
@@ -54,7 +52,6 @@ if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' 
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
     <?php include 'includes/theme.php'; ?>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

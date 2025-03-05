@@ -126,6 +126,7 @@
         function validateForm(event) {
             event.preventDefault(); // Prevent default form submission
 
+            let form = document.getElementById("login");
             let email = document.forms["login"]["email"].value.trim();
             let password = document.forms["login"]["password"].value.trim();
 
@@ -162,6 +163,7 @@
                         }, 1500);
 
                     } else {
+                        form.reset();
                         displayToast(data.message, "error");
                     }
                 })

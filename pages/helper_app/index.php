@@ -710,8 +710,9 @@ if (empty($_SESSION['csrf_token'])) {
                         ownerMiddleNameInput.value = middleName;
                         ownerLastNameInput.value = lastName;
 
-                        ownerIdInput.value = data.stalls[3].account_id;
-
+                        data.stalls.forEach(stall => {
+                            ownerIdInput.value = stall.account_id;
+                        });
 
                         data.stalls.forEach((stall, index) => {
                             const row = document.createElement('tr');

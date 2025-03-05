@@ -160,23 +160,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 
 // Get session status
-$session_status = session_status();
-$status_message = '';
-
-switch ($session_status) {
-    case PHP_SESSION_DISABLED:
-        $status_message = 'Sessions are disabled.';
-        break;
-    case PHP_SESSION_NONE:
-        $status_message = 'No session exists.';
-        break;
-    case PHP_SESSION_ACTIVE:
-        $status_message = 'A session is already active.';
-        break;
-}
-
-// Print JavaScript console log
-echo "<script>console.log('Session Status: " . addslashes($status_message) . "');</script>";
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -417,7 +400,9 @@ if (empty($_SESSION['csrf_token'])) {
                     if (data.success) {
                         displayToast("Registration successful!", "success");
                         form.reset();
-                        location.reload();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     } else {
                         displayToast(data.message || "Registration failed. Please try again.", "error");
                     }

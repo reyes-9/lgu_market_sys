@@ -1,143 +1,179 @@
 <style>
-    /* Top Navigation Bar */
-    .top-nav {
-        width: 100%;
-        height: 60px !important;
-        background-color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 15px 100px !important;
-        position: relative !important;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        /* border-radius: 10px; */
-    }
-
-    .nav {
-        display: flex !important;
-        flex: 1 !important;
-        justify-content: center;
-        gap: 100px;
-
-    }
-
-    .nav-icons {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .nav-icons i {
-        font-size: 22px;
-        cursor: pointer;
-        color: #333;
-        transition: color 0.3s ease-in-out;
-    }
-
-    .nav-icons i:hover {
-        color: #1e40af;
-    }
-
-    .nav-brand {
-        font-size: 20px;
-        cursor: pointer;
-        color: #333;
-        transition: color 0.3s ease-in-out;
-        text-decoration: none;
-    }
-
-    .nav-link.menu {
-        transition: background-color 0.3s ease, color 0.3s ease;
-        color: #008080;
-        font-size: 15px;
-    }
-
-    .nav-link.menu.active {
-        background-color: #003366 !important;
+    a.login {
+        background-color: #003366;
         color: white;
-        font-weight: bold;
-        border-radius: 5px;
+        font-weight: 600;
     }
 
-    .nav-item.dropdown {
-        margin: 0px 0px 0px 0px !important;
+    a.login:hover {
+        background: rgb(10, 70, 129) !important;
+        color: white;
     }
 
-    /* Notifications */
-    .notifications {
-        display: none;
+    a.signup {
+        outline: none;
+        border: none;
+        display: inline-block;
+        position: relative;
+        background: transparent;
+        cursor: pointer;
+        color: #003366;
+    }
+
+    a.signup::after {
+        content: '';
         position: absolute;
-        right: 20px;
-        top: 60px;
-        background: white;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #003366;
+        transition: transform 0.25s ease-out;
+        transform-origin: center center;
+    }
+
+    a.signup:hover::after {
+        visibility: visible;
+        transform: scaleX(1);
+        transform-origin: center center;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        background-color: #fff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        width: 300px;
-        padding: 10px;
+        border-radius: 4px;
+        padding: 5px;
         z-index: 1000;
     }
 
-    .notifications.show {
+    .dropdown-item {
         display: block;
+        padding: 10px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
     }
 </style>
 
 <?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLogin = isset($_SESSION['user_id']) ? true : false;
 $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 ?>
-<div class="top-nav" id="topNav">
-    <a class="nav-brand light" href=" <?php echo ($currentPage == 'index.php' ||  $currentPage == 'lgu_market_sys' ? '#' : '../../index.php') ?>">
-        <img src="../../images/favicon_192.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-        Public Market Monitoring System
-    </a>
 
-    <?php
-    if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor') : ?>
-        <div class="nav">
-            <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
 
-            <div class="nav-item dropdown position-relative m-0">
-                <a class="nav-link menu dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>"
-                    href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Transactions
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
-                    <li><a class="dropdown-item <?php echo $currentPage == 'stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stall_app">Stall Application</a></li>
-                    <li><a class="dropdown-item <?php echo $currentPage == 'transfer_stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/transfer_stall_app">Transfer Stall Application</a></li>
+    <div class="container-fluid">
+        <!-- Brand Logo -->
+        <a class="navbar-brand" href="<?php echo !$isLogin ? '#' : ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '../../index.php'); ?>">
+            <img src="<?php echo $isLogin ? 'images/favicon_192.png' : '../../images/favicon_192.png'; ?>" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+            Public Market Monitoring System
+        </a>
+
+        <!-- Navbar Toggler for Mobile View -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <?php
+            $allowedPages = ['portal', 'stall_app', 'transfer_stall_app', 'stalls', 'violation', 'track_app', 'stall_extend', 'helper_app'];
+            if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor' && isset($currentPage) && in_array($currentPage, $allowedPages)) : ?>
+                <!-- Center Navigation Links -->
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link menu dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>" href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Transactions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
+                            <li><a class="dropdown-item <?php echo $currentPage == 'stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stall_app">Stall Application</a></li>
+                            <li><a class="dropdown-item <?php echo $currentPage == 'transfer_stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/transfer_stall_app">Transfer Stall Application</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu <?php echo $currentPage == 'stalls' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stalls">Stalls</a>
+                    </li>
                 </ul>
-            </div>
+            <?php endif; ?>
 
-            <a class="nav-link menu <?php echo $currentPage == 'stalls' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stalls">Stalls</a>
-        </div>
-    <?php endif; ?>
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                <?php echo $isLogin ? '' : '       <li class="nav-item">
+                    <a href="http://localhost/lgu_market_sys/pages/actions/login.php" class="btn login px-3 rounded-pill">Login</a>
+                </li>' ?>
+                <li class="nav-item">
+                    <?php if ($isLogin): ?>
+                        <a href="<?php echo ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '../../index.php') ?>" class="btn signup">Home</a>
+                    <?php endif; ?>
+                </li>
+                <li class="nav-item">
+                    <a href="http://localhost/lgu_market_sys/pages/actions/signup.php" class="btn signup">Sign up</a>
+                </li>
+            </ul>
 
-    <div class="nav-icons">
-        <i class="bi bi-brightness-high"></i>
-        <i class="bi bi-bell" id="notificationBell"></i>
-        <div class="notifications" id="notificationsList">
-            <p>No new notifications</p>
+            <!-- Right-side Icons -->
+            <ul class="navbar-nav px-5 mx-5 d-flex align-items-center">
+                <li class="nav-item">
+                    <i class="bi bi-brightness-high me-3"></i>
+                </li>
+                <li class="nav-item position-relative">
+                    <i class="bi bi-bell me-3" id="notificationBell"></i>
+                    <div class="notifications position-absolute bg-white shadow rounded p-2" id="notificationsList" style="display:none; width: 300px; right:0; top:40px;">
+                        <p class="m-0">No new notifications</p>
+                    </div>
+                </li>
+                <ul class="navbar-nav d-flex align-items-center justify-content-center w-100">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle" style="cursor: pointer;"></i>
+                        </a>
+                        <?php echo !$isLogin ? '' : '
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="http://localhost/lgu_market_sys/pages/actions/logout.php">Logout</a></li>
+                        </ul>' ?>
+                    </li>
+                </ul>
+            </ul>
+
         </div>
-        <i class="bi bi-person-circle"></i>
     </div>
-</div>
+</nav>
 
-<!-- JavaScript -->
+<!-- JavaScript for Notifications -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-
-        // Notifications
         let notificationBell = document.getElementById("notificationBell");
         let notificationsList = document.getElementById("notificationsList");
 
         notificationBell.addEventListener("click", function(event) {
             event.stopPropagation();
-            notificationsList.classList.toggle("show");
+            notificationsList.style.display = notificationsList.style.display === "block" ? "none" : "block";
         });
 
         document.addEventListener("click", function(event) {
             if (!notificationsList.contains(event.target) && !notificationBell.contains(event.target)) {
-                notificationsList.classList.remove("show");
+                notificationsList.style.display = "none";
             }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+        let dropdownList = dropdownElementList.map(function(dropdownToggleEl) {
+            return new bootstrap.Dropdown(dropdownToggleEl);
         });
     });
 </script>

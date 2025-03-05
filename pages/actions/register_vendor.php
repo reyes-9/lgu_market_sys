@@ -28,6 +28,7 @@ foreach ($requiredFields as $field) {
 }
 
 // Sanitize and validate inputs
+
 $accountId = $_SESSION['user_id'];
 $first_name = htmlspecialchars(trim($_POST['first_name']));
 $middle_name = htmlspecialchars(trim($_POST['middle_name']));
@@ -67,13 +68,13 @@ $addressParts = [
 // Remove empty values and join with a comma
 $address = implode(', ', array_filter($addressParts));
 
-// Check if email already exists in vendors table
+// Check if email already exists in users table
 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email OR alt_email = :altEmail");
 $stmt->execute(['email' => $email, 'altEmail' => $altEmail]);
 
 if ($stmt->fetch()) {
     http_response_code(409);  // Conflict (email already exists)
-    echo json_encode(["success" => false, "message" => "Email already exists as a vendor."]);
+    echo json_encode(["success" => false, "message" => "Email already used."]);
     exit;
 }
 
@@ -86,6 +87,17 @@ if (!$stmt->fetch()) {
     echo json_encode(["success" => false, "message" => "Account not found."]);
     exit;
 }
+
+// Check if account already has a vendor
+$stmt = $pdo->prepare("SELECT id FROM users WHERE account_id = :accountId");
+$stmt->execute(['accountId' => $accountId]);
+
+if ($stmt->fetch()) {
+    http_response_code(409);  // Conflict (vendor already exists for this account)
+    echo json_encode(["success" => false, "message" => "This account is already registered as a vendor."]);
+    exit;
+}
+
 
 // Begin transaction
 $pdo->beginTransaction();

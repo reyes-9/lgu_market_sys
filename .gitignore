@@ -1,0 +1,4 @@
+# Ignore IDE/editor settings
+.vscode/
+upload/*
+!upload/.gitkeep

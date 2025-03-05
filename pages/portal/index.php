@@ -7,7 +7,7 @@
   <title>Vendor Portal - Public Market Monitoring System</title>
   <link rel="icon" type="image/png" href="../../images/favicon_192.png">
   <link rel="stylesheet" href="../../assets/css/vendor_portal.css">
-  <?php include '../../includes/cdn-resources.php'; ?>
+  <?php include "../../includes/cdn-resources.php"; ?>
 </head>
 
 <body class="body light">
@@ -140,11 +140,11 @@
     </div>
   </div>
 
+
   <?php include '../../includes/footer.php'; ?>
   <?php include '../../includes/theme.php'; ?>
 
   <script>
-  
     var notifcation_section = document.getElementById('notificationsSection');
     var profile_section = document.getElementById('profileCard');
 
@@ -168,7 +168,6 @@
     });
   </script>
   <script>
-
     document.addEventListener('DOMContentLoaded', function() {
 
       fetchUser();
@@ -253,7 +252,7 @@
     function renderNotifications(notifications) {
       const notificationList = document.getElementById('notificationList');
 
-      notificationList.innerHTML = ""; 
+      notificationList.innerHTML = "";
 
       notifications.forEach(notification => {
         const notificationItem = document.createElement('li');

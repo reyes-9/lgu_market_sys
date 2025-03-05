@@ -5,9 +5,11 @@ include "validate_document.php";
 include "upload_document.php";
 include "upload_application.php";
 include "get_user_id.php";
+include "insert_applicant.php";
 
 try {
 
+    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
     $pdo->beginTransaction();
 
     if (session_status() == PHP_SESSION_NONE) {
@@ -18,7 +20,6 @@ try {
         http_response_code(403);
         exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
     }
-
 
     if (!isset($_SESSION['user_id'])) {
         http_response_code(401);
@@ -44,13 +45,7 @@ try {
 
     $application_number = $data['application_number'];
 
-    if (is_array($isApplicantInserted) && !$isApplicantInserted['success']) {
-        http_response_code(500);
-        $response['message'] = "Failed to insert applicant.";
-        $response['errors'][] = "Database Error: " . $isApplicantInserted['error'];
-        echo json_encode($response);
-        exit();
-    }
+
 
     // Insert Application
     $applicationId = uploadApplication(
@@ -64,53 +59,48 @@ try {
     );
 
     if (!$applicationId || !is_numeric($applicationId)) {
-        $response['message'] = "Failed to submit application.";
-        $response['errors'][] = "Database error: Unable to submit application.";
-        http_response_code(500);
-        echo json_encode($response);
-        exit();
+        throw new Exception("Failed to submit application.");
     }
 
     $userId = getUserId($pdo, $account_id, $data['first_name'], $data['middle_name'], $data['last_name']);
 
-    if ($userInfo) {
-        $isApplicantInserted = insertApplicant(
-            $pdo,
-            $userId,
-            $applicationId
-        );
-    } else {
-        echo json_encode(["error" => "User not found"]);
-        exit();
+    if (!$userId) {
+        throw new Exception("User not found.");
     }
+
+    $isApplicantInserted = insertApplicant($pdo, $userId["id"], intval($applicationId));
+    if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
+        throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
+    }
+
 
     // Upload Documents
     $proofResidencyUpload = uploadDocument($pdo, 'proof_residency', $applicationId, "Proof of Residency");
     $validIdFileUpload = uploadDocument($pdo, 'valid_id_file', $applicationId, $data['valid_id_type']);
 
     if (!$proofResidencyUpload['success'] || !$validIdFileUpload['success']) {
-        $response['message'] = "Failed to upload files.";
-        $response['errors'][] = "Error uploading documents.";
-        http_response_code(500);
-        echo json_encode($response);
-        exit();
+        throw new Exception("Failed to upload files.");
     }
 
+    unset($_SESSION['csrf_token']);
     $pdo->commit();
-    // Success Response
+    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+
     $response['success'] = true;
     $response['message'] = "Application submitted successfully.";
     $type = 'Stall Application';
     $message = sprintf('Your application for %s has been successfully submitted. Your Application Form Number is: %s.', $type, $application_number);
 
     insertNotification($pdo, $account_id, $type, $message, 'unread');
+    http_response_code(201);
     echo json_encode($response);
     exit();
 } catch (Exception $e) {
-    // Rollback if any error occurs
-    $pdo->rollBack();
 
-    // Log error and return response
+    unset($_SESSION['csrf_token']);
+    $pdo->rollBack();
+    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+
     error_log("Transaction failed: " . $e->getMessage());
     http_response_code(500);
     $response['success'] = false;
@@ -119,7 +109,6 @@ try {
     echo json_encode($response);
     exit();
 }
-
 
 
 function validateApplicationData($data)
@@ -195,30 +184,4 @@ function validateApplicationData($data)
     }
 
     return $errors;
-}
-function insertApplicant(
-    $pdo,
-    $userId,
-    $applicationId
-) {
-    try {
-        // Prepare SQL query for inserting applicant
-        $query = "INSERT INTO applicants 
-            (user_id, application_id) 
-            VALUES 
-            (:user_id, :application_id, NOW())";
-
-        $stmt = $pdo->prepare($query);
-
-        // Handle null values properly
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':applciation_id', $applicationId, PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return ["success" => true];
-    } catch (PDOException $e) {
-        error_log("Database error: " . $e->getMessage());
-        return ["success" => false, "error" => $e->getMessage()];
-    }
 }

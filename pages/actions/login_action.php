@@ -14,20 +14,28 @@ if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST
     exit();
 }
 
+// Initialize login attempts and lockout time
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['lockout_time'] = null;
+}
+
+// Check if lockout time is expired and reset if needed
+if (isset($_SESSION['lockout_time']) && new DateTime() >= new DateTime($_SESSION['lockout_time'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['lockout_time'] = null;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
     $errors = [];
 
-    if (!isset($_SESSION['login_attempts'])) {
-        $_SESSION['login_attempts'] = 0;
-        $_SESSION['lockout_time'] = null;
-    }
-
-    // Check if account is locked
+    // Check if the user is still locked out
     if ($_SESSION['lockout_time'] && new DateTime() < new DateTime($_SESSION['lockout_time'])) {
-        $response['message'] = "Your account is locked. Please try again later.";
-        http_response_code(429); // Too Many Requests (Locked Out)
+        $remaining_lockout = (new DateTime($_SESSION['lockout_time']))->getTimestamp() - (new DateTime())->getTimestamp();
+        $response['message'] = "Too many failed login attempts. Try again in $remaining_lockout seconds.";
+        http_response_code(429); // Too Many Requests
         echo json_encode($response);
         exit();
     }
@@ -37,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Invalid email format.";
     }
 
-    if (empty($password) || empty($email)) {
+    if (empty($email) || empty($password)) {
         $errors[] = "Both fields are required.";
     }
 
@@ -45,17 +53,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Check user credentials
         if (!checkUserPassword($pdo, $email, $password)) {
             $_SESSION['login_attempts']++;
-            $remaining_attempts = 3 - $_SESSION['login_attempts'];
+            $remaining_attempts = 5 - $_SESSION['login_attempts'];
 
-            if ($_SESSION['login_attempts'] >= 4) {
-                $_SESSION['lockout_time'] = (new DateTime())->add(new DateInterval('PT1M'))->format('Y-m-d H:i:s');
-                $response['message'] = "Too many failed login attempts. Your account is locked for 1 minute.";
+            if ($_SESSION['login_attempts'] >= 5) {
+                $_SESSION['lockout_time'] = (new DateTime())->add(new DateInterval('PT30S'))->format('Y-m-d H:i:s');
+                $response['message'] = "Too many failed login attempts. Your account is locked for 30 seconds.";
                 http_response_code(429); // Too Many Requests
             } else {
                 $response['message'] = "Incorrect email or password. You have $remaining_attempts attempt(s) left.";
                 http_response_code(401); // Unauthorized
             }
         } else {
+            // Successful login
             $_SESSION['login_attempts'] = 0;
             $_SESSION['lockout_time'] = null;
 
@@ -69,7 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $response['success'] = true;
             $response['user_type'] = $user['user_type'];
             http_response_code(200); // OK (successful login)
-
             unset($_SESSION['csrf_token']);
         }
     } else {

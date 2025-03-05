@@ -4,9 +4,11 @@ include_once "notifications.php";
 include "validate_document.php";
 include "upload_document.php";
 include "upload_application.php";
-include "get_user_info.php";
+include "get_user_id.php";
 include "insert_stall_transfers.php";
-error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+include "insert_applicant.php";
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE); // Disable warnings & notices
+
 try {
 
     $pdo->beginTransaction();
@@ -55,49 +57,13 @@ try {
     $fullAddress = implode(', ', array_filter($addressParts));
 
     if ($transferType === "Succession") {
-        $userInfo = getUserInfo($pdo, $data['deceased_owner_id'], $data['deceased_first_name'], $data['deceased_middle_name'], $data['deceased_last_name']);
+        $userId = getUserId($pdo, $data['deceased_owner_id'], $data['deceased_first_name'], $data['deceased_middle_name'], $data['deceased_last_name']);
         $type = 'Stall Succession';
     } else {
-        $userInfo = getUserInfo($pdo, $data['current_owner_id'], $data['current_first_name'], $data['current_middle_name'], $data['current_last_name']);
+        $userId = getUserId($pdo, intval($data['current_owner_id']), $data['current_first_name'], $data['current_middle_name'], $data['current_last_name']);
         $type = 'Stall Transfer';
     }
 
-    if (!$userInfo) {
-        echo json_encode(["error" => "User not found"]);
-        exit;
-    }
-
-    // Construct full address from user data
-    $fullAddress = $userInfo['address'];
-
-    // Insert Applicant
-    $isApplicantInserted = insertApplicant(
-        $pdo,
-        $account_id,
-        $userInfo['first_name'],
-        $userInfo['middle_name'],
-        $userInfo['last_name'],
-        $userInfo['sex'],
-        $userInfo['email'],
-        $userInfo['alt_email'],
-        $userInfo['contact_no'],
-        $userInfo['civil_status'],
-        $userInfo['nationality'],
-        $userInfo['address']
-    );
-
-    if (!$isApplicantInserted) {
-        echo json_encode(["error" => "Failed to insert applicant"]);
-    }
-    if (is_array($isApplicantInserted) && !$isApplicantInserted['success']) {
-        http_response_code(500);
-        $response['message'] = "Failed to insert applicant.";
-        $response['errors'][] = "Database Error: " . $isApplicantInserted['error'];
-        echo json_encode($response);
-        exit;
-    }
-
-    // Insert Application
     $applicationId = uploadApplication(
         $pdo,
         $application_number,
@@ -109,11 +75,16 @@ try {
     );
 
     if (!$applicationId || !is_numeric($applicationId)) {
-        $response['message'] = "Failed to submit application.";
-        $response['errors'][] = "Database error: Unable to submit application.";
-        http_response_code(500);
-        echo json_encode($response);
-        exit();
+        throw new Exception("Failed to submit application.");
+    }
+
+    if (!$userId) {
+        throw new Exception("User not found.");
+    }
+
+    $isApplicantInserted = insertApplicant($pdo, $userId["id"], intval($applicationId));
+    if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
+        throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
 
     $deceasedOwnerId = $data['deceased_owner_id'] ?? null; // Handle if not provided
@@ -150,8 +121,7 @@ try {
     );
 
     if (!$stallTransferResponse['success']) {
-        echo json_encode($response);
-        exit;
+        throw new Exception("Failed to insert extension. " . $extensionResponse['error']);
     }
 
     $transferDocuments = [
@@ -185,30 +155,27 @@ try {
 
     // If there were any errors, return an error response
     if (!empty($uploadErrors)) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Failed to upload some files.",
-            "errors"  => $uploadErrors
-        ]);
-        http_response_code(500);
-        exit;
+        throw new Exception("Failed to upload files.");
     }
 
+    unset($_SESSION['csrf_token']);
     $pdo->commit();
-    // Success Response
+    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+
     $response['success'] = true;
     $response['message'] = "Application submitted successfully.";
-
     $message = sprintf('Your application for %s has been successfully submitted. Your Application Form Number is: %s.', $type, $application_number);
 
     insertNotification($pdo, $account_id, $type, $message, 'unread');
+    http_response_code(201);
     echo json_encode($response);
     exit();
 } catch (Exception $e) {
-    // Rollback if any error occurs
-    $pdo->rollBack();
 
-    // Log error and return response
+    unset($_SESSION['csrf_token']);
+    $pdo->rollBack();
+    $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+
     error_log("Transaction failed: " . $e->getMessage());
     http_response_code(500);
     $response['success'] = false;
@@ -322,52 +289,6 @@ function validateApplicationData($data, $app_type)
     }
 
     return $errors;
-}
-function insertApplicant(
-    $pdo,
-    $accountId,
-    $firstName,
-    $middleName,
-    $lastName,
-    $sex,
-    $email,
-    $altEmail,
-    $phoneNumber,
-    $civilStatus,
-    $nationality,
-    $fullAddress
-) {
-    try {
-        // Prepare SQL query for inserting applicant
-        $query = "INSERT INTO applicants 
-            (account_id, first_name, middle_name,last_name, sex, email, alt_email, phone_number, 
-            civil_status, nationality, address, created_at) 
-            VALUES 
-            (:account_id, :first_name, :middle_name,:last_name, :sex, :email, :alt_email, :phone_number, 
-            :civil_status, :nationality, :address, NOW())";
-
-        $stmt = $pdo->prepare($query);
-
-        // Handle null values properly
-        $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
-        $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
-        $stmt->bindValue(':middle_name', $middleName, PDO::PARAM_STR);
-        $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
-        $stmt->bindValue(':sex', $sex, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':alt_email', !empty($altEmail) ? $altEmail : null, PDO::PARAM_STR);
-        $stmt->bindValue(':phone_number', $phoneNumber, PDO::PARAM_STR);
-        $stmt->bindValue(':civil_status', $civilStatus, PDO::PARAM_STR);
-        $stmt->bindValue(':nationality', $nationality, PDO::PARAM_STR);
-        $stmt->bindValue(':address', $fullAddress, PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return ["success" => true];
-    } catch (PDOException $e) {
-        error_log("Database error: " . $e->getMessage());
-        return ["success" => false, "error" => $e->getMessage()];
-    }
 }
 
 

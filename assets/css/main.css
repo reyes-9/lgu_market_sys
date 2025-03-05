@@ -39,22 +39,6 @@ body {
   align-items: center;
 }
 
-/* Navbar styles*/
-/* .navbar {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.navbar-brand {
-  font-size: 1.2rem;
-  margin-right: 1rem;
-}
-
-.navbar-nav .nav-link {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-} */
-
 .navbar.dark {
   background-color: #020d18;
 }
@@ -161,4 +145,30 @@ footer.light {
   color: #fff; /* White text */
   cursor: not-allowed; /* Show not-allowed cursor */
   opacity: 0.65; /* Reduce opacity */
+}
+
+/* For Webkit-based browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the vertical scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light gray track */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #113f6d;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0e2e55;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #003366 #f1f1f1;
 }

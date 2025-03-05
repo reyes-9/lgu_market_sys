@@ -128,16 +128,16 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="row mt-2">
                     <div class="form-group col-md-4">
                         <label>First Name: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="first_name">
+                        <input type="text" class="form-control" id="firstName" name="first_name">
                     </div>
                     <div class="form-group col-md-4">
                         <label>Middle Name: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="middle_name">
+                        <input type="text" class="form-control" id="middleName" name="middle_name">
                         <small>Type N/A if you don't have middle name</small>
                     </div>
                     <div class="form-group col-md-4">
                         <label>Last Name: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="last_name">
+                        <input type="text" class="form-control" id="lastName" name="last_name">
                     </div>
                 </div>
 
@@ -179,30 +179,30 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label>House Number: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="house_no">
+                        <input type="text" class="form-control" id="houseNumber" name="house_no">
                     </div>
                     <div class="form-group col-md-4">
                         <label>Street: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="street">
+                        <input type="text" class="form-control" id="street" name="street">
                     </div>
                     <div class="form-group col-md-4">
                         <label>Subdivision: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="subdivision">
+                        <input type="text" class="form-control" id="subdivision" name="subdivision">
                     </div>
                 </div>
 
                 <div class="row mt-2">
                     <div class="form-group col-md-4">
                         <label>Province: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="province">
+                        <input type="text" class="form-control" id="province" name="province">
                     </div>
                     <div class="form-group col-md-4">
                         <label>City: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="city">
+                        <input type="text" class="form-control" id="city" name="city">
                     </div>
                     <div class="form-group col-md-4">
                         <label>Barangay: <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="barangay">
+                        <input type="text" class="form-control" id="barangay" name="barangay">
                     </div>
                 </div>
 
@@ -227,8 +227,6 @@ if (empty($_SESSION['csrf_token'])) {
                     <button type="button" class="form-button" onclick="switchForm('detailsForm', 'marketSelectionForm')">Back</button>
                     <button type="button" class="form-button" id="detailsBtn">Next</button>
                 </div>
-
-
             </form>
 
             <form class="d-none" id="documentUploadForm" method="POST" enctype="multipart/form-data">
@@ -818,6 +816,50 @@ if (empty($_SESSION['csrf_token'])) {
                     alert('Failed to load market locations. Please try again later.');
                 });
         }
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("../actions/get_user_info.php")
+                .then(response => response.json())
+                .then(data => {
+                    // Check if the request was successful
+                    if (!data.success || !data.user) {
+                        console.error("Error:", data.message || "No user data available.");
+                        document.getElementById("user_message").textContent = "User data not available.";
+                        return;
+                    }
+
+                    const user = data.user; // The user object
+                    console.log("User Data:", user);
+
+                    // Name Fields
+                    document.getElementById("firstName").value = user.name?.first_name || "";
+                    document.getElementById("middleName").value = user.name?.middle_name || "";
+                    document.getElementById("lastName").value = user.name?.last_name || "";
+
+                    // Email and Contact Info
+                    document.getElementById("email").value = user.email || "";
+                    document.getElementById("altEmail").value = user.alt_email || "";
+                    document.getElementById("mobile").value = user.contact_number || "";
+
+                    // Personal Details
+                    document.querySelector("select[name='sex']").value = user.sex || "";
+                    document.querySelector("select[name='civil_status']").value = user.civil_status || "";
+
+                    // Address Fields (Splitting comma-separated string)
+                    let addressParts = user.address ? user.address.split(',').map(part => part.trim()) : [];
+
+                    document.getElementById("houseNumber").value = addressParts[0] || "";
+                    document.getElementById("street").value = addressParts[1] || "";
+                    document.getElementById("subdivision").value = addressParts[2] || "";
+                    document.getElementById("province").value = addressParts[3] || "";
+                    document.getElementById("city").value = addressParts[4] || "";
+                    document.getElementById("barangay").value = addressParts[5] || "";
+                    document.getElementById("zipcode").value = addressParts[6] || "";
+                })
+                .catch(error => {
+                    console.error("Error fetching user data:", error);
+                    document.getElementById("user_message").textContent = "Failed to load user data.";
+                });
+        });
     </script>
 
 </body>
