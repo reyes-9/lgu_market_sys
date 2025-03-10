@@ -4,7 +4,7 @@ require_once '../../includes/config.php';
 
 header('Content-Type: application/json');
 
-$account_id = $_SESSION['user_id'];
+$account_id = $_SESSION['account_id'];
 
 try {
     // **Check if it's a withdrawal request (POST)**
@@ -70,7 +70,7 @@ try {
                 s.stall_number, 
                 sec.section_name AS section_name, 
                 m.market_name AS market_name,
-                CONCAT(h.first_name, ' ', COALESCE(h.middlename, ''), ' ', h.last_name) AS full_name
+                CONCAT(h.first_name, ' ', COALESCE(h.middle_name, ''), ' ', h.last_name) AS full_name,
                 e.duration AS extension_duration,
                 app.id,
                 app.application_type,

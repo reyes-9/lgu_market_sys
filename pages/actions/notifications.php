@@ -1,7 +1,9 @@
 <?php
 require_once '../../includes/config.php';
-session_start();
-$account_id = $_SESSION['user_id'];
+require '../../includes/session.php';
+
+
+$account_id = $_SESSION['account_id'];
 $notifications = [
     'application' => [
         'submitted' => [
@@ -151,10 +153,10 @@ function markAllAsRead($pdo, $account_id)
     }
 }
 
-function markAsRead($pdo, $account_id)
+function markAsRead($pdo, $account_id, $notification_id)
 {
     try {
-        $query = "UPDATE notifications SET status = 'read' WHERE user_id = :user_id AND id = :id";
+        $query = "UPDATE notifications SET status = 'read' WHERE account_id = :user_id AND id = :id";
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':id', $account_id, PDO::PARAM_INT);
 

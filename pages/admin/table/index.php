@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+if ($_SESSION['user_type'] !== 'Admin') {
+    header("Location: /lgu_market_sys/errors/err403.php");
+    exit;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,7 +84,7 @@
                 </div>
 
 
-                <div class="tables d-none" id="tables">
+                <div class="tables my-5 d-none" id="tables">
                     <!-- Stall Transfer Table -->
                     <div class="container stall-transfer d-none">
 
@@ -275,6 +285,9 @@
     <script>
         let tableMenu = document.querySelector(".table-menu");
         let tables = document.getElementById("tables");
+        let statusBtnClass = "view-application-btn";
+        let buttonText = "View Application";
+
         document.addEventListener("DOMContentLoaded", function() {
 
             document.querySelector(".card-stall").addEventListener("click", function() {
@@ -304,6 +317,8 @@
                 button.addEventListener("click", function() {
 
                     let dataName = this.getAttribute("data-name");
+                    statusBtnClass = "view-application-btn";
+                    buttonText = "View Application";
                     returnToTableMenu(dataName);
                 });
             });
@@ -320,10 +335,14 @@
                     const status = button.getAttribute("data-status");
 
                     startReview(applicationId);
+                } else if (event.target.classList.contains("view-application-btn")) {
+                    const button = event.target;
+                    const applicationId = button.getAttribute("data-id");
+
+                    viewApplication(applicationId);
                 }
             });
         })
-
 
         const filterOptions = ['All Applications', 'Approved', 'Submitted', 'Under Review', 'Rejected', 'Withdrawn'];
 
@@ -454,6 +473,17 @@
                             return
                         }
 
+                        if (row.status === "Submitted") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Start Review";
+                        }
+                        if (row.status === "Under Review") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Continue Review";
+                        }
+
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                     <td>${row.id}</td>
@@ -465,7 +495,7 @@
                     <td>${row.status}</td>
                     <td>${row.created_at}</td>
                     <td>
-                            <button class="btn btn-sm btn-warning start-review-btn" 
+                            <button class="btn btn-sm btn-warning ${statusBtnClass}" 
                                 data-id="${row.id}" 
                                 data-account-name="${row.account_name}" 
                                 data-stall-number="${row.stall_number}" 
@@ -473,7 +503,7 @@
                                 data-market-name="${row.market_name}" 
                                 data-application-type="${row.application_type}" 
                                 data-status="${row.status}">
-                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                                ${buttonText}
                             </button>
                     </td>
                 `;
@@ -496,6 +526,17 @@
                         if (filter !== 'All Applications' && filter !== row.status) {
                             return
                         }
+                        if (row.status === "Submitted") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Start Review";
+                        }
+                        if (row.status === "Under Review") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Continue Review";
+                        }
+
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
@@ -509,7 +550,7 @@
                         <td>${row.status}</td>
                         <td>${row.created_at}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning start-review-btn" 
+                            <button class="btn btn-sm btn-warning ${statusBtnClass}" 
                                 data-id="${row.id}" 
                                 data-account-name="${row.account_name}" 
                                 data-stall-number="${row.stall_number}" 
@@ -517,7 +558,7 @@
                                 data-market-name="${row.market_name}" 
                                 data-application-type="${row.application_type}" 
                                 data-status="${row.status}">
-                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                                    ${buttonText}
                             </button>
                         </td>
                     `;
@@ -539,6 +580,18 @@
                         if (filter !== 'All Applications' && filter !== row.status) {
                             return
                         }
+                        if (row.status === "Submitted") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Start Review";
+                        }
+                        if (row.status === "Under Review") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Continue Review";
+                        }
+
+
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                         <td>${row.id}</td>
@@ -551,7 +604,7 @@
                         <td>${row.status}</td>
                         <td>${row.created_at}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning start-review-btn" 
+                            <button class="btn btn-sm btn-warning ${statusBtnClass}" 
                                 data-id="${row.id}" 
                                 data-account-name="${row.account_name}" 
                                 data-stall-number="${row.stall_number}" 
@@ -559,7 +612,7 @@
                                 data-market-name="${row.market_name}" 
                                 data-application-type="${row.application_type}" 
                                 data-status="${row.status}">
-                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                                    ${buttonText}
                             </button>
                         </td>
                         `;
@@ -579,6 +632,17 @@
                         if (filter !== 'All Applications' && filter !== row.status) {
                             return
                         }
+                        if (row.status === "Submitted") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Start Review";
+                        }
+                        if (row.status === "Under Review") {
+                            console.log(row.status);
+                            statusBtnClass = "start-review-btn";
+                            buttonText = "Continue Review";
+                        }
+
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                         <td>${row.id}</td>
@@ -590,15 +654,15 @@
                         <td>${row.status}</td>
                         <td>${row.created_at}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning start-review-btn" 
+                            <button class="btn btn-sm btn-warning ${statusBtnClass}" 
                                 data-id="${row.id}" 
                                 data-account-name="${row.account_name}" 
                                 data-stall-number="${row.stall_number}" 
                                 data-section-name="${row.section_name}" 
                                 data-market-name="${row.market_name}" 
-                                data-application-type="${row.application_type}" 
+                                data-application-type="${row.application_type}"
                                 data-status="${row.status}">
-                                ${row.status === 'Under Review' ? 'Resume Review' : 'Start Review'}
+                                    ${buttonText}
                             </button>
                         </td>
                     `;
@@ -608,25 +672,33 @@
         }
 
         function startReview(applicationId) {
+
+            let hashedId = btoa(applicationId);
+
             fetch('../../actions/start_review.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        application_id: applicationId
+                        application_id: hashedId
                     })
                 })
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
                         alert("Review started!");
-                        window.location.href = `/lgu_market_sys/pages/admin/review/?id=${applicationId}`;
+                        window.location.href = `/lgu_market_sys/pages/admin/review/?id=${hashedId}`;
                     } else {
                         alert("Error: " + result.message);
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        }
+
+        function viewApplication(applicationId) {
+            let hashedId = btoa(applicationId);
+            window.location.href = `/lgu_market_sys/pages/admin/review/?id=${hashedId}`;
         }
     </script>
 
@@ -665,3 +737,9 @@
 </body>
 
 </html>
+
+<!-- 
+nreyesmine69@gmail.com
+test1234 
+
+-->

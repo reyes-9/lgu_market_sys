@@ -2,7 +2,7 @@
 session_start();
 require_once '../../includes/config.php';
 
-$account_id = $_SESSION['user_id'];
+$account_id = $_SESSION['account_id'];
 
 try {
     $stmt_user = $pdo->prepare("SELECT CONCAT(first_name, ' ', middle_name, ' ', last_name) AS name, email, address, contact_no FROM users WHERE account_id = :account_id");

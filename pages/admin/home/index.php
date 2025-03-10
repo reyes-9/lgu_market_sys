@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+if ($_SESSION['user_type'] !== 'Admin') {
+  header("Location: /lgu_market_sys/errors/err403.php");
+  exit;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 

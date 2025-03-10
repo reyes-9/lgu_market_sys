@@ -10,7 +10,7 @@
         color: white;
     }
 
-    a.signup {
+    a.links {
         outline: none;
         border: none;
         display: inline-block;
@@ -20,7 +20,7 @@
         color: #003366;
     }
 
-    a.signup::after {
+    a.links::after {
         content: '';
         position: absolute;
         width: 100%;
@@ -33,7 +33,7 @@
         transform-origin: center center;
     }
 
-    a.signup:hover::after {
+    a.links:hover::after {
         visibility: visible;
         transform: scaleX(1);
         transform-origin: center center;
@@ -58,6 +58,10 @@
     .dropdown-item:hover {
         background-color: #f1f1f1;
     }
+
+    .nav-item {
+        margin: 5px;
+    }
 </style>
 
 <?php
@@ -66,7 +70,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$isLogin = isset($_SESSION['user_id']) ? true : false;
+$isLogin = isset($_SESSION['account_id']) ? true : false;
 $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 ?>
 
@@ -74,7 +78,7 @@ $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
     <div class="container-fluid">
         <!-- Brand Logo -->
-        <a class="navbar-brand" href="<?php echo !$isLogin ? '#' : ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '../../index.php'); ?>">
+        <a class="navbar-brand" href="<?php echo !$isLogin ? '#' : ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '/lgu_market_sys'); ?>">
             <img src="<?php echo $isLogin ? 'images/favicon_192.png' : '../../images/favicon_192.png'; ?>" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
             Public Market Monitoring System
         </a>
@@ -87,9 +91,14 @@ $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         <div class="collapse navbar-collapse" id="navbarNav">
             <?php
             $allowedPages = ['portal', 'stall_app', 'transfer_stall_app', 'stalls', 'violation', 'track_app', 'stall_extend', 'helper_app'];
-            if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor' && isset($currentPage) && in_array($currentPage, $allowedPages)) : ?>
+            if (
+                isset($_SESSION['user_type']) &&
+                ($_SESSION['user_type'] === 'Vendor' ||
+                    ($_SESSION['user_type'] === 'Admin' && isset($currentPage) && in_array($currentPage, $allowedPages)))
+            ) :
+            ?>
                 <!-- Center Navigation Links -->
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav ms-auto profile">
                     <li class="nav-item">
                         <a class="nav-link menu <?php echo $currentPage == 'portal' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/portal">Profile</a>
                     </li>
@@ -111,16 +120,22 @@ $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
             <?php endif; ?>
 
             <ul class="navbar-nav ms-auto d-flex align-items-center">
+                <?php
+                if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Admin') : ?>
+                    <li class="nav-item">
+                        <a href="http://localhost/lgu_market_sys/pages/admin/home/" class="btn links">Admin</a>
+                    </li>
+                <?php endif; ?>
                 <?php echo $isLogin ? '' : '       <li class="nav-item">
                     <a href="http://localhost/lgu_market_sys/pages/actions/login.php" class="btn login px-3 rounded-pill">Login</a>
                 </li>' ?>
                 <li class="nav-item">
                     <?php if ($isLogin): ?>
-                        <a href="<?php echo ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '../../index.php') ?>" class="btn signup">Home</a>
+                        <a href="<?php echo ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '/lgu_market_sys') ?>" class="btn links">Home</a>
                     <?php endif; ?>
                 </li>
                 <li class="nav-item">
-                    <a href="http://localhost/lgu_market_sys/pages/actions/signup.php" class="btn signup">Sign up</a>
+                    <a href="http://localhost/lgu_market_sys/pages/actions/signup.php" class="btn links">Sign up</a>
                 </li>
             </ul>
 

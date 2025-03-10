@@ -21,13 +21,13 @@ try {
         exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
     }
 
-    if (!isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['account_id'])) {
         http_response_code(401);
         echo json_encode(["success" => false, "message" => "Unauthorized access."]);
         exit;
     }
 
-    $account_id = $_SESSION['user_id'];
+    $account_id = $_SESSION['account_id'];
     $response = ['success' => false, 'message' => '', 'errors' => []];
 
     // Validate Form Data

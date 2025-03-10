@@ -13,7 +13,7 @@
 
 session_start();
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['account_id'])) {
     echo '<script>
             alert("Please log in to continue.");
             window.location.href = "/lgu_market_sys/pages/actions/signup.php";
@@ -40,7 +40,7 @@ if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' 
 
         <div class="button-container">
             <a class="btn btn-custom" href="/lgu_market_sys/pages/feedback">Feedback Services</a>
-            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor'): ?>
+            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Vendor' || $_SESSION['user_type'] === 'Admin'): ?>
                 <a class="btn btn-custom" href="/lgu_market_sys/pages/portal">Vendor Portal</a>
             <?php else: ?>
                 <a class="btn btn-custom disabled" href="#" onclick="alert('Only vendors can access this page.');">Vendor Portal</a>

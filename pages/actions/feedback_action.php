@@ -4,7 +4,7 @@ require_once '../../includes/config.php';
 session_start();
 ob_start();
 
-$account_id = $_SESSION['user_id'];
+$account_id = $_SESSION['account_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

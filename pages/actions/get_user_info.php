@@ -4,12 +4,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['account_id'])) {
     echo json_encode(["success" => false, "message" => "User not logged in."]);
     exit;
 }
 
-$account_id = $_SESSION['user_id'];
+$account_id = $_SESSION['account_id'];
 
 try {
     // Prepare the SQL statement using PDO

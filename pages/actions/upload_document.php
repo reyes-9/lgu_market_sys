@@ -29,8 +29,8 @@ function uploadDocument($pdo, $fileInputName, $applicationId, $documentType, $up
     if (move_uploaded_file($file['tmp_name'], $fullFilePath)) {
         try {
             // Store file details in database
-            $query = "INSERT INTO documents (application_id, document_name, document_type, document_path, uploaded_at) 
-                      VALUES (:application_id, :document_name, :document_type, :document_path, NOW())";
+            $query = "INSERT INTO documents (application_id, document_name, document_type, document_path, uploaded_at, status) 
+                      VALUES (:application_id, :document_name, :document_type, :document_path, NOW()), 'Pending'";
             $stmt = $pdo->prepare($query);
             $stmt->execute([
                 ':application_id' => $applicationId,

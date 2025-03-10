@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt->rowCount() > 0) {
             $pdo->rollBack(); // Rollback transaction if email exists
             http_response_code(400); // Bad Request
-            echo json_encode(['success' => false, 'message' => 'Email is already registered.']);
+            echo json_encode(['success' => false, 'message' => 'Invalid Email.']);
             exit;
         }
 

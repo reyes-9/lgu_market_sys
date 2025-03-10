@@ -161,8 +161,11 @@
                     displayToast(data.message, data.success ? "success" : "error");
                     if (data.success) {
                         document.getElementById("signupForm").reset();
-                        window.location.href = "/lgu_market_sys/pages/actions/login.php";
+                        setTimeout(function() {
+                            window.location.href = "/lgu_market_sys/pages/actions/login.php";
+                        }, 2000);
                     }
+
                 })
                 .catch(error => {
                     console.error("Error:", error);

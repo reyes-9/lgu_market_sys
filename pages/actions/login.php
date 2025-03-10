@@ -58,7 +58,7 @@
     session_start();
 
     // Check if user is logged in
-    if (isset($_SESSION['user_id'])) {
+    if (isset($_SESSION['account_id'])) {
         echo '<script>
             alert("You are already logged in.");
             window.location.href = "http://localhost/lgu_market_sys/";

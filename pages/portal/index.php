@@ -256,30 +256,67 @@
 
       notifications.forEach(notification => {
         const notificationItem = document.createElement('li');
-        notificationItem.classList.add("list-group-item", "position-relative");
+        notificationItem.classList.add("list-group-item", "position-relative", "notification-item");
 
         if (notification.status === "unread") {
           notificationItem.classList.add("unread");
-
         } else {
           notificationItem.classList.remove("unread");
-
         }
 
+        // Initially show only a preview of the message
         notificationItem.innerHTML = `
-      <strong>${notification.type}</strong>
-      <p class="message-preview mb-1">${notification.message}</p>
-      <span class="time">${timeAgo(notification.created_at)}</span>
-      `;
+            <strong>${notification.type}</strong>
+            <p class="message-preview mb-1">${notification.message.length > 50 ? notification.message.substring(0, 50) + '...' : notification.message}</p>
+            <p class="message-full mb-1" style="display: none;">${notification.message}</p>
+            <span class="time">${timeAgo(notification.created_at)}</span>
+        `;
+
+        // Add click event to toggle full message
+        notificationItem.addEventListener("click", function() {
+          const preview = notificationItem.querySelector(".message-preview");
+          const fullMessage = notificationItem.querySelector(".message-full");
+
+          if (fullMessage.style.display === "none") {
+            preview.style.display = "none";
+            fullMessage.style.display = "block";
+          } else {
+            preview.style.display = "block";
+            fullMessage.style.display = "none";
+            notificationItem.classList.remove("unread");
+          }
+        });
 
         notificationList.appendChild(notificationItem);
       });
-
     }
+
 
     function markAllAsRead() {
       const notificationAlert = document.getElementById('notificationAlert');
       const readBtn = document.getElementById('markAllReadBtn');
+      fetch('../actions/notifications.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'mark_all_read'
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.read_status === 'success') {
+
+            document.querySelectorAll('.list-group-item.unread').forEach(item => {
+              item.classList.remove('unread');
+            });
+          }
+
+        })
+    }
+
+    function markAsRead() {
       fetch('../actions/notifications.php', {
           method: 'POST',
           headers: {

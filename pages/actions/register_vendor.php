@@ -29,7 +29,7 @@ foreach ($requiredFields as $field) {
 
 // Sanitize and validate inputs
 
-$accountId = $_SESSION['user_id'];
+$accountId = $_SESSION['account_id'];
 $first_name = htmlspecialchars(trim($_POST['first_name']));
 $middle_name = htmlspecialchars(trim($_POST['middle_name']));
 $last_name = htmlspecialchars(trim($_POST['last_name']));
