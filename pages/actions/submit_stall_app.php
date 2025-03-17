@@ -1,5 +1,6 @@
 <?php
 require_once "../../includes/config.php";
+require "../../includes/session.php";
 include_once "notifications.php";
 include "validate_document.php";
 include "upload_document.php";
@@ -11,10 +12,6 @@ try {
 
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
     $pdo->beginTransaction();
-
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
 
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         http_response_code(403);
@@ -54,7 +51,7 @@ try {
         $account_id,
         intval($data['stall_id']),
         intval($data['section_id']),
-        intval($data['market_id']),
+        intVal($data['market_id']),
         'stall'
     );
 
@@ -68,7 +65,7 @@ try {
         throw new Exception("User not found.");
     }
 
-    $isApplicantInserted = insertApplicant($pdo, $userId["id"], intval($applicationId));
+    $isApplicantInserted = insertApplicant($pdo, $userId, intval($applicationId));
     if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
         throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
@@ -79,6 +76,7 @@ try {
     $validIdFileUpload = uploadDocument($pdo, 'valid_id_file', $applicationId, $data['valid_id_type']);
 
     if (!$proofResidencyUpload['success'] || !$validIdFileUpload['success']) {
+        var_dump($proofResidencyUpload['message']);
         throw new Exception("Failed to upload files.");
     }
 
@@ -116,7 +114,7 @@ function validateApplicationData($data)
     $errors = [];
 
     // Validate Market Selection
-    if (empty($data['market_id'])) {
+    if (empty(intVal($data['market_id']))) {
         $errors[] = "Market is required.";
     }
     if (empty($data['section_id'])) {

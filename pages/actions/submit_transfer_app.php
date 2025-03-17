@@ -17,10 +17,10 @@ try {
         session_start();
     }
 
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        http_response_code(403);
-        exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
-    }
+    // if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    //     http_response_code(403);
+    //     exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
+    // }
 
     if (!isset($_SESSION['account_id'])) {
         http_response_code(401);
@@ -70,7 +70,7 @@ try {
         $account_id,
         intval($data['stall_id']),
         intval($data['section_id']),
-        intval($data['market_id']),
+        intVal($data['market_id']),
         strtolower($type)
     );
 
@@ -82,7 +82,7 @@ try {
         throw new Exception("User not found.");
     }
 
-    $isApplicantInserted = insertApplicant($pdo, $userId["id"], intval($applicationId));
+    $isApplicantInserted = insertApplicant($pdo, $userId, intval($applicationId));
     if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
         throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
@@ -195,7 +195,7 @@ function validateApplicationData($data, $app_type)
     }
 
     // Validate Market Selection
-    if (empty($data['market_id'])) {
+    if (empty(intVal($data['market_id']))) {
         $errors[] = "Market is required.";
     }
     if (empty($data['section_id'])) {

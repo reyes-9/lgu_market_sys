@@ -1,10 +1,12 @@
 <?php
 require_once "../../includes/config.php";
+require "../../includes/session.php";
+require "get_user_id.php";
 
 header("Content-Type: application/json");
-session_start();
 
-$account_id = $_SESSION["user_id"];
+$account_id = $_SESSION["account_id"];
+$user_id = getUserIdByAccountId($pdo, $account_id);
 
 try {
     $violations = getViolations($account_id, $pdo);
@@ -18,17 +20,17 @@ try {
     echo json_encode(["success" => false, "error" => "Unexpected error", "details" => $e->getMessage()]);
 }
 
-function getViolations($account_id, $pdo)
+function getViolations($user_id, $pdo)
 {
     try {
         $sql = "SELECT v.id, v.remarks, DATE(v.violation_date) AS violation_date, v.status,
                        vt.violation_name, vt.criticality, vt.fine_amount  
                 FROM violations v
                 JOIN violation_types vt ON v.violation_type_id = vt.id
-                WHERE v.vendor_id = :account_id";
+                WHERE v.user_id = :user_id";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':account_id', $account_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -36,7 +38,7 @@ function getViolations($account_id, $pdo)
         throw new Exception("Database query failed: " . $e->getMessage());
     }
 }
-function getStatusCount($account_id, $pdo)
+function getStatusCount($user_id, $pdo)
 {
     $query = "
         SELECT 
@@ -45,12 +47,12 @@ function getStatusCount($account_id, $pdo)
             SUM(CASE WHEN vt.criticality = 'Critical' THEN 1 ELSE 0 END) as critical_count
         FROM violations v
         JOIN violation_types vt ON v.violation_type_id = vt.id
-        WHERE v.vendor_id = :account_id 
+        WHERE v.user_id = :user_id 
         GROUP BY v.status
     ";
 
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':account_id', $account_id, PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
 
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

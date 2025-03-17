@@ -1,8 +1,10 @@
 <?php
 session_start();
 require_once '../../includes/config.php';
+require 'get_user_id.php';
 
 $account_id = $_SESSION['account_id'];
+$user_id = getUserIdByAccountId($pdo, $account_id);
 
 try {
     $stmt_user = $pdo->prepare("SELECT CONCAT(first_name, ' ', middle_name, ' ', last_name) AS name, email, address, contact_no FROM users WHERE account_id = :account_id");
@@ -17,16 +19,16 @@ try {
                     s.stall_size, 
                     s.section_id,
                     s.market_id,
-                    s.account_id,
+                    s.user_id,
                     sec.section_name AS section_name, 
                     m.market_name AS market_name 
                 FROM stalls s
             JOIN sections sec ON s.section_id = sec.id
             JOIN market_locations m ON s.market_id = m.id
-            WHERE s.account_id = :account_id
+            WHERE s.user_id = :user_id
         ");
 
-    $stmt_stall->execute([':account_id' => $account_id]);
+    $stmt_stall->execute([':user_id' => $user_id]);
     $stall = $stmt_stall->fetchAll(PDO::FETCH_ASSOC);
 
     // Prepare response

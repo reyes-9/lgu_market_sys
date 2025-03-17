@@ -72,14 +72,17 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $isLogin = isset($_SESSION['account_id']) ? true : false;
 $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$homePath = "/lgu_market_sys/";
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
 
     <div class="container-fluid">
         <!-- Brand Logo -->
-        <a class="navbar-brand" href="<?php echo !$isLogin ? '#' : ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '/lgu_market_sys'); ?>">
-            <img src="<?php echo $isLogin ? 'images/favicon_192.png' : '../../images/favicon_192.png'; ?>" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+        <a class="navbar-brand" href="<?php echo ($currentPath === $homePath) ? '#' : $homePath; ?>">
+            <img src="<?php echo $isLogin ? 'images/favicon_192.png' : '../../images/favicon_192.png'; ?>"
+                alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
             Public Market Monitoring System
         </a>
 
@@ -93,8 +96,8 @@ $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
             $allowedPages = ['portal', 'stall_app', 'transfer_stall_app', 'stalls', 'violation', 'track_app', 'stall_extend', 'helper_app'];
             if (
                 isset($_SESSION['user_type']) &&
-                ($_SESSION['user_type'] === 'Vendor' ||
-                    ($_SESSION['user_type'] === 'Admin' && isset($currentPage) && in_array($currentPage, $allowedPages)))
+                isset($currentPage) && in_array($currentPage, $allowedPages) &&
+                ($_SESSION['user_type'] === 'Vendor' || $_SESSION['user_type'] === 'Admin')
             ) :
             ?>
                 <!-- Center Navigation Links -->
@@ -131,9 +134,10 @@ $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
                 </li>' ?>
                 <li class="nav-item">
                     <?php if ($isLogin): ?>
-                        <a href="<?php echo ($currentPage == 'index.php' || $currentPage == 'lgu_market_sys' ? '#' : '/lgu_market_sys') ?>" class="btn links">Home</a>
+                        <a href="<?php echo ($currentPath === $homePath) ? '#' : $homePath; ?>" class="btn links">Home</a>
                     <?php endif; ?>
                 </li>
+
                 <li class="nav-item">
                     <a href="http://localhost/lgu_market_sys/pages/actions/signup.php" class="btn links">Sign up</a>
                 </li>

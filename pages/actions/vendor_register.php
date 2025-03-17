@@ -179,7 +179,7 @@ if (empty($_SESSION['csrf_token'])) {
 
 
         <form id="detailsForm" method="POST">
-            <input type="text" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <div class="row">
                 <div class="form-group col-md-4">
                     <label>Email: <small class="error-message"></small></label>

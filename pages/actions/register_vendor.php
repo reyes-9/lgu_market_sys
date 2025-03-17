@@ -28,7 +28,6 @@ foreach ($requiredFields as $field) {
 }
 
 // Sanitize and validate inputs
-
 $accountId = $_SESSION['account_id'];
 $first_name = htmlspecialchars(trim($_POST['first_name']));
 $middle_name = htmlspecialchars(trim($_POST['middle_name']));
@@ -98,7 +97,6 @@ if ($stmt->fetch()) {
     exit;
 }
 
-
 // Begin transaction
 $pdo->beginTransaction();
 
@@ -121,7 +119,7 @@ try {
     ]);
 
     // Update user_type in accounts table
-    $stmt = $pdo->prepare("UPDATE accounts SET user_type = 'vendor' WHERE id = :accountId");
+    $stmt = $pdo->prepare("UPDATE accounts SET user_type = 'Vendor' WHERE id = :accountId");
     $stmt->execute(['accountId' => $accountId]);
 
     // Commit transaction
@@ -129,7 +127,7 @@ try {
 
     unset($_SESSION['csrf_token']);
     http_response_code(201);  // Created
-    echo json_encode(["success" => true, "message" => "Registration successful! You are now a vendor."]);
+    echo json_encode(["success" => true, "message" => "Registration successful! You are now a Vendor."]);
 } catch (Exception $e) {
     $pdo->rollBack();
     http_response_code(500);  // Internal Server Error

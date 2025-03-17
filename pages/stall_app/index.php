@@ -287,6 +287,12 @@ if (empty($_SESSION['csrf_token'])) {
             getCurrentDate();
             generateAndSubmitApplication();
 
+            if (isFromVendorMapping()) {
+                console.log("User came from Vendor Mapping Page.");
+                setSelectedValuesFromURL();
+
+            }
+
         });
         document.getElementById("documentUploadForm").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -336,6 +342,88 @@ if (empty($_SESSION['csrf_token'])) {
                     displayToast("An error occurred while submitting the application", "error");
                 });
         });
+
+        function setSelectedValuesFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const stallNumber = urlParams.get("stall_number");
+            const section = urlParams.get("section");
+            const market = urlParams.get("market");
+
+            console.log("Stall Number: ", stallNumber);
+            console.log("Section: ", section);
+            console.log("Market: ", market);
+
+            // Step 1: Select Market
+            selectDropdownByText("market", market, () => {
+                getStallData(); // Trigger section population
+
+                // Step 2: Select Section after Market is selected
+                setTimeout(() => {
+                    selectDropdownByText("section", section, () => {
+                        getStallData(); // Trigger stall number population
+
+                        // Step 3: Select Stall Number after Section is selected
+                        setTimeout(() => {
+                            selectDropdownByText("stall", stallNumber);
+                        }, 500);
+                    });
+                }, 500);
+            });
+        }
+
+        function selectDropdownByText(selectId, textValue, callback) {
+            const selectElement = document.getElementById(selectId);
+            if (!selectElement) return;
+
+            // Wait for the dropdown to populate before selecting the value
+            setTimeout(() => {
+                let found = false;
+                for (const option of selectElement.options) {
+                    if (option.textContent.trim() === textValue.trim()) {
+                        selectElement.value = option.value;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    console.warn(`Option with text "${textValue}" not found in #${selectId}`);
+                } else if (callback) {
+                    callback(); // Proceed to the next step
+                }
+            }, 500); // Adjust the timeout if needed
+        }
+
+        function isFromVendorMapping() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.has("from") && urlParams.get("from") === "mapping";
+        }
+
+
+        function fillStallApplicationForm() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const stallNumber = urlParams.get("stall_number");
+            const section = urlParams.get("section");
+            const market = urlParams.get("market");
+
+            // Display or use the values
+            console.log("Stall Number:", stallNumber);
+            console.log("Section:", section);
+            console.log("Market:", market);
+
+            // Check if elements exist before setting values to avoid errors
+            const stallField = document.getElementById("stallNumberField");
+            const sectionField = document.getElementById("sectionField");
+            const marketField = document.getElementById("marketField");
+
+            if (stallField) stallField.value = stallNumber || "";
+            if (sectionField) sectionField.value = section || "";
+            if (marketField) marketField.value = market || "";
+        }
+
 
         // Function to generate and submit application form
         function generateAndSubmitApplication() {

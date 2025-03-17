@@ -452,7 +452,7 @@ if (empty($_SESSION['csrf_token'])) {
             });
         }
     </script>
-
+  
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('../actions/profile_action.php')

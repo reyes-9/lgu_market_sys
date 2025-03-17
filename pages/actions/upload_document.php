@@ -30,7 +30,7 @@ function uploadDocument($pdo, $fileInputName, $applicationId, $documentType, $up
         try {
             // Store file details in database
             $query = "INSERT INTO documents (application_id, document_name, document_type, document_path, uploaded_at, status) 
-                      VALUES (:application_id, :document_name, :document_type, :document_path, NOW()), 'Pending'";
+                      VALUES (:application_id, :document_name, :document_type, :document_path, NOW(), 'Pending')";
             $stmt = $pdo->prepare($query);
             $stmt->execute([
                 ':application_id' => $applicationId,
@@ -47,6 +47,7 @@ function uploadDocument($pdo, $fileInputName, $applicationId, $documentType, $up
             ];
         } catch (PDOException $e) {
             return ["success" => false, "message" => "Database error: " . $e->getMessage()];
+            var_dump($e->getMessage());
         }
     } else {
         return ["success" => false, "message" => "Failed to move uploaded file."];

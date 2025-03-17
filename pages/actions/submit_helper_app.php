@@ -85,7 +85,7 @@ try {
         $account_id,
         intval($data['stall_id']),
         intval($data['section_id']),
-        intval($data['market_id']),
+        intVal($data['market_id']),
         'helper',
         $helperId
     );
@@ -99,7 +99,7 @@ try {
         throw new Exception("User not found.");
     }
 
-    $isApplicantInserted = insertApplicant($pdo, $userId["id"], intval($applicationId));
+    $isApplicantInserted = insertApplicant($pdo, $userId, intval($applicationId));
     if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
         throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
@@ -148,7 +148,7 @@ function validateApplicationData($data)
     $errors = [];
 
     // Validate Market Selection
-    if (empty($data['market_id'])) {
+    if (empty(intVal($data['market_id']))) {
         $errors[] = "Market is required.";
     }
     if (empty($data['section_id'])) {

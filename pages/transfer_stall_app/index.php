@@ -168,7 +168,7 @@ if (empty($_SESSION['csrf_token'])) {
 
                 <!-- Submit Button -->
                 <div class="container d-flex  justify-content-center gap-5">
-                    <button type="button" class="form-button" onclick="switchForm('transferDeatilsForm', 'marketSelectionForm')">Back</button>
+                    <button type="button" class="form-button" onclick="switchForm('transferDetailsForm', 'marketSelectionForm')">Back</button>
                     <button type="button" class="form-button" id="transferDetailsBtn">Next</button>
                 </div>
             </form>

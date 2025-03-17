@@ -1,13 +1,11 @@
 <?php
 require_once '../../includes/config.php';
 
-global $pdo;
 ob_start();
 
 function countStalls($pdo, $input)
 {
     try {
-
         $selectedId = intval($input['id']);
 
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM stalls WHERE market_id = :id");
@@ -15,9 +13,8 @@ function countStalls($pdo, $input)
 
         return $stmt->fetchColumn();
     } catch (PDOException $e) {
-
         error_log("Error counting stalls: " . $e->getMessage());
-        return false; 
+        return false;
     }
 }
 
@@ -39,51 +36,60 @@ function countStallsByStatus($pdo, $input)
             'occupied' => $occupiedCount
         ];
     } catch (PDOException $e) {
-
         error_log("Error counting stalls: " . $e->getMessage());
         return false;
+    }
+}
+
+function getMapsLink($pdo, $input)
+{
+    try {
+        $selectedId = intval($input['id']);
+
+        $stmt = $pdo->prepare("SELECT google_maps_links FROM market_locations WHERE id = :id");
+        $stmt->execute([':id' => $selectedId]);
+        $link = $stmt->fetchColumn();
+
+        return $link ?: null; // Return null if no link is found
+    } catch (PDOException $e) {
+        error_log("Error fetching map link: " . $e->getMessage());
+        return null;
     }
 }
 
 function getMarketInfo($pdo)
 {
     try {
-
         $input = json_decode(file_get_contents("php://input"), true);
 
-        if (isset($input['id'])) {
-
-            $stall_count = countStalls($pdo, $input);
-
-            $status_count = [];
-            $status_count['status'] = countStallsByStatus($pdo, $input);
-            $vacant_count = $status_count['status']['vacant'];
-            $occupied_count = $status_count['status']['occupied'];
-
-            if ($stall_count) {
-                header('Content-Type: application/json');
-                echo json_encode([
-                    'success' => true,
-                    's_count' => $stall_count,
-                    's_vacant' => $vacant_count,
-                    's_occupied' => $occupied_count
-                ]);
-            } else {
-                header('Content-Type: application/json');
-                echo json_encode([
-                    'success' => false,
-                ]);
-            }
-        } else {
-            header('Content-Type: application/json');
+        if (!isset($input['id'])) {
             echo json_encode([
                 'success' => false,
                 'message' => "No ID provided."
             ]);
+            return;
+        }
+
+        $stall_count = countStalls($pdo, $input);
+        $status_count = countStallsByStatus($pdo, $input);
+        $gmap_link = getMapsLink($pdo, $input);
+
+        if ($stall_count !== false && $status_count !== false) {
+            echo json_encode([
+                'success' => true,
+                's_count' => $stall_count,
+                's_vacant' => $status_count['vacant'],
+                's_occupied' => $status_count['occupied'],
+                'gmap_link' => $gmap_link
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => "Failed to retrieve market information."
+            ]);
         }
     } catch (Exception $e) {
-
-        header('Content-Type: application/json');
+        error_log("Error fetching market info: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => "Error: " . $e->getMessage()
@@ -91,4 +97,5 @@ function getMarketInfo($pdo)
     }
 }
 
+header('Content-Type: application/json');
 getMarketInfo($pdo);

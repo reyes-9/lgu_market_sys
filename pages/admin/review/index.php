@@ -336,6 +336,9 @@ if ($applications_id) {
                 .then(data => {
                     if (data.success) {
                         alert(data.message);
+                        setTimeout(() => {
+                            window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
+                        }, 3000);
                     } else {
                         alert("Error: " + data.message);
                     }
