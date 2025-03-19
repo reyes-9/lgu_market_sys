@@ -119,6 +119,25 @@ if ($applications_id) {
 <body class="body light">
     <?php include '../../../includes/nav.php'; ?>
 
+    <div class="text-start m-3 p-3 title d-flex align-items-center">
+        <div class="icon-box me-3 shadow title-icon">
+            <i class="bi bi-bar-chart-line-fill"></i>
+        </div>
+        <div>
+            <h4 class="m-0">Admin - Applications Review</h4>
+            <p class="text-muted mb-0">Evaluate and approve or reject stall applications based on eligibility criteria.</p>
+        </div>
+        <div class="ms-auto me-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="http://localhost/lgu_market_sys/pages/admin/home/">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="http://localhost/lgu_market_sys/pages/admin/table/">Tables</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reviews</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
     <div class="review-container">
 
         <a class="btn btn-return" href="/lgu_market_sys/pages/admin/table/">

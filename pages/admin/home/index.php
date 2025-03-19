@@ -23,10 +23,11 @@ if ($_SESSION['user_type'] !== 'Admin') {
 
 <body class="body light">
 
+
   <?php include '../../../includes/nav.php'; ?>
 
   <!-- Toast -->
-  <div class="toast-container mt-5 p-3 top-0 end-0">
+  <!-- <div class="toast-container mt-5 p-3 top-0 end-0">
     <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show" data-bs-autohide="false">
       <div class="toast-header text-bg-warning rounded-top">
         <svg class="mx-2" width="25" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -49,15 +50,28 @@ if ($_SESSION['user_type'] !== 'Admin') {
         Market maintenance scheduled
       </div>
     </div>
+  </div> -->
+
+  <div class="text-start m-3 p-3 title d-flex align-items-center">
+    <div class="icon-box me-3 shadow title-icon">
+      <i class="bi bi-bar-chart-line-fill"></i>
+    </div>
+    <div>
+      <h4 class="m-0">Admin - Dashboard</h4>
+      <p class="text-muted mb-0">Monitor market activity, manage vendors, and track key performance metrics.</p>
+    </div>
+    <div class="ms-auto me-5">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item acitve" aria-current="page"><a href="#">Dashboard</a></li>
+        </ol>
+      </nav>
+    </div>
   </div>
 
-  <div class="text-center mt-5 p-0">
-    <h2 class="title light">Admin Dashboard</h2>
-  </div>
 
-  <div class="container-fluid p-0">
-
-    <div class="row m-4 p-4">
+  <!-- <div class="container-fluid p-5">
+    <div class="row m-4 p-5">
       <div class="container-fluid">
         <div class="row announcement light p-4 m-3 text-center rounded shadow">
           <div class="line">
@@ -72,10 +86,10 @@ if ($_SESSION['user_type'] !== 'Admin') {
 
 
 
-        <!-- Statistic Cards Row -->
+
         <div class="row justify-content-center align-items-center text-center mb-4">
 
-          <!-- Today's Money -->
+
           <div class="col-md-4 mb-3">
             <div class="card light shadow position-relative">
               <div class="icon-container">
@@ -115,9 +129,8 @@ if ($_SESSION['user_type'] !== 'Admin') {
             </div>
           </div>
 
-          <!-- Charts Row -->
           <div class="row">
-            <!-- Website Views -->
+
             <div class="col-md-6 mb-3">
               <div class="card light shadow">
                 <div class="card-body">
@@ -127,7 +140,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
               </div>
             </div>
 
-            <!-- Daily Sales -->
+         
             <div class="col-md-6 mb-3">
               <div class="card light shadow">
                 <div class="card-body">
@@ -138,14 +151,194 @@ if ($_SESSION['user_type'] !== 'Admin') {
             </div>
           </div>
 
+          <div class="row g-4">
+       
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm p-3 text-center modern-card">
+                <div class="card-body">
+                  <i class="bi bi-exclamation-triangle text-danger fs-2 mb-3"></i>
+                  <h5 class="card-title fw-bold">Add Violation</h5>
+                  <p class="card-text text-muted">Report violations found during stall inspections.</p>
+                  <button class="btn btn-danger rounded-pill px-4" id="addViolationBtn">
+                    <i class="bi bi-clipboard-plus"></i> Report Violation
+                  </button>
+                </div>
+              </div>
+            </div>
+
+       
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm p-3 text-center modern-card">
+                <div class="card-body">
+                  <i class="bi bi-megaphone text-primary fs-2 mb-3"></i>
+                  <h5 class="card-title fw-bold">Market Announcements</h5>
+                  <p class="card-text text-muted">Post important updates for vendors and customers.</p>
+                  <button class="btn btn-primary rounded-pill px-4" id="postAnnouncementBtn">
+                    <i class="bi bi-pencil-square"></i> Post Announcement
+                  </button>
+                </div>
+              </div>
+            </div>
+
+   
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm p-3 text-center modern-card">
+                <div class="card-body">
+                  <i class="bi bi-upc-scan text-success fs-2 mb-3"></i>
+                  <h5 class="card-title fw-bold">QR Code Management</h5>
+                  <p class="card-text text-muted">Generate and display QR codes for stalls.</p>
+                  <button class="btn btn-success rounded-pill px-4" id="manageQrCodesBtn">
+                    <i class="bi bi-qr-code"></i> Manage QR Codes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
         </div>
       </div>
     </div>
-    <div class="row text-center">
-      <div class="container">
-        <a href="../table/" class="btn btn-warning" tabindex="-1" role="button" aria-disabled="true">Manage Applications</a>
+  </div> -->
+
+  <div class="container mt-4">
+    <section class="my-5">
+      <div class="text-start mb-4">
+        <h4 class="fw-bold">Market Performance Overview</h4>
+        <p class="text-muted">Track market metrics, vendor registrations, utilization trends, violations, and customer satisfaction for better management.</p>
       </div>
-    </div>
+      <div class="row">
+        <!-- Analytics Chart -->
+        <div class="col-lg-8">
+          <div class="card p-3">
+            <div class="head d-flex justify-content-between align-items-center p-3">
+              <h5 class="fw-bold">Market Utilization Trend</h5>
+
+              <div class="btn-group">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Select Market
+                </button>
+                <ul class="dropdown-menu">
+                  ...
+                </ul>
+              </div>
+            </div>
+
+            <canvas id="analyticsChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="col-lg-4 d-flex flex-column gap-5">
+          <div class="stats-card bg-white d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-primary fw-bold">New Vendors Registered</h6>
+              <h5 class="fw-bold">1,563</h5>
+              <p class="text-muted">May 23 - June 01 (2017)</p>
+            </div>
+            <div class="icon-box bg-primary"><i class="bi bi-person-plus-fill"></i></div>
+          </div>
+
+          <div class="stats-card bg-white d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-success fw-bold">Total Users</h6>
+              <h5 class="fw-bold">30,564</h5>
+              <p class="text-muted">May 23 - June 01 (2017)</p>
+            </div>
+            <div class="icon-box bg-success"><i class="bi bi-people-fill"></i></div>
+          </div>
+
+          <div class="stats-card bg-white d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-warning fw-bold">Total Registered Vendors</h6>
+              <h5 class="fw-bold">20,564</h5>
+              <p class="text-muted">May 23 - June 01 (2017)</p>
+            </div>
+            <div class="icon-box bg-warning"><i class="bi bi-shop"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task Stats -->
+      <div class="row my-5">
+        <div class="col-md-6">
+          <div class="card p-3 text-center">
+            <h6 class="text-secondary fw-bold">Violation Rate</h6>
+            <h5 class="fw-bold">532 <span class="text-success">+1.69%</span></h5>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card p-3 text-center">
+            <h6 class="text-secondary fw-bold">Customer Satisfaction Score</h6>
+            <h5 class="fw-bold">4,569 <span class="text-danger">-0.5%</span></h5>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <section class="container my-5">
+      <div class="text-start mb-4">
+        <h4 class="fw-bold">Market Management Tools</h4>
+        <p class="text-muted">Manage market operations efficiently with these tools.</p>
+      </div>
+
+      <<div class="row g-4 d-flex justify-content-center">
+        <div class="col-md-4 d-flex">
+          <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <i class="bi bi-exclamation-triangle text-danger fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Stall Violations</h5>
+              <p class="card-text text-muted">Report and manage violations found during stall inspections.</p>
+              <a class="btn btn-danger rounded-pill px-4" id="addViolationBtn" href="http://localhost/lgu_market_sys/pages/admin/violation/">
+                <i class="bi bi-clipboard-plus"></i> Manage Violation
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex">
+          <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <i class="bi bi-megaphone text-primary fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Market Announcements</h5>
+              <p class="card-text text-muted">Post important updates for vendors and customers.</p>
+              <button class="btn btn-primary rounded-pill px-4" id="postAnnouncementBtn">
+                <i class="bi bi-pencil-square"></i> Post Announcement
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex">
+          <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <i class="bi bi-upc-scan text-success fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">QR Code Management</h5>
+              <p class="card-text text-muted">Generate and display QR codes for stalls.</p>
+              <button class="btn btn-success rounded-pill px-4" id="manageQrCodesBtn">
+                <i class="bi bi-qr-code"></i> Manage QR Codes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex">
+          <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <i class="bi bi-file-earmark-text text-primary fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Applications</h5>
+              <p class="card-text text-muted">Post important updates for vendors and customers.</p>
+              <a class="btn btn-warning rounded-pill px-4" id="postAnnouncementBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
+                <i class="bi bi-clipboard-check"></i> Manage Applications
+              </a>
+            </div>
+          </div>
+        </div>
+  </div>
+
+  </section>
 
   </div>
 
@@ -155,6 +348,72 @@ if ($_SESSION['user_type'] !== 'Admin') {
   <?php include '../../../includes/theme.php'; ?>
 
   <script>
+    // Chart.js Configuration
+    const ctx = document.getElementById('analyticsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["Oct 23", "Oct 27", "Oct 31", "Nov", "Nov 08", "Nov 12", "Nov 16"],
+        datasets: [{
+          label: 'Performance',
+          data: [45, 50, 60, 80, 70, 90, 85],
+          borderColor: '#007bff',
+          backgroundColor: 'rgba(0, 123, 255, 0.1)',
+          borderWidth: 2,
+          pointRadius: 4,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+
+  <script>
+    document.getElementById("addViolationBtn").addEventListener("click", function() {
+      fetch("/api/add-violation", {
+          method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => alert("Violation reported successfully!"))
+        .catch(error => console.error("Error:", error));
+    });
+
+    document.getElementById("postAnnouncementBtn").addEventListener("click", function() {
+      fetch("/api/post-announcement", {
+          method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => alert("Announcement posted successfully!"))
+        .catch(error => console.error("Error:", error));
+    });
+
+    document.getElementById("manageQrCodesBtn").addEventListener("click", function() {
+      fetch("/api/manage-qr", {
+          method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => alert("QR Code action completed!"))
+        .catch(error => console.error("Error:", error));
+    });
+
     // Website Views
     var ctx = document.getElementById('websiteViewsChart').getContext('2d');
     var websiteViewsChart = new Chart(ctx, {

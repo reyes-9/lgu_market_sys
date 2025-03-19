@@ -3,7 +3,7 @@ require_once '../../includes/config.php';
 require_once "log_admin_actions.php";
 
 session_start();
-header('Content-Type: application/json'); // Set JSON response type
+header('Content-Type: application/json');
 
 $response = ['success' => false, 'message' => '', 'user_type' => null];
 

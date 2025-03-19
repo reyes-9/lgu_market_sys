@@ -57,10 +57,22 @@ try {
     $fullAddress = implode(', ', array_filter($addressParts));
 
     if ($transferType === "Succession") {
-        $userId = getUserId($pdo, $data['deceased_owner_id'], $data['deceased_first_name'], $data['deceased_middle_name'], $data['deceased_last_name']);
+        $userId = getUserId(
+            $pdo,
+            intval($data['deceased_owner_id'] ?? 0), // Ensure it's an integer
+            properCase($data['deceased_first_name'] ?? ''),
+            properCase($data['deceased_middle_name'] ?? ''),
+            properCase($data['deceased_last_name'] ?? '')
+        );
         $type = 'Stall Succession';
     } else {
-        $userId = getUserId($pdo, intval($data['current_owner_id']), $data['current_first_name'], $data['current_middle_name'], $data['current_last_name']);
+        $userId = getUserId(
+            $pdo,
+            intval($data['current_owner_id'] ?? 0), // Ensure it's an integer
+            properCase($data['current_first_name'] ?? ''),
+            properCase($data['current_middle_name'] ?? ''),
+            properCase($data['current_last_name'] ?? '')
+        );
         $type = 'Stall Transfer';
     }
 
@@ -95,7 +107,11 @@ try {
 
 
     $transferReason = $data['transfer_reason'] ?? null;
-    $recipientName = $data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name'];
+    $recipientName = trim(
+        properCase($data['first_name'] ?? '') . ' ' .
+        properCase($data['middle_name'] ?? '') . ' ' .
+        properCase($data['last_name'] ?? '')
+    );
     $recipientContact = $data['contact_no'];
     $recipientEmail = $data['email'];
     $recipientAltEmail = $data['alt_email'];
@@ -184,6 +200,14 @@ try {
     echo json_encode($response);
     exit();
 }
+
+function properCase($name)
+{
+    return preg_replace_callback("/\b[a-z']+\b/i", function ($match) {
+        return ucfirst(strtolower($match[0]));
+    }, $name);
+}
+
 
 function validateApplicationData($data, $app_type)
 {

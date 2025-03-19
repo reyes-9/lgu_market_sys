@@ -1,15 +1,18 @@
 <?php
 require_once '../../includes/config.php';
+require '../../includes/session.php';
+include_once 'notifications.php';
 
-session_start();
 ob_start();
 
 $account_id = $_SESSION['account_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+
     $type = trim($_POST['type']) ?? '';
     $message = htmlspecialchars(trim($_POST['message']), ENT_QUOTES, 'UTF-8');
+    $sentiment = htmlspecialchars(trim($_POST['sentiment']), ENT_QUOTES, 'UTF-8');
 
     if (empty($message)) {
         echo json_encode(['status' => 'error', 'message' => 'All fields are required.']);
@@ -17,13 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        include_once 'notifications.php';
+
         if ($type === 'feedback') {
             try {
-                $stmt = $pdo->prepare("INSERT INTO feedback (account_id, message) VALUES (:account_id, :message)");
+
+                $stmt = $pdo->prepare("INSERT INTO feedback (account_id, message, sentiment) VALUES (:account_id, :message, :sentiment)");
                 $stmt->execute([
                     ':account_id' => $account_id,
-                    ':message' => $message
+                    ':message' => $message,
+                    ':sentiment' => $sentiment
                 ]);
 
                 ob_clean();
@@ -70,5 +75,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     ob_end_clean();
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Not a POST request']);
+    echo json_encode(['status' => 'error', 'message' => 'An error occurred while processing your request.']);
 }

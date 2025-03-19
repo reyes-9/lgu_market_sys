@@ -17,12 +17,30 @@ if ($_SESSION['user_type'] !== 'Admin') {
     <title>Vendor Portal - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../favicon_192.png">
     <link rel="stylesheet" href="../../../assets/css/admin.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <?php include '../../../includes/cdn-resources.php'; ?>
 </head>
 
 <body class="body light">
     <?php include '../../../includes/nav.php'; ?>
+
+
+    <div class="text-start m-3 p-3 title d-flex align-items-center">
+        <div class="icon-box me-3 shadow title-icon">
+            <i class="bi bi-bar-chart-line-fill"></i>
+        </div>
+        <div>
+            <h4 class="m-0">Admin - Applications</h4>
+            <p class="text-muted mb-0">Review and process stall applications submitted by vendors.</p>
+        </div>
+        <div class="ms-auto me-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="http://localhost/lgu_market_sys/pages/admin/home/">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Tables</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 
     <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
 
@@ -93,7 +111,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
                         </button>
 
                         <h4 class="text-center">Stall Transfer Applications Table</h4>
-                        <hr>
+
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="">
 
                         </div>

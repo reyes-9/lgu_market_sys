@@ -74,6 +74,7 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
 $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $homePath = "/lgu_market_sys/";
+
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
@@ -94,10 +95,13 @@ $homePath = "/lgu_market_sys/";
         <div class="collapse navbar-collapse" id="navbarNav">
             <?php
             $allowedPages = ['portal', 'stall_app', 'transfer_stall_app', 'stalls', 'violation', 'track_app', 'stall_extend', 'helper_app'];
+            $invalidPath = '/lgu_market_sys/pages/admin/';
             if (
                 isset($_SESSION['user_type']) &&
-                isset($currentPage) && in_array($currentPage, $allowedPages) &&
-                ($_SESSION['user_type'] === 'Vendor' || $_SESSION['user_type'] === 'Admin')
+                isset($currentPage) &&
+                in_array($currentPage, $allowedPages) &&
+                ($_SESSION['user_type'] === 'Vendor' || $_SESSION['user_type'] === 'Admin') &&
+                strpos($_SERVER['REQUEST_URI'], $invalidPath) === false // Hide in admin pages
             ) :
             ?>
                 <!-- Center Navigation Links -->

@@ -15,7 +15,7 @@
     <?php include '../../includes/nav.php'; ?>
 
     <!-- Toast Container -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+    <div class="position-fixed top-10 end-0 p-3" style="z-index: 1050">
         <div id="responseMsg" class="toast align-items-center  border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
@@ -48,6 +48,7 @@
                             </div>
 
                             <button type="submit" class="btn btn-warning btn-block mt-3">Submit Feedback</button>
+
                         </form>
                     </div>
                 </div>
@@ -202,6 +203,101 @@
     </script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("feedbackForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                handleFormSubmit("feedbackForm");
+            });
+
+            document.getElementById("supportForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                handleFormSubmit("supportForm");
+            });
+        });
+
+        async function handleFormSubmit(formId) {
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+
+            const message = sanitizeInput(formData.get("message"));
+            const submitButton = form.querySelector("button[type='submit']");
+
+            // Extract the form type (feedback/support)
+            const formType = formData.get("type"); // Ensure your form has an input named "type"
+            const originalButtonText = submitButton.innerHTML;
+
+            try {
+
+                submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...`;
+                submitButton.disabled = true;
+
+                let sentiment = "undefined"; // Default sentiment if not analyzed
+
+                if (formType === "feedback") {
+                    sentiment = await analyzeSentiment(message);
+                    console.log("Detected sentiment:", sentiment);
+                    formData.append("sentiment", sentiment);
+                }
+
+                const response = await fetch('../actions/feedback_action.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                switch (data.type) {
+                    case 'feedback':
+                    case 'support':
+                        showToast(data.message, data.status);
+                        break;
+                    default:
+                        showToast("Unexpected response type.", "error");
+                }
+            } catch (error) {
+                showToast(`Error: ${error.message}`, "error");
+            } finally {
+                // Restore button text & enable button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            }
+        }
+
+
+        async function analyzeSentiment(message) {
+            if (message.trim() === "") {
+                alert("Please enter feedback before analyzing.");
+                return;
+            }
+
+            console.log("Sending feedback:", message);
+
+            try {
+                const response = await fetch("../actions/sentiment.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        feedback: message
+                    })
+                });
+
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                return data.sentiment;
+            } catch (error) {
+                console.error("Error:", error);
+                return "undefined";
+            }
+        }
+        const sanitizeInput = (input) => {
+            const temp = document.createElement("div");
+            temp.textContent = input; // Escapes HTML characters
+            return temp.innerHTML;
+        };
+
         function showToast(message, status) {
             var toastEl = document.getElementById("responseMsg");
             toastEl.querySelector(".toast-body").innerText = message;
@@ -212,42 +308,6 @@
             if (status === "success") toastEl.classList.add("text-bg-success");
             else if (status === "error") toastEl.classList.add("text-bg-danger");
         }
-
-        // Function to handle form submissions for both feedback and support forms
-        function handleFormSubmit(formId) {
-
-            const form = document.getElementById(formId);
-            form.addEventListener('submit', function(e) {
-
-                e.preventDefault();
-                const formData = new FormData(this);
-
-                fetch('../actions/feedback_action.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        switch (data.type) {
-
-                            case 'feedback':
-                                showToast(data.message, data.status);
-                                break;
-                            case 'support':
-                                showToast(data.message, data.status);
-                                break;
-                            default:
-                                showToast("Unexpected response type.", "error");
-                        }
-                    })
-                    .catch(error => {
-                        showToast(`Error: ${error.message}`, "error");
-                    });
-            });
-        }
-
-        handleFormSubmit('feedbackForm');
-        handleFormSubmit('supportForm');
     </script>
 </body>
 

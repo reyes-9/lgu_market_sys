@@ -59,18 +59,18 @@ try {
 
     $helperResponse = insertHelper(
         $pdo,
-        $data['stall_id'],
+        intval($data['stall_id'] ?? 0),
         $account_id,
-        $data['first_name'],
-        $data['last_name'],
-        $data['middle_name'],
-        $data['sex'],
-        $data['email'],
-        $data['alt_email'],
-        $data['contact_no'],
-        $data['civil_status'],
-        $data['nationality'],
-        $fullAddress
+        properCase($data['first_name'] ?? ''),
+        properCase($data['last_name'] ?? ''),
+        properCase($data['middle_name'] ?? ''),
+        $data['sex'] ?? '',
+        filter_var($data['email'] ?? '', FILTER_VALIDATE_EMAIL) ? $data['email'] : '',
+        filter_var($data['alt_email'] ?? '', FILTER_VALIDATE_EMAIL) ? $data['alt_email'] : '',
+        preg_replace('/[^0-9]/', '', $data['contact_no'] ?? ''),
+        $data['civil_status'] ?? '',
+        properCase($data['nationality'] ?? ''),
+        trim($fullAddress)
     );
 
     if (!$helperResponse['success']) {
@@ -142,7 +142,12 @@ try {
     exit();
 }
 
-
+function properCase($name)
+{
+    return preg_replace_callback("/\b[a-z']+\b/i", function ($match) {
+        return ucfirst(strtolower($match[0]));
+    }, trim($name));
+}
 function validateApplicationData($data)
 {
     $errors = [];

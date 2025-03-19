@@ -297,7 +297,7 @@
 
 
                     <!-- Submit Button -->
-                    <button class="btn btn-success rounded-pill shadow-sm py-2 mt-3 fw-semibold" onclick="submitFeedback()">Submit Review</button>
+                    <button class="btn btn-success rounded-pill shadow-sm py-2 mt-3 fw-semibold" id="submitReviewButton" onclick="submitFeedback()">Submit Review</button>
                 </div>
             </div>
 
@@ -500,13 +500,14 @@
 
                 return starsHTML;
             }
-
-            function submitFeedback() {
+            async function submitFeedback() {
+                const placeholderText = document.getElementById("placeholderText"); // Ensure it's defined
                 // Get review details
                 let rating = document.querySelector("#starRating .bi-star-fill") ? document.querySelectorAll("#starRating .bi-star-fill").length : 0;
                 let commentBox = document.getElementById("commentBox");
                 let feedback = commentBox ? commentBox.innerText.trim() : "";
                 const stall_id = reviewButton.getAttribute("data-stall-id");
+                const submitButton = document.getElementById("submitReviewButton"); // Ensure your button has this ID
 
                 // Validate if feedback is empty
                 if (!rating) {
@@ -519,30 +520,107 @@
                     return;
                 }
 
-                // Prepare data
-                let formData = new FormData();
-                formData.append("stall_id", stall_id);
-                formData.append("rating", rating);
-                formData.append("comment", feedback);
+                // Store original button text
+                const originalButtonText = submitButton.innerHTML;
 
-                fetch("../actions/submit_review.php", {
+                try {
+                    // Show Bootstrap spinner & disable button
+                    submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...`;
+                    submitButton.disabled = true;
+
+                    // Analyze sentiment
+                    const sentiment = await analyzeSentiment(feedback);
+                    console.log("Detected sentiment:", sentiment);
+
+                    // Prepare form data
+                    let formData = new FormData();
+                    formData.append("stall_id", stall_id);
+                    formData.append("rating", rating);
+                    formData.append("comment", feedback);
+                    formData.append("sentiment", sentiment); // Append analyzed sentiment
+
+                    // 🔹 Log form data before submission
+                    console.log(" Form Data Before Sending:");
+                    for (let [key, value] of formData.entries()) {
+                        console.log(`${key}:`, value);
+                    }
+
+                    // Send data to server
+                    const response = await fetch("../actions/submit_review.php", {
                         method: "POST",
                         body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert("Feedback submitted successfully!");
-                            commentBox.innerHTML = ""; // Clear the comment box
-                            resetStarRating(); // Reset the rating
-                        } else {
-                            alert("Failed to submit feedback. Please try again.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error submitting feedback:", error);
-                        alert("An error occurred while submitting feedback.");
                     });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert("Feedback submitted successfully!");
+
+                        // Clear the comment box properly
+                        commentBox.innerHTML = "";
+
+                        // Reset the rating
+                        resetStarRating();
+
+                        // Remove all existing tags
+                        document.querySelectorAll("#commentBox .badge").forEach(tag => tag.remove());
+
+                        // Ensure placeholder text is shown again
+                        if (placeholderText) {
+                            placeholderText.classList.remove("d-none");
+                        }
+
+                        // Allow adding new tags again
+                        commentBox.contentEditable = "true"; // Ensure it's still editable
+                        commentBox.focus(); // Move cursor to input area
+
+                        // Rebind event listeners for clicking on tags (Fix for disappearing functionality)
+                        document.querySelectorAll("#ratingTags button").forEach(button => {
+                            button.onclick = function() {
+                                addTag(this.innerText); // Reattach click event for adding tags
+                            };
+                        });
+                    } else {
+                        alert("Failed to submit feedback. Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Error submitting feedback:", error);
+                    alert("An error occurred while submitting feedback.");
+                } finally {
+                    // Restore button text & enable button
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                }
+            }
+
+
+            async function analyzeSentiment(message) {
+                if (message.trim() === "") {
+                    alert("Please enter feedback before analyzing.");
+                    return;
+                }
+
+                console.log("Sending feedback:", message);
+
+                try {
+                    const response = await fetch("../actions/sentiment.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            feedback: message
+                        })
+                    });
+
+                    const data = await response.json();
+                    console.log("API Response:", data);
+
+                    return data.sentiment;
+                } catch (error) {
+                    console.error("Error:", error);
+                    return "undefined";
+                }
             }
 
             function setReviewSection(stall_number, section, market, stall_id) {
@@ -727,50 +805,55 @@
 
             function addTag(tag) {
                 const commentBox = document.getElementById("commentBox");
-                const placeholder_text = document.getElementById("placeholderText");
+                const placeholder_text = document.getElementById("placeholderText"); // Ensure this exists
 
-                // Check if commentBox is empty and hide/show the placeholder
-                if (!isDivEmpty(commentBox)) {
-                    placeholder_text.classList.add("d-none");
-                } else {
-                    placeholder_text.classList.remove("d-none");
+                // 🔹 Ensure commentBox exists
+                if (!commentBox) {
+                    console.error("Error: commentBox not found!");
+                    return;
                 }
 
-                // Check if the tag already exists inside the comment box
+                // 🔹 Hide placeholder if commentBox is not empty
+                if (placeholder_text) {
+                    placeholder_text.classList.add("d-none");
+                }
+
+                // 🔹 Check if the tag already exists inside the comment box
                 if (document.getElementById(`tag-${tag}`)) return;
 
-                // Create tag span
+                // 🔹 Create tag span
                 const tagSpan = document.createElement("span");
                 tagSpan.classList.add("badge", "bg-success-subtle", "text-dark", "rounded-pill", "me-2", "p-2");
                 tagSpan.id = `tag-${tag}`;
                 tagSpan.contentEditable = "false"; // Prevent user from editing the tag itself
 
-                // Create remove button
+                // 🔹 Create remove button
                 const removeBtn = document.createElement("button");
                 removeBtn.classList.add("btn-close", "btn-close-dark", "ms-1");
                 removeBtn.style.fontSize = "10px";
                 removeBtn.onclick = function() {
                     tagSpan.remove(); // Remove the tag on click
-                    // Show placeholder text again if comment box is empty
-                    if (isDivEmpty(commentBox)) {
+
+                    // 🔹 Show placeholder text again if comment box is empty
+                    if (placeholder_text && isDivEmpty(commentBox)) {
                         placeholder_text.classList.remove("d-none");
                     }
                 };
 
-                // Append text and button inside the span
+                // 🔹 Append text and button inside the span
                 tagSpan.innerText = tag + " ";
                 tagSpan.appendChild(removeBtn);
 
-                // Insert tag at the beginning of the comment box
+                // 🔹 Insert tag at the beginning of the comment box
                 commentBox.insertBefore(tagSpan, commentBox.firstChild);
 
-                // Add space after the tag for better formatting
+                // 🔹 Add space after the tag for better formatting
                 commentBox.insertBefore(document.createTextNode(" "), commentBox.firstChild.nextSibling);
 
-                // Move the cursor to the end of the comment box
+                // 🔹 Move the cursor to the end of the comment box
                 commentBox.focus();
 
-                // Ensure the cursor stays at the end of the comment box
+                // 🔹 Ensure the cursor stays at the end of the comment box
                 const range = document.createRange();
                 const selection = window.getSelection();
                 range.selectNodeContents(commentBox);

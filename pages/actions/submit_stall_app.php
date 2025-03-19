@@ -42,8 +42,6 @@ try {
 
     $application_number = $data['application_number'];
 
-
-
     // Insert Application
     $applicationId = uploadApplication(
         $pdo,
@@ -59,8 +57,13 @@ try {
         throw new Exception("Failed to submit application.");
     }
 
-    $userId = getUserId($pdo, $account_id, $data['first_name'], $data['middle_name'], $data['last_name']);
-
+    $userId = getUserId(
+        $pdo,
+        $account_id,
+        properCase($data['first_name'] ?? ''),
+        properCase($data['middle_name'] ?? ''),
+        properCase($data['last_name'] ?? '')
+    );
     if (!$userId) {
         throw new Exception("User not found.");
     }
@@ -108,6 +111,12 @@ try {
     exit();
 }
 
+function properCase($name)
+{
+    return preg_replace_callback("/\b[a-z']+\b/i", function ($match) {
+        return ucfirst(strtolower($match[0]));
+    }, $name);
+}
 
 function validateApplicationData($data)
 {

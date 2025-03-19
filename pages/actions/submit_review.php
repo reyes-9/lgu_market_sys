@@ -13,6 +13,7 @@ try {
     $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : null;
     $comment = isset($_POST['comment']) ? trim($_POST['comment']) : "";
     $stall_id = isset($_POST['stall_id']) ? trim($_POST['stall_id']) : null;
+    $sentiment = isset($_POST['sentiment']) ? trim($_POST['sentiment']) : "undefined";
 
     if (!$user_id) {
         throw new Exception("User not found.");
@@ -25,12 +26,13 @@ try {
     }
 
     // Prepare and execute the query
-    $stmt = $pdo->prepare("INSERT INTO stall_reviews ( stall_id, user_id, rating, comment) VALUES (:stall_id, :user_id, :rating, :comment)");
+    $stmt = $pdo->prepare("INSERT INTO stall_reviews ( stall_id, user_id, rating, comment, comment_sentiment) VALUES (:stall_id, :user_id, :rating, :comment, :comment_sentiment)");
     $stmt->execute([
         ':stall_id' => $stall_id,
         ':user_id' => $user_id,
         ':rating' => $rating,
         ':comment' => $comment,
+        ':comment_sentiment' => $sentiment
     ]);
 
     // Send success response

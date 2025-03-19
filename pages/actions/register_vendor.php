@@ -27,24 +27,35 @@ foreach ($requiredFields as $field) {
     }
 }
 
-// Sanitize and validate inputs
-$accountId = $_SESSION['account_id'];
-$first_name = htmlspecialchars(trim($_POST['first_name']));
-$middle_name = htmlspecialchars(trim($_POST['middle_name']));
-$last_name = htmlspecialchars(trim($_POST['last_name']));
-$email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? $_POST['email'] : null;
-$altEmail = filter_var($_POST['alt_email'], FILTER_VALIDATE_EMAIL) ? $_POST['alt_email'] : null;
-$contact_no = preg_match('/^\d{11}$/', $_POST['contact_no']) ? $_POST['contact_no'] : null;
-$zipcode = preg_match('/^\d{4}$/', $_POST['zip_code']) ? $_POST['zip_code'] : null;
-$house_no = htmlspecialchars(trim($_POST['house_no']));
-$street = htmlspecialchars(trim($_POST['street']));
-$subdivision = htmlspecialchars(trim($_POST['subdivision']));
-$province = htmlspecialchars(trim($_POST['province']));
-$city = htmlspecialchars(trim($_POST['city']));
-$barangay = htmlspecialchars(trim($_POST['barangay']));
-$sex = htmlspecialchars(trim($_POST['sex']));
-$civil_status = htmlspecialchars(trim($_POST['civil_status']));
-$nationality = htmlspecialchars(trim($_POST['nationality']));
+// Sanitize & Validate Inputs
+$accountId = $_SESSION['account_id'] ?? 0; // Ensure session variable exists
+
+$first_name = properCase(htmlspecialchars(trim($_POST['first_name'] ?? ''), ENT_QUOTES, 'UTF-8'));
+$middle_name = properCase(htmlspecialchars(trim($_POST['middle_name'] ?? ''), ENT_QUOTES, 'UTF-8'));
+$last_name = properCase(htmlspecialchars(trim($_POST['last_name'] ?? ''), ENT_QUOTES, 'UTF-8'));
+
+$email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL) ? trim($_POST['email']) : null;
+$altEmail = filter_var($_POST['alt_email'] ?? '', FILTER_VALIDATE_EMAIL) ? trim($_POST['alt_email']) : null;
+
+$contact_no = isset($_POST['contact_no']) && preg_match('/^\d{11}$/', $_POST['contact_no'])
+    ? trim($_POST['contact_no'])
+    : null;
+
+$zipcode = isset($_POST['zip_code']) && preg_match('/^\d{4}$/', $_POST['zip_code'])
+    ? trim($_POST['zip_code'])
+    : null;
+
+// Sanitize Address Fields
+$house_no = htmlspecialchars(trim($_POST['house_no'] ?? ''), ENT_QUOTES, 'UTF-8');
+$street = htmlspecialchars(trim($_POST['street'] ?? ''), ENT_QUOTES, 'UTF-8');
+$subdivision = htmlspecialchars(trim($_POST['subdivision'] ?? ''), ENT_QUOTES, 'UTF-8');
+$province = htmlspecialchars(trim($_POST['province'] ?? ''), ENT_QUOTES, 'UTF-8');
+$city = htmlspecialchars(trim($_POST['city'] ?? ''), ENT_QUOTES, 'UTF-8');
+$barangay = htmlspecialchars(trim($_POST['barangay'] ?? ''), ENT_QUOTES, 'UTF-8');
+
+$sex = htmlspecialchars(trim($_POST['sex'] ?? ''), ENT_QUOTES, 'UTF-8');
+$civil_status = htmlspecialchars(trim($_POST['civil_status'] ?? ''), ENT_QUOTES, 'UTF-8');
+$nationality = properCase(htmlspecialchars(trim($_POST['nationality'] ?? ''), ENT_QUOTES, 'UTF-8'));
 
 // Check if required fields are valid
 if (!$email || !$altEmail || !$contact_no || !$zipcode) {
@@ -132,4 +143,11 @@ try {
     $pdo->rollBack();
     http_response_code(500);  // Internal Server Error
     echo json_encode(["success" => false, "message" => "Registration failed: " . $e->getMessage()]);
+}
+
+function properCase($name)
+{
+    return preg_replace_callback("/\b[a-z']+\b/i", function ($match) {
+        return ucfirst(strtolower($match[0]));
+    }, trim($name));
 }

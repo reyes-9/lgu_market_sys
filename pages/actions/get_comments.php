@@ -12,7 +12,6 @@ try {
         exit;
     }
 
-    // Fetch comments from database
     $stmt = $pdo->prepare("
 SELECT 
       CONCAT(u.first_name, ' ', u.last_name) AS author, 

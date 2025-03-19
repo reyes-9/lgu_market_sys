@@ -57,7 +57,13 @@ try {
         throw new Exception("Failed to submit application.");
     }
 
-    $userId = getUserId($pdo, $account_id, $data['owner_first_name'], $data['owner_middle_name'], $data['owner_last_name']);
+    $userId = getUserId(
+        $pdo,
+        $account_id,
+        properCase($data['owner_first_name'] ?? ''),
+        properCase($data['owner_middle_name'] ?? ''),
+        properCase($data['owner_last_name'] ?? '')
+    );
     if (!$userId) {
         throw new Exception("User not found.");
     }
@@ -115,6 +121,12 @@ try {
 }
 
 
+function properCase($name)
+{
+    return preg_replace_callback("/\b[a-z']+\b/i", function ($match) {
+        return ucfirst(strtolower($match[0]));
+    }, trim($name));
+}
 
 function validateApplicationData($data)
 {
