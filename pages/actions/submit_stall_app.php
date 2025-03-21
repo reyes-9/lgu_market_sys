@@ -1,7 +1,7 @@
 <?php
 require_once "../../includes/config.php";
 require "../../includes/session.php";
-include_once "notifications.php";
+include "notifications.php";
 include "validate_document.php";
 include "upload_document.php";
 include "upload_application.php";

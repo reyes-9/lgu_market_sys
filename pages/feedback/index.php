@@ -250,9 +250,11 @@
                     case 'feedback':
                     case 'support':
                         showToast(data.message, data.status);
+                        form.reset();
                         break;
                     default:
                         showToast("Unexpected response type.", "error");
+                        form.reset();
                 }
             } catch (error) {
                 showToast(`Error: ${error.message}`, "error");
@@ -275,6 +277,7 @@
             try {
                 const response = await fetch("../actions/sentiment.php", {
                     method: "POST",
+                    redirect: "follow",
                     headers: {
                         "Content-Type": "application/json"
                     },

@@ -7,7 +7,7 @@
     <title>Home - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="images/favicon_192.png">
     <link rel="stylesheet" href="assets/css/index.css">
-    <?php include "includes\cdn-resources.php" ?>
+    <?php include_once "includes\cdn-resources.php" ?>
 </head>
 <?php
 
@@ -32,7 +32,9 @@ if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' 
 ?>
 
 <body class="body light">
+
     <?php include 'includes/nav.php'; ?>
+    <?php include 'includes/announcements.php'; ?>
     <!-- Main content -->
     <div class="content-wrapper text-light">
         <h1>Public Market Monitoring System</h1>
@@ -52,6 +54,7 @@ if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' 
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
     <?php include 'includes/theme.php'; ?>
+
 
 </body>
 

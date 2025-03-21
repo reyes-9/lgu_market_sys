@@ -304,12 +304,72 @@ if ($_SESSION['user_type'] !== 'Admin') {
               <i class="bi bi-megaphone text-primary fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Market Announcements</h5>
               <p class="card-text text-muted">Post important updates for vendors and customers.</p>
-              <button class="btn btn-primary rounded-pill px-4" id="postAnnouncementBtn">
+              <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#announcementModal">
                 <i class="bi bi-pencil-square"></i> Post Announcement
               </button>
             </div>
           </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="announcementModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div class="modal-container">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <h4 class="modal-title fw-bold" id="announcementModalLabel">New Announcement</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <p class="text-muted me-5">
+                    Announcements inform vendors and customers about important market updates, events, and policies.
+                  </p>
+                  <hr class="mb-4">
+
+                  <form id="announcementForm">
+                    <div class="mb-3">
+                      <label for="announcementTitle" class="form-label">Title</label>
+                      <input type="text" class="form-control" id="announcementTitle" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="announcementMessage" class="form-label">Message</label>
+                      <textarea class="form-control" id="announcementMessage" rows="4" required></textarea>
+                    </div>
+
+                    <!-- Target Audience Dropdown -->
+                    <div class="mb-3">
+                      <label for="announcementAudience" class="form-label">Target Audience</label>
+                      <select class="form-select" id="announcementAudience" required>
+                        <option value="all" selected>All Users</option>
+                        <option value="vendors">Vendors</option>
+                        <option value="admins">Admins</option>
+                      </select>
+                    </div>
+
+                    <!-- Start Date and Expiry Date Inputs -->
+                    <div class="mb-3">
+                      <label for="announcementStartDate" class="form-label">Start Date</label>
+                      <input type="datetime-local" class="form-control" id="announcementStartDate" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="announcementExpiryDate" class="form-label">Expiry Date</label>
+                      <input type="datetime-local" class="form-control" id="announcementExpiryDate" required>
+                    </div>
+
+                    <div class="text-end">
+                      <button type="submit" class="btn btn-primary">Post Announcement</button>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
 
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
@@ -346,6 +406,64 @@ if ($_SESSION['user_type'] !== 'Admin') {
 
   <?php include '../../../includes/footer.php'; ?>
   <?php include '../../../includes/theme.php'; ?>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const announcementForm = document.getElementById("announcementForm");
+
+      announcementForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        postAnnouncement();
+      });
+    });
+
+    function postAnnouncement() {
+      const title = document.getElementById("announcementTitle").value.trim();
+      const message = document.getElementById("announcementMessage").value.trim();
+      const audience = document.getElementById("announcementAudience").value;
+      const startDate = document.getElementById("announcementStartDate").value;
+      const expiryDate = document.getElementById("announcementExpiryDate").value;
+
+      if (title === "" || message === "" || startDate === "" || expiryDate === "") {
+        alert("Please fill out all fields.");
+        return;
+      }
+
+      // Prepare data for submission
+      const formData = new URLSearchParams();
+      formData.append("title", title);
+      formData.append("message", message);
+      formData.append("audience", audience);
+      formData.append("start_date", startDate);
+      formData.append("expiry_date", expiryDate);
+
+      console.log("FormData being sent:");
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
+      // Send data to backend via AJAX
+      fetch("../../actions/post_announcements.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString(),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Announcement posted successfully!");
+            document.getElementById("announcementForm").reset();
+            bootstrap.Modal.getInstance(document.getElementById("announcementModal")).hide(); // Close modal
+          } else {
+            alert("Failed to post announcement.");
+          }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+  </script>
 
   <script>
     // Chart.js Configuration
@@ -386,139 +504,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
     });
   </script>
 
-  <script>
-    document.getElementById("addViolationBtn").addEventListener("click", function() {
-      fetch("/api/add-violation", {
-          method: "POST"
-        })
-        .then(response => response.json())
-        .then(data => alert("Violation reported successfully!"))
-        .catch(error => console.error("Error:", error));
-    });
 
-    document.getElementById("postAnnouncementBtn").addEventListener("click", function() {
-      fetch("/api/post-announcement", {
-          method: "POST"
-        })
-        .then(response => response.json())
-        .then(data => alert("Announcement posted successfully!"))
-        .catch(error => console.error("Error:", error));
-    });
-
-    document.getElementById("manageQrCodesBtn").addEventListener("click", function() {
-      fetch("/api/manage-qr", {
-          method: "POST"
-        })
-        .then(response => response.json())
-        .then(data => alert("QR Code action completed!"))
-        .catch(error => console.error("Error:", error));
-    });
-
-    // Website Views
-    var ctx = document.getElementById('websiteViewsChart').getContext('2d');
-    var websiteViewsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-        datasets: [{
-          label: 'Website Views',
-          data: [45, 30, 20, 35, 60, 70, 80],
-          backgroundColor: function(ctx) {
-            var chart = ctx.chart;
-            var {
-              ctx: chartCtx,
-              chartArea
-            } = chart;
-
-            if (!chartArea) {
-              // This prevents errors during the initial chart creation before the layout is calculated
-              return;
-            }
-
-            return chart.data.datasets[0].data.map(function(value, index) {
-              // Create a gradient for each bar
-              var gradient = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-              gradient.addColorStop(0, '#186fc4');
-              gradient.addColorStop(1, '#003366');
-              return gradient;
-            });
-          },
-          borderColor: '#003366', // Border color for the bars (optional)
-          borderWidth: 1,
-          borderRadius: 10
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-
-    // Daily Sales Chart
-    var ctx2 = document.getElementById('dailySalesChart').getContext('2d');
-    var dailySalesChart = new Chart(ctx2, {
-      type: 'line',
-      data: {
-        labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-        datasets: [{
-          label: 'Daily Sales',
-          data: [200, 220, 180, 350, 400, 390, 320, 450, 380, 300, 310, 410],
-          borderColor: '#186fc4',
-          fill: false,
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  </script>
-
-
-  <script>
-    var ctx = document.getElementById('applicationsChart').getContext('2d');
-    var applicationsChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'Applications',
-          data: [12, 19, 3, 5, 2, 3, 7],
-          backgroundColor: 'rgba(0, 123, 255, 0.5)',
-          borderColor: 'rgba(0, 123, 255, 1)',
-          borderWidth: 2
-        }]
-      }
-    });
-  </script>
-  <script>
-    // Theme
-    const title = document.querySelector('.title');
-    const announcement = document.querySelector('.announcement');
-    const cards = document.querySelectorAll('.card');
-
-    console.log(announcement);
-
-    themeToggleButton.addEventListener("click", () => {
-
-      title.classList.toggle('dark');
-      title.classList.toggle('light');
-      announcement.classList.toggle('dark');
-      announcement.classList.toggle('light');
-
-      cards.forEach((cards) => {
-        cards.classList.toggle('dark');
-        cards.classList.toggle('light');
-        console.log("Card:", cards.classList);
-      });
-    });
-  </script>
 </body>
 
 </html>

@@ -248,3 +248,62 @@ table td button {
 .card-title-home {
   color: charcoal;
 }
+
+/* Violation */
+.is-invalid {
+  border-color: darkred;
+}
+
+input,
+select,
+textarea {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.modal-container {
+  padding: 30px 40px !important;
+  color: #003366;
+  border: 3px solid #003366;
+  border-radius: 10px;
+}
+
+/* Style the date input */
+input[type="date"] {
+  background: #fff;
+  border: 2px solid #dadada; /* Blue border */
+  border-radius: 8px;
+  padding: 10px 15px !important;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  width: 50%;
+}
+
+/* Ensure the date text is visible */
+input[type="date"]::-webkit-datetime-edit {
+  color: #333;
+  font-size: 16px;
+}
+
+/* Ensure the calendar icon is visible */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(30%);
+  cursor: pointer;
+}
+
+/* Hover and focus effects */
+input[type="date"]:hover,
+input[type="date"]:focus {
+  border-color: #adadad;
+  box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .form-group {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
