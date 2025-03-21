@@ -1,5 +1,21 @@
 @import url("main.css");
-
+body {
+  margin: 0;
+  padding: 0;
+  background: rgb(23, 162, 184);
+  background: linear-gradient(
+    225deg,
+    rgba(23, 162, 184, 1) 0%,
+    rgba(3, 64, 112, 1) 41%,
+    rgba(0, 51, 102, 1) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.fixed-row {
+  height: 600px; /* Set a fixed height */
+  overflow-y: hidden; /* Enable vertical scrolling if content overflows */
+}
 /* Cards */
 .card {
   border-radius: 10px;
@@ -52,11 +68,12 @@
   color: #323335;
   border: none;
   border-radius: 5px;
+  background: transparent !important;
+  color: #f7f7f7;
 }
 
 .pagination .page-item.active .page-link {
-  background-color: #003366;
-  color: bisque;
+  background-color: #ffffff36 !important;
 }
 
 /* Animation for each card - Slide up with fade-in */
@@ -236,11 +253,12 @@
 }
 
 .btn-return {
-  color: #003366 !important;
+  color: white !important;
   border: 0 !important;
   font-size: 18px !important;
   outline: none !important;
 }
+
 .btn-return:hover {
-  color: black !important;
+  color: #c5c5c5 !important;
 }

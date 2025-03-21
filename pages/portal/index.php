@@ -172,7 +172,7 @@
 
       fetchUser();
       fetchNotifications();
-      fetchStatusCount();
+      fetchStatusViolationCount();
 
       document.getElementById("returnBtn").addEventListener("click", function() {
         fetchNotifications();
@@ -338,7 +338,7 @@
         })
     }
 
-    function fetchStatusCount() {
+    function fetchStatusViolationCount() {
       fetch('../actions/violation_action.php')
         .then(response => response.json())
         .then(data => {

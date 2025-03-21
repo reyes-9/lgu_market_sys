@@ -1,3 +1,14 @@
+:root {
+  --text-light: #212529; /* Light text color (dark gray) */
+  --text-dark: #f8f9fa; /* Dark text color (light gray) */
+  --bg-light: #ffffff; /* Light background color */
+  --bg-dark: #343a40; /* Dark background color */
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 html,
 body {
   height: 100vh !important;

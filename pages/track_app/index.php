@@ -10,22 +10,22 @@
     <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
-<body class="body light">
+<body class="body">
 
     <?php include '../../includes/nav.php'; ?>
     <div class="content-wrapper">
-        <div class="container m-5">
+        <div class="container mx-5 mt-5">
             <div class="container mt-3 p-0">
                 <a href="../portal/" class="btn btn-outline btn-return mb-3">
                     <i class="bi bi-arrow-left"></i> Profile
                 </a>
             </div>
-            <h2>Your Applications</h2>
+            <h2 class="text-light">Your Applications</h2>
 
             <div class="container my-4">
-                <div class="row g-5">
-                </div>
+                <div class="row g-5 fixed-row">
 
+                </div>
                 <nav class="mt-4">
                     <ul class="pagination" id="pagination"></ul>
                 </nav>
