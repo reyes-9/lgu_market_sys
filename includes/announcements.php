@@ -85,14 +85,14 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .card {
             border-radius: 8px;
             background: linear-gradient(45deg, #23282c, #1e2125);
-            box-shadow: 25px -25px 51px #191c20, -25px 25px 51px #292e32;
+            /* box-shadow: 25px -25px 51px #191c20, -25px 25px 51px #292e32; */
             padding: 20px 30px;
             transition: all 0.4s ease-in-out;
         }
 
         .card:hover {
             transform: scale(0.8);
-            box-shadow: rgba(255, 193, 7, 0.4) 0px 5px 15px;
+            box-shadow: rgba(172, 170, 164, 0.2) 0px 0px 70px;
         }
 
         .card {
@@ -104,6 +104,11 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .show .card {
             opacity: 1;
             transform: scale(1);
+        }
+
+        .modal-body {
+            background: rgb(37, 87, 136);
+            background: radial-gradient(circle, rgba(37, 87, 136, 1) 0%, rgba(24, 57, 90, 1) 0%, rgba(22, 51, 81, 1) 24%, rgba(0, 0, 0, 1) 100%);
         }
     </style>
 </head>
@@ -144,9 +149,9 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Announcement Modal -->
     <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg bg-dark text-light">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-body bg-dark text-light b-0">
+                <div class="modal-body text-light b-0">
                     <div class="body-container">
                         <div class="d-flex justify-content-between">
                             <div class="head text-warning fw-bold">
