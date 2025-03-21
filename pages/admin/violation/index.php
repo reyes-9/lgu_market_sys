@@ -26,9 +26,9 @@
 
         <!-- Toast -->
         <!-- <div class="toast-container mt-5 p-3 top-0 end-0">
-    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show" data-bs-autohide="false">
-      <div class="toast-header text-bg-warning rounded-top">
-        <svg class="mx-2" width="25" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+             <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show" data-bs-autohide="false">
+                <div class="toast-header text-bg-warning rounded-top">
+             <svg class="mx-2" width="25" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" y="0" width="100" height="100" rx="20" fill="url(#grad1)" />
           <defs>
             <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -39,16 +39,16 @@
           <polygon points="50,20 75,75 25,75" fill="white" />
           <rect x="47" y="40" width="6" height="20" fill="#ff4c4c" />
           <circle cx="50" cy="70" r="3" fill="#ff4c4c" />
-        </svg>
-        <strong class="me-auto">System Alerts</strong>
-        <small>11 mins ago</small>
-      </div>
-      <div class="toast-body text-light rounded-bottom p-4">
-        New system update available <br>
-        Market maintenance scheduled
-      </div>
-    </div>
-  </div> -->
+         </svg>
+            <strong class="me-auto">System Alerts</strong>
+            <small>11 mins ago</small>
+                </div>
+                    <div class="toast-body text-light rounded-bottom p-4">
+                     New system update available <br>
+                Market maintenance scheduled
+             </div>
+            </div>
+        </div> -->
 
         <div class="text-start m-3 p-3 title d-flex align-items-center">
             <div class="icon-box me-3 shadow title-icon">
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="container mt-4">
+        <div class="container-fluid w-75 mt-5">
             <div class="d-flex justify-content-center align-items-center mb-4">
                 <div class="container">
                     <h4 class="fw-bold">Violation Management</h4>
@@ -83,7 +83,7 @@
             </div>
 
             <!-- Violations Table -->
-            <div class="table-responsive tables mb-5">
+            <div class="table-responsive tables mb-5 w-100">
                 <div class="text-center mb-4 mt-5">
                     <h4>Violations Table</h4>
                 </div>
@@ -101,11 +101,14 @@
             s.stall_number, 
             vt.violation_name, 
             vt.fine_amount,
+            vt.criticality,
             v.violation_description, 
             v.evidence_image_path, 
             v.violation_date, 
             v.status, 
-            v.created_at
+            v.created_at,
+            v.appeal_text,
+            v.appeal_document_path
         FROM violations v
         JOIN users u ON v.user_id = u.id
         JOIN stalls s ON v.stall_id = s.id
@@ -117,15 +120,14 @@
                     die("Database Error: " . $e->getMessage());
                 }
                 ?>
-                <!-- Filter Dropdown -->
-                <div class="mb-3">
-                    <label for="violationFilter" class="form-label">Filter by Status:</label>
-                    <select id="violationFilter" class="form-select" onchange="filterViolations()">
-                        <option value="all">All</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Deleted">Deleted</option>
-                    </select>
+                <!-- Filter Buttons -->
+
+                <div class="d-flex flex-wrap justify-content-center gap-5 mb-4 filter-container">
+                    <button class="btn filter-button" data-value="">All</button>
+                    <button class="btn filter-button" data-value="Resolved">Resolved</button>
+                    <button class="btn filter-button" data-value="Pending">Pending</button>
+                    <button class="btn filter-button" data-value="Deleted">Deleted</button>
+                    <button class="btn filter-button" data-value="Critical">Critical</button>
                 </div>
 
                 <table class="table table-striped">
@@ -140,13 +142,16 @@
                             <th>Violation Date</th>
                             <th>Fine Amount</th>
                             <th>Status</th>
+                            <th>ViolationAppeal</th>
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="violationsTable">
                         <?php foreach ($violations as $violation): ?>
-                            <tr id="row-<?= $violation['id'] ?>" data-status="<?= $violation['status'] ?>">
+
+
+                            <tr id="row-<?= $violation['id'] ?>" data-status="<?= $violation['status'] ?>" data-criticality="<?= $violation['criticality'] ?>">
                                 <td><?= htmlspecialchars($violation['id']) ?></td>
                                 <td><?= htmlspecialchars($violation['vendor_name']) ?></td>
                                 <td><?= htmlspecialchars($violation['stall_number']) ?></td>
@@ -155,7 +160,8 @@
                                 <td>
                                     <?php if (!empty($violation['evidence_image_path'])): ?>
                                         <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal<?= $violation['id'] ?>">
-                                            View Image
+                                            <i class="bi bi-file-image"></i>
+                                            View
                                         </button>
                                     <?php else: ?>
                                         No Image
@@ -164,6 +170,13 @@
                                 <td><?= htmlspecialchars($violation['violation_date']) ?></td>
                                 <td><?= htmlspecialchars($violation['fine_amount']) ?></td>
                                 <td id="status-<?= $violation['id'] ?>"><?= htmlspecialchars($violation['status']) ?></td>
+                                <td>
+                                    <?php if (!empty($violation['appeal_text'])): ?>
+                                        <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#appealModal<?= $violation['id'] ?>">
+                                            <i class="bi bi-file-earmark-text-fill"></i> View
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?= htmlspecialchars($violation['created_at']) ?></td>
                                 <td>
                                     <?php if ($violation['status'] !== 'Resolved' && $violation['status'] !== 'Deleted'): ?>
@@ -196,12 +209,46 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Modal for Appeal -->
+                            <div class="modal fade" id="appealModal<?= $violation['id'] ?>" tabindex="-1" aria-labelledby="appealModalLabel<?= $violation['id'] ?>" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div class="modal-container">
+                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                    <h3 class="modal-title" id="modalLabel<?= $violation['id'] ?>">Appeal for Violation</h3>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <hr>
+                                                <h5>Appeal Message: </h5>
+                                                <p><?= $violation['appeal_text'] ?></p>
+                                                <h5>Appeal Document: </h5>
+                                                <?php
+                                                $filePath = $violation['appeal_document_path'];
+                                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                                $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                                                // Determine whether to display or provide a link
+                                                if (in_array(strtolower($fileExtension), $imageExtensions)): ?>
+                                                    <img src="../../../<?= $filePath ?>" alt="Appeal Image" class="img-fluid">
+                                                <?php else: ?>
+                                                    <a href="../<?= $filePath ?>" target="_blank" class="btn btn-info">
+                                                        <i class="bi bi-file-earmark-text"></i> View Document
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
-
 
         <!-- Add Violation Modal -->
         <div class="modal fade" id="addViolationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addViolationModal" aria-hidden="true">
@@ -317,7 +364,6 @@
             </div>
         </div>
 
-
         <?php include '../../../includes/footer.php'; ?>
         <?php include '../../../includes/theme.php'; ?>
 
@@ -353,19 +399,50 @@
                     .catch(error => console.error("Error:", error));
             });
 
-            function filterViolations() {
-                let filterValue = document.getElementById("violationFilter").value.toLowerCase();
-                let rows = document.querySelectorAll("#violationsTable tr");
+            document.addEventListener("DOMContentLoaded", function() {
+                const filterButtons = document.querySelectorAll(".filter-button");
+                const violationsTable = document.getElementById("violationsTable");
 
-                rows.forEach(row => {
-                    let status = row.getAttribute("data-status").toLowerCase();
-                    if (filterValue === "all" || status === filterValue) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
+                // Attach event listeners to buttons
+                filterButtons.forEach(button => {
+                    button.addEventListener("click", function() {
+                        let filterValue = this.getAttribute("data-value").toLowerCase();
+                        filterViolations(filterValue);
+                        setActiveButton(this);
+                    });
                 });
-            }
+
+                // Set "All" as the default filter on page load
+                filterViolations("");
+                document.querySelector('.filter-button[data-value=""]').classList.add("active");
+
+                // Function to filter rows
+                function filterViolations(filterValue) {
+                    let rows = violationsTable.querySelectorAll("tr");
+                    console.log("Filter Value: ", filterValue);
+                    rows.forEach(row => {
+                        let status = row.getAttribute("data-status")?.toLowerCase();
+                        let criticality = row.getAttribute("data-criticality")?.toLowerCase();
+
+                        console.log(status)
+                        if (!status) return;
+
+                        if (filterValue === "" || filterValue === "all" || status === filterValue || criticality === filterValue) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+                }
+
+                function setActiveButton(clickedButton) {
+                    filterButtons.forEach(button => {
+                        button.classList.remove("active");
+                    });
+                    clickedButton.classList.add("active");
+                }
+            });
+
 
             function resolveViolation(violationId, account_id) {
                 if (!confirm("Are you sure you want to resolve this violation?")) return;
@@ -463,6 +540,9 @@
                 return isValid;
             }
         </script>
+
+
+
         <script>
             let locationsData; // Store the fetched data for later use
 

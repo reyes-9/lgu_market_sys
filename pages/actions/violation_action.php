@@ -9,8 +9,8 @@ $account_id = $_SESSION["account_id"];
 $user_id = getUserIdByAccountId($pdo, $account_id);
 
 try {
-    $violations = getViolations($account_id, $pdo);
-    $statusCount = getStatusCount($account_id, $pdo);
+    $violations = getViolations($user_id, $pdo);
+    $statusCount = getStatusCount($user_id, $pdo);
     echo json_encode(["success" => true, "data" => $violations, "count" => $statusCount]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -23,10 +23,14 @@ try {
 function getViolations($user_id, $pdo)
 {
     try {
-        $sql = "SELECT v.id, v.remarks, DATE(v.violation_date) AS violation_date, v.status,
+        $sql = "SELECT v.id, DATE(v.violation_date) AS violation_date, 
+                        v.status,
+                        v.violation_description,
+                        v.evidence_image_path,
                        vt.violation_name, vt.criticality, vt.fine_amount  
                 FROM violations v
                 JOIN violation_types vt ON v.violation_type_id = vt.id
+                JOIN stalls s ON v.stall_id = s.id
                 WHERE v.user_id = :user_id";
 
         $stmt = $pdo->prepare($sql);

@@ -1,4 +1,13 @@
 @import url("main.css");
+body {
+  background: rgb(23, 162, 184);
+  background: linear-gradient(
+    225deg,
+    rgba(23, 162, 184, 1) 0%,
+    rgba(3, 64, 112, 1) 41%,
+    rgba(0, 51, 102, 1) 100%
+  );
+}
 
 .btn-return {
   color: #d3d3d3 !important;
@@ -11,11 +20,15 @@
 }
 
 .container.content {
-  color: white;
-  background-color: #003366;
-  padding: 30px 50px 70px 50px;
+  background: linear-gradient(225deg, #002e5c, #00376d);
+  box-shadow: -38px 38px 76px #002b57, 38px -38px 76px #003b75;
+  color: #f8f9fc;
+  border-radius: 40px;
+  box-shadow: 0 1px 100px rgba(133, 133, 133, 0.185);
+  /* border: 6px solid #f8f9fc; */
+  padding: 30px 50px;
   margin-bottom: 50px;
-  border-radius: 10px;
+  overflow-y: auto;
 }
 
 .table-container {
@@ -23,15 +36,21 @@
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
-table.custom-table th,
-table.custom-table td {
+.table-title {
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f8f9fc;
+}
+
+.violations-table th,
+.violations-table td {
   background-color: #003366 !important;
   padding: 15px;
-  color: var(--bs-light);
+  color: var(--bs-light) !important;
   border-bottom: 1px solid rgb(126, 126, 126);
 }
 
-table.custom-table th {
+.violations-table th {
   position: sticky;
   top: 0;
   background-color: white; /* Ensure the header remains visible */
@@ -53,4 +72,76 @@ table.custom-table th {
 
 .table-container::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Buttons */
+.filter-btn {
+  position: relative;
+  padding: 5px 20px !important;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f8f9fc !important;
+  background: none;
+  border: 0 !important;
+  cursor: pointer !important;
+  outline: none;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Underline Effect */
+.filter-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: #ffc107;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.filter-btn:hover {
+  color: #f8f9fca8 !important;
+}
+.filter-btn.active {
+  border: 0;
+  color: #f8f9fca8 !important;
+  font-weight: 600;
+}
+.filter-btn.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.filter-btn:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Modal */
+.modal-container {
+  padding: 30px 40px !important;
+  color: #003366;
+  border: 3px solid #003366 !important;
+  border-radius: 10px;
+}
+input,
+select,
+textarea {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.modal-table th,
+.modal-table td {
+  border-radius: 10px;
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+  color: #003366 !important;
+}
+
+.modal-table th {
+  font-weight: bold;
 }

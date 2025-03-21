@@ -36,55 +36,6 @@
   background-color: #003366;
 }
 
-/* .title.light {
-  color: #212529;
-}
-
-.title.dark {
-  color: #fff;
-}
-
-.announcement.light {
-  background-color: #003366;
-  color: #fff;
-}
-
-.announcement.dark {
-  background-color: #1a2732;
-  color: #fff;
-}
-
-.card.light {
-  position: relative;
-  padding: 10px 20px;
-  background-color: #fff;
-}
-
-.card.dark {
-  position: relative;
-  padding: 10px 20px;
-  background-color: #0d0d0d;
-  color: #fff;
-}
-
-.card-body h5 {
-  font-weight: 600;
-}
-
-.card-body h3 {
-  font-weight: bold;
-}
-
-.chart-container {
-  position: relative;
-  margin-top: 20px;
-}
-
-.stat-change {
-  font-size: 14px;
-  font-weight: bold;
-} */
-
 /* Style for icon placement */
 .icon-container {
   position: absolute;
@@ -111,6 +62,7 @@
 }
 
 /* Table */
+
 table thead {
   position: sticky;
   top: 0;

@@ -396,8 +396,8 @@ if ($_SESSION['user_type'] !== 'Admin') {
                                 fetchTableStallExtend(option);
                                 break;
                         }
-                        console.log(option.toLowerCase().replace(/ /g, ''))
-                        console.log(option)
+                        console.log(option.toLowerCase().replace(/ /g, ''));
+                        console.log(option);
 
                         const allButtons = container.querySelectorAll('.filter-button');
                         allButtons.forEach(btn => btn.classList.remove('active'));

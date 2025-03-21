@@ -1,5 +1,8 @@
 @import url("main.css");
 
+body {
+}
+
 .divide {
   border-left: 3px solid var(--bs-warning);
 }
