@@ -374,11 +374,11 @@ if ($_SESSION['user_type'] !== 'Admin') {
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
-              <i class="bi bi-upc-scan text-success fs-2 mb-3"></i>
-              <h5 class="card-title-home fw-bold">QR Code Management</h5>
-              <p class="card-text text-muted">Generate and display QR codes for stalls.</p>
+              <i class="bi bi-clipboard-check text-success fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Inspection Management</h5>
+              <p class="card-text text-muted">"Inspectors can view their assigned inspections, update statuses, and mark them as completed or canceled."</p>
               <button class="btn btn-success rounded-pill px-4" id="manageQrCodesBtn">
-                <i class="bi bi-qr-code"></i> Manage QR Codes
+                <i class="bi bi-clipboard-check"></i> Manage Inspections
               </button>
             </div>
           </div>

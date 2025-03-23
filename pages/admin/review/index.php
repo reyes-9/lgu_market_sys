@@ -24,13 +24,16 @@ if ($applications_id) {
         app.status,
         app.created_at,
         app.account_id,
+        app.inspection_status,
+        app.inspection_date,
         a.user_id,
         CONCAT(u.first_name, ' ', IFNULL(u.middle_name, ''), ' ', u.last_name) AS applicant_full_name,
         v.violation_type_id,
         vt.violation_name,
         d.document_name, 
         d.document_path, 
-        d.status AS doc_status
+        d.status AS doc_status,
+        i.name AS inspector_name
     FROM applications app
     JOIN stalls s ON app.stall_id = s.id    
     JOIN sections sec ON app.section_id = sec.id
@@ -38,6 +41,7 @@ if ($applications_id) {
     JOIN applicants a ON app.id = a.application_id
     JOIN users u ON a.user_id = u.id
     JOIN documents d ON app.id = d.application_id 
+    LEFT JOIN inspectors i ON app.inspector_id = i.id
     LEFT JOIN violations v ON a.user_id = v.user_id AND v.status = 'Pending'
     LEFT JOIN violation_types vt ON v.violation_type_id = vt.id
     LEFT JOIN extensions e ON app.id = e.application_id  
@@ -74,10 +78,14 @@ if ($applications_id) {
                 'status' => $row['status'],
                 'created_at' => $row['created_at'],
                 'applicant_full_name' => $row['applicant_full_name'],
+                'inspection_status' => $row['inspection_status'],
+                'inspection_date' => $row['inspection_date'],
+                'inspector_name' => $row['inspector_name'],
                 'violations' => [],
                 'documents' => []
             ];
         }
+
 
         // Add violations if not already included
         if (!empty($row['violation_type_id']) && !in_array($row['violation_name'], array_column($applications[$applications_id]['violations'], 'violation_name'))) {
@@ -96,8 +104,9 @@ if ($applications_id) {
             ];
         }
     }
-
-    // var_dump($applications, JSON_PRETTY_PRINT);
+    // var_dump($applications_id);
+    // var_dump($applications[$applications_id]['inspection_']);
+    // echo '<pre>' . var_dump(json_encode($applications, JSON_PRETTY_PRINT)) . '</pre>';
 } else {
     die("Invalid application ID.");
 }
@@ -214,6 +223,27 @@ if ($applications_id) {
         </div>
 
         <hr>
+        <div id="scheduleInfoSection">
+            <h5 class="fw-bold">Inspection Info:</h5>
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th>Status: </th>
+                        <td id="inspectionStatus"></td>
+                    </tr>
+                    <tr>
+                        <th>Inspector Name: </th>
+                        <td id="selectedInspector"></td>
+                    </tr>
+                    <tr>
+                        <th>Inspection Date: </th>
+                        <td id="selectedDate"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
         <h6> <strong> Uploaded Documents</strong></h6>
         <div id="uploadedDocument" class="container mt-3">
             <div class="row">
@@ -226,6 +256,51 @@ if ($applications_id) {
         </div>
 
         <hr>
+
+
+        <!-- Schedule Inspection Button -->
+        <div id="inspectionSection">
+            <h5 class="fw-bold">Stall Inspection Scheduling</h5>
+            <p class="text-muted">Assign an inspector and set an inspection date before approving or rejecting the application.</p>
+
+            <button id="scheduleInspectionBtn" class="btn btn-dark">Schedule Inspection</button>
+        </div>
+
+
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="inspectionModal" tabindex="-1" aria-labelledby="inspectionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <div class="modal-container">
+
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h4 class="modal-title" id="inspectionModalLabel">Schedule Inspection</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <p class="text-muted me-5">A stall inspection ensures market stalls meet health, safety, and permit regulations.</p>
+                            <hr>
+
+                            <!-- Radio buttons for inspectors -->
+                            <h5>Select Inspector</h5>
+                            <div class="mb-4" id="inspectorsList">
+
+                            </div>
+
+                            <!-- Date picker -->
+                            <h5>Inspection Date</h5>
+                            <input type="date" id="inspectionDate" class="form-control mb-5">
+
+
+                            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" id="confirmInspection" class="btn btn-sm btn-info">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="approval-section mt-3" id="approvalSection">
             <h5 class="fw-bold">Review & Approval</h5>
@@ -263,113 +338,138 @@ if ($applications_id) {
     <?php include '../../../includes/footer.php'; ?>
 
     <script>
+        let invalidDocuments = 0;
+
         document.addEventListener("DOMContentLoaded", function() {
             checkEligibility();
             initializeApprovalActions();
 
+            // hideApprovalSection();
+            document.getElementById('scheduleInspectionBtn').addEventListener('click', showModal);
+            document.getElementById('confirmInspection').addEventListener('click', confirmInspection);
+
         });
 
-        let invalidDocuments = 0;
+        function confirmInspection() {
 
+            let applications = <?php echo json_encode($applications); ?>;
+            let application_id = Object.keys(applications)[0];
 
-        function hideRejectedApplicationSections(applicationStatus) {
-            const approval_section = document.getElementById("approvalSection");
-            const documents_btn_divs = document.getElementsByClassName("documentsBtn"); // Returns a collection
-            console.log(applicationStatus);
-            if (approval_section) {
-                if (applicationStatus === "Rejected" || applicationStatus === "Approved") {
-                    approval_section.classList.add("d-none");
-                    console.log("hello")
-                } else {
-                    approval_section.classList.remove("d-none");
-                }
+            console.log("Application Id: ", application_id);
+
+            if (!validateScheduleInputs()) {
+                alert("Complete all the missing fields.")
+                return;
             }
 
-            // Loop through all elements with class "documentsBtn" and hide/show them
-            for (let divs of documents_btn_divs) {
-                if (applicationStatus === "Rejected" || applicationStatus === "Approved") {
-                    divs.classList.add("d-none");
-                } else {
-                    divs.classList.remove("d-none");
-                }
+            if (!confirm("Are you sure you want to confirm this inspection?")) {
+                return;
             }
-        }
+            let selectedInspector = document.querySelector('input[name="inspector"]:checked');
+            let inspectorId = selectedInspector ? selectedInspector.value : null;
+            let inspectionDate = document.getElementById("inspectionDate").value;
 
-        // Initialize event listeners on all approval forms
-        function initializeApprovalActions() {
-            document.querySelectorAll(".approval-actions").forEach(form => {
-                form.addEventListener("submit", function(event) {
-                    event.preventDefault(); // Prevent default form submission
-
-                    let formData = new FormData(this);
-                    let action = event.submitter.name; // Determine which button was clicked
-
-                    if (action === "approved") {
-                        approveApplication(formData);
-                    } else if (action === "rejected") {
-
-                        let reject_input = document.getElementById('rejection_input').value;
-
-                        if (!reject_input || reject_input.trim() === "") {
-                            alert("Please, Enter reason for rejection.");
-                            return;
-                        }
-
-                        rejectApplication(formData);
+            fetch("../../actions/set_inspection.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        inspector_id: inspectorId,
+                        inspection_date: inspectionDate,
+                        application_id: application_id
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Inspection confirmed successfully!");
+                        location.reload();
+                    } else {
+                        alert("Failed to confirm inspection: " + data.message);
+                        location.reload();
                     }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while confirming the inspection.");
+                    location.reload();
                 });
-            });
         }
 
-        // Function to handle application approval
-        function approveApplication(formData) {
-            formData.append("action", "approved");
+        function validateScheduleInputs() {
 
-            fetch("../../actions/process_application.php", {
-                    method: "POST",
-                    body: formData
-                })
+            let selectedInspector = document.querySelector('input[name="inspector"]:checked');
+            let inspectionDate = document.getElementById('inspectionDate');
+
+            if (!selectedInspector) {
+
+                return false;
+            }
+
+            if (!inspectionDate || inspectionDate.value.trim() === "") {
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function showModal() {
+            let modal = new bootstrap.Modal(document.getElementById('inspectionModal'));
+            fetchInspectors();
+            modal.show();
+        }
+
+        function fetchInspectors() {
+            fetch("../../actions/get_inspectors.php")
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        setTimeout(() => {
-                            window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
-                        }, 3000);
+                    let inspectorsList = document.getElementById("inspectorsList");
+                    inspectorsList.innerHTML = "";
+
+                    if (data.inspectors.length > 0) {
+                        data.inspectors.forEach(inspector => {
+                            let label = document.createElement("label");
+                            label.innerHTML = ` <label class="radio-modern m-2 mx-3">
+                                                    <input type="radio" name="inspector" value="${inspector.id}"> 
+                                                    <span class="radio-checkmark"></span>
+                                                    ${inspector.name}
+                                                </label>
+                           `;
+                            inspectorsList.appendChild(label);
+                            inspectorsList.appendChild(document.createElement("br"));
+                        });
                     } else {
-                        alert("Error: " + data.message);
+                        inspectorsList.innerHTML = "<p class='text-muted'>No inspectors available.</p>";
                     }
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => {
+                    console.error("Error fetching inspectors:", error);
+                });
         }
 
-        // Function to handle application rejection
-        function rejectApplication(formData) {
-            formData.append("action", "rejected");
+        // function hideApprovalSection() {
+        //     let applications = <?php //echo json_encode($applications, JSON_PRETTY_PRINT); 
+                                    ?>;
+        //     let firstKey = Object.keys(applications)[0]; // Gets '358'
+        //     const approval_section = document.getElementById("approvalSection");
+        //     let inspection_status = applications[firstKey].inspection_status;
 
-            fetch("../../actions/process_application.php", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        setTimeout(() => {
-                            window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
-                        }, 3000);
-                    } else {
-                        alert("Error: " + data.message);
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-        }
+        //     if (inspection_status !== "Completed") {
+        //         approval_section.style.display = "none";
+        //     } else {
+        //         approval_section.style.display = "block";
+        //     }
+
+        // }
 
         function assignValues(applications) {
 
-            // Extract the first (or only) application object
             let applicationId = Object.keys(applications)[0]; // Get the first application key (e.g., "317")
             let application = applications[applicationId]; // Extract the actual application data
+
+            console.log(application);
 
             if (application) {
 
@@ -393,6 +493,33 @@ if ($applications_id) {
                 document.getElementById("marketName").innerHTML = ` ${application.market_name ?? 'N/A'}`;
                 document.getElementById("sectionName").innerHTML = ` ${application.section_name ?? 'N/A'}`;
                 document.getElementById("stallNumber").innerHTML = `${application.stall_number ?? 'N/A'}`;
+
+                const sched_info_div = document.getElementById("scheduleInfoSection");
+                const selected_inspector = document.getElementById("selectedInspector");
+                const selected_date = document.getElementById("selectedDate");
+                const inspection_status = document.getElementById("inspectionStatus");
+                const schedule_button = document.getElementById("scheduleInspectionBtn");
+                const approval_section = document.getElementById("approvalSection");
+
+                if (application.inspection_status === "Pending") {
+                    sched_info_div.style.display = "none";
+                }
+                if (application.inspection_status !== "Completed") {
+                    approval_section.style.display = "none";
+                }
+
+                // if the inspection is completed
+                // if the inspection is completed
+                // if the inspection is completed
+                // if the inspection is completed
+                // if the inspection is completed
+                // if the inspection is completed
+                // if the inspection is completed
+
+                selected_inspector.innerHTML = `${application.inspector_name}`;
+                selected_date.innerHTML = `${application.inspection_date}`;
+                inspection_status.innerHTML = `${application.inspection_status}`;
+                schedule_button.textContent = "Reschedule Inspection";
 
                 // Handle Violations
                 let violationsElement = document.getElementById("violations");
@@ -437,20 +564,20 @@ if ($applications_id) {
                         }
 
                         return `
-                             <div class="document-item text-center p-3 border rounded mb-3 bg-light" id="docRow-${index}">
-                                 <strong>${doc.document_name}</strong><br>
-                                 ${preview}<br>
-                                 <a href="http://localhost/lgu_market_sys/${doc.document_path}" target="_blank" class="btn btn-sm mt-2 border-0">View Document</a>
-                                 <div class="mt-2 documentsBtn">
-                                        <button class="btn btn-success btn-sm" onclick="approveDocument(${index}, '${doc.document_path}')">Valid</button>
-                                        <button class="btn btn-danger btn-sm" onclick="toggleDocumentRejectionComment(${index})">Reject</button>
-                                 </div>
-                                 <div id="rejection-comment-${index}" class="d-none mt-2">
-                                     <textarea id="rejection-text-${index}" placeholder="Enter rejection reason." class="rejection_input" rows="2"></textarea>
-                                     <button class="btn btn-danger btn-sm mt-2" onclick="rejectDocument(${index}, '${doc.document_path}')">Confirm Rejection</button>
-                                 </div>
-                                 <p id="status-${index}" class="text-muted mt-2">Status: <span class="badge ${statusBadgeClass}">${doc.document_status}</span></p>
-                             </div>`;
+                 <div class="document-item text-center p-3 border rounded mb-3 bg-light" id="docRow-${index}">
+                     <strong>${doc.document_name}</strong><br>
+                     ${preview}<br>
+                     <a href="http://localhost/lgu_market_sys/${doc.document_path}" target="_blank" class="btn btn-sm mt-2 border-0">View Document</a>
+                     <div class="mt-2 documentsBtn">
+                            <button class="btn btn-success btn-sm" onclick="approveDocument(${index}, '${doc.document_path}')">Valid</button>
+                            <button class="btn btn-danger btn-sm" onclick="toggleDocumentRejectionComment(${index})">Reject</button>
+                     </div>
+                     <div id="rejection-comment-${index}" class="d-none mt-2">
+                         <textarea id="rejection-text-${index}" placeholder="Enter rejection reason." class="rejection_input" rows="2"></textarea>
+                         <button class="btn btn-danger btn-sm mt-2" onclick="rejectDocument(${index}, '${doc.document_path}')">Confirm Rejection</button>
+                     </div>
+                     <p id="status-${index}" class="text-muted mt-2">Status: <span class="badge ${statusBadgeClass}">${doc.document_status}</span></p>
+                 </div>`;
                     }).join('');
 
                     documentContainer.innerHTML += documentList;
@@ -459,6 +586,96 @@ if ($applications_id) {
                 }
 
             }
+        }
+
+        function hideRejectedApplicationSections(applicationStatus) {
+            const approval_section = document.getElementById("approvalSection");
+            const documents_btn_divs = document.getElementsByClassName("documentsBtn"); // Returns a collection
+            console.log(applicationStatus);
+            if (approval_section) {
+                if (applicationStatus === "Rejected" || applicationStatus === "Approved") {
+                    approval_section.classList.add("d-none");
+                    console.log("hello")
+                } else {
+                    approval_section.classList.remove("d-none");
+                }
+            }
+
+            // Loop through all elements with class "documentsBtn" and hide/show them
+            for (let divs of documents_btn_divs) {
+                if (applicationStatus === "Rejected" || applicationStatus === "Approved") {
+                    divs.classList.add("d-none");
+                } else {
+                    divs.classList.remove("d-none");
+                }
+            }
+        }
+
+        function initializeApprovalActions() {
+            document.querySelectorAll(".approval-actions").forEach(form => {
+                form.addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    let formData = new FormData(this);
+                    let action = event.submitter.name; // Determine which button was clicked
+
+                    if (action === "approved") {
+                        approveApplication(formData);
+                    } else if (action === "rejected") {
+
+                        let reject_input = document.getElementById('rejection_input').value;
+
+                        if (!reject_input || reject_input.trim() === "") {
+                            alert("Please, Enter reason for rejection.");
+                            return;
+                        }
+
+                        rejectApplication(formData);
+                    }
+                });
+            });
+        }
+
+        function approveApplication(formData) {
+            formData.append("action", "approved");
+
+            fetch("../../actions/process_application.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        setTimeout(() => {
+                            window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
+                        }, 3000);
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function rejectApplication(formData) {
+            formData.append("action", "rejected");
+
+            fetch("../../actions/process_application.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        setTimeout(() => {
+                            window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
+                        }, 3000);
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
 
         function approveDocument(index, docPath) {
@@ -522,7 +739,6 @@ if ($applications_id) {
                 .catch(error => console.error("Error rejecting document:", error));
         }
 
-
         function toggleDocumentRejectionComment(index) {
             let commentDiv = document.getElementById(`rejection-comment-${index}`);
             commentDiv.classList.toggle("d-none");
@@ -535,7 +751,7 @@ if ($applications_id) {
 
         function checkEligibility() {
             <?php
-            $application = reset($applications); // Get the first application data
+            $application = reset($applications);
             $userId = !empty($application['user_id']) ? json_encode($application['user_id']) : 'null';
             $stallNumber = !empty($application['stall_number']) ? json_encode($application['stall_number']) : 'null';
             $application_type = !empty($application['application_type']) ? json_encode($application['application_type']) : 'null';
@@ -610,6 +826,7 @@ if ($applications_id) {
                     const violationSpinner = document.getElementById("violationSpinner");
                     const violationIconSuccess = document.getElementById("violationIconSuccess");
                     const violationIconFailed = document.getElementById("violationIconFailed");
+                    const inspection_button = document.getElementById("scheduleInspectionBtn");
 
                     if (data.hasViolation) {
                         setTimeout(() => {
@@ -630,8 +847,11 @@ if ($applications_id) {
 
                     if (data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0) {
                         document.getElementById("approve-button").disabled = false;
+                        inspection_button.disabled = false;
                     } else {
                         document.getElementById("approve-button").disabled = true;
+                        inspection_button.disabled = true;
+
                     }
 
 
