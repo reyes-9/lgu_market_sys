@@ -10,7 +10,7 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_tok
 }
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405);
     exit(json_encode(["success" => false, "message" => "Invalid Request"]));
 }
 

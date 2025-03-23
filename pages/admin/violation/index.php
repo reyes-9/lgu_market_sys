@@ -150,7 +150,6 @@
                     <tbody id="violationsTable">
                         <?php foreach ($violations as $violation): ?>
 
-
                             <tr id="row-<?= $violation['id'] ?>" data-status="<?= $violation['status'] ?>" data-criticality="<?= $violation['criticality'] ?>">
                                 <td><?= htmlspecialchars($violation['id']) ?></td>
                                 <td><?= htmlspecialchars($violation['vendor_name']) ?></td>
@@ -494,7 +493,6 @@
                     })
                     .catch(error => console.error("Error:", error));
             }
-
 
             function validateViolationForm() {
                 let isValid = true;

@@ -304,7 +304,7 @@
         }
 
         function fetchData(page) {
-            fetch(`../actions/track_action.php?page=${page}`)
+            fetch(`../actions/track_application.php?page=${page}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);

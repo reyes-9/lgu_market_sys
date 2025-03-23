@@ -452,7 +452,7 @@ if (empty($_SESSION['csrf_token'])) {
             });
         }
     </script>
-  
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('../actions/profile_action.php')
@@ -496,10 +496,10 @@ if (empty($_SESSION['csrf_token'])) {
                             const row = document.createElement('tr'); // Only one <tr> element
                             row.innerHTML = `
                         <td>
-                            <label class="radio-modern">
+                           <label class="radio-modern">
                                 <input type="radio" name="selected_stall_id" value="${stall.id}" id="stall_${index}">
                                 <span class="radio-checkmark"></span>
-                            </label>
+                            </label> 
                         </td>
                         <td>${stall.stall_number}</td>
                         <td data-market-id="${stall.market_id}">${stall.market_name}</td>
