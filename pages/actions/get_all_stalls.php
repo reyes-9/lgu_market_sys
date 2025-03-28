@@ -30,7 +30,7 @@ try {
     $stmt_stall->execute();
     $stall_results = $stmt_stall->fetchAll(PDO::FETCH_ASSOC);
 
-    // TRANSFER 
+    // TRANSFER / SUCCESSION
     $stmt_transfer = $pdo->prepare("
     SELECT 
         a.id, 
@@ -50,12 +50,9 @@ try {
     LEFT JOIN stalls st ON a.stall_id = st.id
     LEFT JOIN sections sec ON a.section_id = sec.id
     LEFT JOIN market_locations mk ON a.market_id = mk.id
-    WHERE a.application_type = :application_type
+    WHERE a.application_type IN ('stall transfer', 'stall succession')
 ");
 
-
-    $stmt_transfer->bindParam(':application_type', $applicationType);
-    $applicationType = 'stall transfer';
     $stmt_transfer->execute();
     $stall_transfer_results = $stmt_transfer->fetchAll(PDO::FETCH_ASSOC);
 

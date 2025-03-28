@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Public Market Monitoring System</title>
-    <link rel="icon" type="image/png" href="images/favicon_192.png">
+    <link rel="icon" type="image/png" href="images/logo.png">
     <link rel="stylesheet" href="assets/css/index.css">
     <?php include_once "includes\cdn-resources.php" ?>
 </head>

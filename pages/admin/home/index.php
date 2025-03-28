@@ -15,7 +15,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Public Market Monitoring System</title>
-  <link rel="icon" type="image/png" href="../favicon_192.png">
+  <link rel="icon" type="image/png" href="../logo.png">
   <link rel="stylesheet" href="../../../assets/css/admin.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <?php include '../../../includes/cdn-resources.php'; ?>
@@ -389,7 +389,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-file-earmark-text text-primary fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Applications</h5>
-              <p class="card-text text-muted">Post important updates for vendors and customers.</p>
+              <p class="card-text text-muted">Manage stall and more applications in one click.</p>
               <a class="btn btn-warning rounded-pill px-4" id="postAnnouncementBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
                 <i class="bi bi-clipboard-check"></i> Manage Applications
               </a>

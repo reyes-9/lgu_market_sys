@@ -76,7 +76,6 @@ if (empty($_SESSION['csrf_token'])) {
 
             <h2 class="text-center mb-4">Transfer Stall Application</h2>
 
-
             <div class="mb-3">
                 <form action="" id="transferTypeForm">
                     <div class="form-section">Transfer Type</div>
@@ -161,10 +160,10 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
 
                 <!-- New Stall Owner Information -->
-                <div class="form-section">New Owner Personal Information</div>
+                <!-- <div class="form-section">New Owner Personal Information</div>
                 <div class="row mt-2" id="newOwnerInfoTransfer">
 
-                </div>
+                </div> -->
 
                 <!-- Submit Button -->
                 <div class="container d-flex  justify-content-center gap-5">
@@ -281,10 +280,10 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
 
                 <!-- Successor Information -->
-                <div class="form-section">Successor Personal Information</div>
+                <!-- <div class="form-section">Successor Personal Information</div>
                 <div class="row mt-2" id="newOwnerInfoSuccession">
 
-                </div>
+                </div> -->
 
                 <!-- Relationship to Deceased (Optional) -->
                 <div class="mb-3">
@@ -579,13 +578,11 @@ if (empty($_SESSION['csrf_token'])) {
                 const transferDetailsForm = document.getElementById("transferDetailsForm");
                 const marketForm = document.getElementById("marketSelectionForm");
                 const transferTypeForm = document.getElementById("transferTypeForm");
-                const newOwnerInfoTransferId = document.getElementById("newOwnerInfoTransfer").id;
-                const newOwnerInfoSuccessionId = document.getElementById("newOwnerInfoSuccession").id;
 
                 if (selectedValue.value === "Transfer") {
-                    updateForm(transferDetailsForm, [marketForm, transferTypeForm], newOwnerInfoTransferId, marketVal, sectionVal, stallVal);
+                    updateForm(transferDetailsForm, [marketForm, transferTypeForm], marketVal, sectionVal, stallVal);
                 } else if (selectedValue.value === "Succession") {
-                    updateForm(successionDetailsForm, [marketForm, transferTypeForm], newOwnerInfoSuccessionId, marketVal, sectionVal, stallVal);
+                    updateForm(successionDetailsForm, [marketForm, transferTypeForm], marketVal, sectionVal, stallVal);
                 }
 
             } else {
@@ -593,7 +590,7 @@ if (empty($_SESSION['csrf_token'])) {
             }
         }
 
-        function updateForm(showForm, hideForms, userInfoFormId, marketVal, sectionVal, stallVal) {
+        function updateForm(showForm, hideForms, marketVal, sectionVal, stallVal) {
             // Check if the form is a details form
             const isDetailsForm = showForm.id === "transferDetailsForm" || showForm.id === "successionDetailsForm";
 
@@ -649,151 +646,8 @@ if (empty($_SESSION['csrf_token'])) {
             // Hide other forms
             hideForms.forEach(form => form.classList.add("d-none"));
 
-            if (userInfoFormId && userInfoFormId.trim() !== "") {
-                displayUserInfoForm(userInfoFormId);
-            }
         }
 
-        function displayUserInfoForm(formId) {
-            document.getElementById(formId).innerHTML = `
-            <div class="row">
-            <div class="form-group col-md-4">
-                <label>Email: <small class="error-message"></small></label>
-                <input type="email" class="form-control" id="email" name="email">
-                <small id="emailError" class="d-none">Invalid email format.</small>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Alternate Email: <small class="error-message"></small></label>
-                <input type="email" class="form-control" id="altEmail" name="alt_email">
-                <small id="altEmailError" class="d-none">Invalid email format.</small>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Mobile Number: <small class="error-message"></small></label>
-                <input type="tel" class="form-control" id="mobile" name="contact_no">
-                <small id="mobileError" class="d-none">Mobile number must be exactly 11 digits.</small>
-            </div>
-            </div>
-
-         <div class="row mt-2">
-            <div class="form-group col-md-4">
-                <label>First Name: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="first_name">
-            </div>
-            <div class="form-group col-md-4">
-                <label>Middle Name: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="middle_name">
-                <small>Type N/A if you don't have middle name</small>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Last Name: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="last_name">
-            </div>
-            </div>
-
-          <div class="row mt-2">
-            <div class="form-group col-md-4 position-relative">
-                <label>Sex: <small class="error-message"></small></label>
-                <div class="dropdown-wrapper">
-                    <select class="form-control" name="sex">
-                        <option value="">Select</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                    <i class="bi bi-chevron-down dropdown-icon"></i>
-                </div>
-            </div>
-
-            <div class="form-group col-md-4 position-relative">
-                <label>Civil Status <small class="error-message"></small></label>
-                <div class="dropdown-wrapper">
-                    <select class="form-control" name="civil_status">
-                        <option value="">Select</option>
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Widowed">Widowed</option>
-                        <option value="Divorced">Divorced</option>
-                        <option value="Separated">Separated</option>
-                    </select>
-                    <i class="bi bi-chevron-down dropdown-icon"></i>
-                </div>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Nationality: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="nationality" value="Filipino">
-            </div>
-           </div>
-
-            <!-- Address Information -->
-         <div class="form-section">Address</div>
-         <div class="row">
-            <div class="form-group col-md-4">
-                <label>House Number: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="house_no">
-            </div>
-            <div class="form-group col-md-4">
-                <label>Street: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="street">
-            </div>
-            <div class="form-group col-md-4">
-                <label>Subdivision: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="subdivision">
-            </div>
-         </div>
-
-          <div class="row mt-2">
-            <div class="form-group col-md-4">
-                <label>Province: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="province">
-            </div>
-            <div class="form-group col-md-4">
-                <label>City: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="city">
-            </div>
-            <div class="form-group col-md-4">
-                <label>Barangay: <small class="error-message"></small></label>
-                <input type="text" class="form-control" name="barangay">
-             </div>
-         </div>
-
-         <div class="row mt-2">
-            <div class="form-group col-md-4">
-                <label>Zip Code: <small class="error-message"></small></label>
-                <input type="text" class="form-control" id="zipcode" name="zip_code">
-                <small id="zipError" class="d-none">ZIP code must be exactly 4 digits.</small>
-                </div>
-            </div>
-          `;
-        }
-
-        function isMobileValid() {
-            const mobileInput = document.getElementById("mobile");
-            const mobileValue = mobileInput.value.trim();
-            if (/^\d{11}$/.test(mobileValue)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function isZipValid() {
-            const zipInput = document.getElementById("zipcode");
-            const zipValue = zipInput.value.trim();
-            if (/^\d{4}$/.test(zipValue)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function isEmailValid(email, altEmail) {
-            const emailResult = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-            const altEmailResult = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(altEmail);
-
-            return {
-                emailValid: emailResult,
-                altEmailValid: altEmailResult
-            };
-        }
 
         function validateDetailsForm() {
             let isValid = true;
@@ -807,13 +661,6 @@ if (empty($_SESSION['csrf_token'])) {
             const successionDetailsForm = document.getElementById("successionDetailsForm");
             const successionDocumentsForm = document.getElementById("successionDocumentsForm");
             const successionInputs = successionDetailsForm.querySelectorAll("input, select");
-
-            const zipError = document.getElementById("zipError");
-            const emailInput = document.getElementById("email");
-            const altEmailInput = document.getElementById("altEmail");
-            const emailError = document.getElementById("emailError");
-            const altEmailError = document.getElementById("altEmailError");
-
 
             if (selectedRadio.value === "Transfer") {
                 transferInputs.forEach(input => {
@@ -849,35 +696,6 @@ if (empty($_SESSION['csrf_token'])) {
                         errorMessage.textContent = "";
                     }
                 });
-            }
-
-            if (!isMobileValid()) {
-                isValid = false;
-                mobileError.classList.remove("d-none");
-            } else {
-                mobileError.classList.add("d-none");
-            }
-            if (!isZipValid()) {
-                isValid = false;
-                zipError.classList.remove("d-none");
-            } else {
-                zipError.classList.add("d-none")
-            }
-
-            const emailValidation = isEmailValid(emailInput.value, altEmailInput.value);
-
-            if (!emailValidation.emailValid) {
-                isValid = false;
-                emailError.classList.remove("d-none");
-            } else {
-                emailError.classList.add("d-none");
-            }
-
-            if (!emailValidation.altEmailValid) {
-                isValid = false;
-                altEmailError.classList.remove("d-none");
-            } else {
-                altEmailError.classList.add("d-none");
             }
 
             if (isValid) {

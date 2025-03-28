@@ -82,7 +82,7 @@ $homePath = "/lgu_market_sys/";
     <div class="container-fluid">
         <!-- Brand Logo -->
         <a class="navbar-brand" href="<?php echo ($currentPath === $homePath) ? '#' : $homePath; ?>">
-            <img src="<?php echo $isLogin ? 'images/favicon_192.png' : '../../images/favicon_192.png'; ?>"
+            <img src="<?php echo $isLogin ? ' images/logo.png' : '../../images/logo.png'; ?>"
                 alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
             Public Market Monitoring System
         </a>

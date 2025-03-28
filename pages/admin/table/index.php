@@ -15,7 +15,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Portal - Public Market Monitoring System</title>
-    <link rel="icon" type="image/png" href="../favicon_192.png">
+    <link rel="icon" type="image/png" href="../logo.png">
     <link rel="stylesheet" href="../../../assets/css/admin.css">
     <?php include '../../../includes/cdn-resources.php'; ?>
 </head>
@@ -65,7 +65,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
                                 <div class="col">
                                     <div class="card-db card-stall" onclick="">
                                         <div class="card-body">
-                                            <h5 class="card-title">Stall Application</h5>
+                                            <h5 class="card-title">Stall Applications</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
                                 <div class="col">
                                     <div class="card-db card-transfer" onclick="window.location.href='#'">
                                         <div class="card-body">
-                                            <h5 class="card-title">Stall Transfer Application</h5>
+                                            <h5 class="card-title">Stall Transfer/Succession Applications</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
                                 <div class="col">
                                     <div class="card-db card-ext" onclick="window.location.href='#'">
                                         <div class="card-body">
-                                            <h5 class="card-title">Stall Extension Application</h5>
+                                            <h5 class="card-title">Stall Extension Applications</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
                                 <div class="col">
                                     <div class="card-db card-helper" onclick="window.location.href='#'">
                                         <div class="card-body">
-                                            <h5 class="card-title">Helper Application</h5>
+                                            <h5 class="card-title">Helper Applications</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +110,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
 
-                        <h4 class="text-center">Stall Transfer Applications Table</h4>
+                        <h4 class="text-center">Stall Transfer/Succession Applications Table</h4>
 
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4 filter-container" id="">
 

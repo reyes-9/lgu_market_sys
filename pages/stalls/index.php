@@ -44,6 +44,10 @@
           </div>
 
           <div class="mt-5 text-end">
+            <!-- Button to Trigger Modal -->
+            <button class="btn btn-dark m-2" id="requestCollectionBtn" data-bs-toggle="modal" data-bs-target="#garbageRequestModal">
+              Request Garbage Collection
+            </button>
             <a href="/lgu_market_sys/pages/stall_extend" class="btn btn-warning m-2">Stall Extension Application</a>
             <a href="/lgu_market_sys/pages/helper_app" class="btn btn-warning m-2">Add Helper Application</a>
           </div>
@@ -52,12 +56,53 @@
     </div>
   </div>
 
+  <!-- Garbage Collection Request Modal -->
+  <div class="modal fade" id="garbageRequestModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="garbageRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="modal-container">
+            <div class="d-flex align-items-center justify-content-between">
+              <h4 class="modal-title fw-bold" id="garbageRequestModalLabel">Request Garbage Collection</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <p class="text-muted me-5">
+              Submit a request for garbage collection in the market area. Once the request count reaches the required threshold, it will be processed.
+            </p>
+            <hr class="mb-4">
+
+            <form id="garbageRequestForm">
+              <div class="mb-3">
+                <label for="marketName" class="form-label">Market:</label>
+                <select class="form-select" id="market" onchange="getStallData()" required>
+                  <option value="" disabled selected>-- Select Market --</option>
+                </select>
+              </div>
+              <div class="text-end">
+                <button type="submit" class="btn btn-primary" id="requestCollectionBtn">Submit Request</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
   <?php include '../../includes/footer.php'; ?>
   <?php include '../../includes/theme.php'; ?>
 
   <script>
     // Fetch the user data from the backend
     document.addEventListener('DOMContentLoaded', function() {
+
+      getMarkets();
+
+      const form = document.getElementById("garbageRequestForm");
+      form.addEventListener("submit", handleGarbageRequestSubmission);
+
+
       fetch('../actions/profile_action.php')
         .then(response => response.json())
         .then(data => {
@@ -89,6 +134,70 @@
           console.error('Error fetching data:', error);
         });
     });
+
+    function handleGarbageRequestSubmission(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const form = document.getElementById("garbageRequestForm");
+      const formData = new FormData(form);
+      const marketSelect = document.getElementById("market");
+
+      if (!marketSelect.value) {
+        alert("Please select a market.");
+        return;
+      }
+
+      formData.append("market_id", marketSelect.value); // Append market value
+
+      // Log FormData
+      console.log("Logging FormData before submission:");
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
+      // Send the request
+      fetch("../actions/add_and_submit_garbage_request.php", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Garbage request submitted successfully!");
+            form.reset();
+          } else {
+            alert("Error: " + data.message);
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred. Please try again.");
+        });
+    }
+
+    function getMarkets() {
+      fetch('../actions/get_market.php')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          locationsData = data; // Store data globally
+          let marketLocationSelect = document.getElementById('market');
+          data.forEach(location => {
+            let option = document.createElement('option');
+            option.value = location.id;
+            option.text = location.market_name;
+            marketLocationSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching market locations:', error);
+          alert('Failed to load market locations. Please try again later.');
+        });
+    }
   </script>
 </body>
 

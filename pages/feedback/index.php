@@ -43,7 +43,7 @@
                             <input type="hidden" name="type" value="feedback">
 
                             <div class="form-group">
-                                <label for="feedbackMessage">Message</label>
+
                                 <textarea id="feedbackMessage" name="message" class="form-control" rows="5" required></textarea>
                             </div>
 
@@ -80,7 +80,7 @@
                                     <form id="supportFormModal" method="POST" action="../actions/feedback_action.php">
                                         <input type="hidden" name="type" value="support">
                                         <div class="form-group">
-                                            <label for="supportMessage">Message</label>
+
                                             <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your question here..." required></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-warning mt-3">Submit</button>
@@ -155,7 +155,7 @@
                         <form id="supportForm" method="POST" action="../actions/feedback_action.php">
                             <input type="hidden" name="type" value="support">
                             <div class="form-group">
-                                <label for="supportMessage">Message</label>
+
                                 <textarea id="supportMessage" name="message" class="form-control" rows="5" placeholder="Type your support request here..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-warning btn-block mt-3">Submit Support Request</button>

@@ -17,10 +17,10 @@ try {
         session_start();
     }
 
-    // if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    //     http_response_code(403);
-    //     exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
-    // }
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        http_response_code(403);
+        exit(json_encode(['success' => false, 'message' => 'CSRF token invalid.']));
+    }
 
     if (!isset($_SESSION['account_id'])) {
         http_response_code(401);
@@ -46,18 +46,8 @@ try {
 
     $application_number = $data['application_number'];
 
-    $addressParts = [  // Process Address
-        $data['house_no'],
-        $data['street'],
-        $data['barangay'],
-        $data['city'],
-        $data['province'],
-        $data['zip_code']
-    ];
-    $fullAddress = implode(', ', array_filter($addressParts));
-
     if ($transferType === "Succession") {
-        $userId = getUserId(
+        $deceasedOwnerId = getUserId(
             $pdo,
             intval($data['deceased_owner_id'] ?? 0), // Ensure it's an integer
             properCase($data['deceased_first_name'] ?? ''),
@@ -66,7 +56,7 @@ try {
         );
         $type = 'Stall Succession';
     } else {
-        $userId = getUserId(
+        $currentOwnerId = getUserId(
             $pdo,
             intval($data['current_owner_id'] ?? 0), // Ensure it's an integer
             properCase($data['current_first_name'] ?? ''),
@@ -90,35 +80,21 @@ try {
         throw new Exception("Failed to submit application.");
     }
 
-    if (!$userId) {
-        throw new Exception("User not found.");
-    }
+    $userId = getUserIdByAccountId($pdo, $account_id);
 
     $isApplicantInserted = insertApplicant($pdo, $userId, intval($applicationId));
     if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
         throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
 
-    $deceasedOwnerId = $data['deceased_owner_id'] ?? null; // Handle if not provided
-    $currentOwnerId = $data['current_owner_id'] ?? null;
-
-
     $ownerId = ($transferType === "Succession") ? $deceasedOwnerId : $currentOwnerId;
 
+    if (!$ownerId) {
+        throw new Exception("User not found.");
+    }
 
     $transferReason = $data['transfer_reason'] ?? null;
-    $recipientName = trim(
-        properCase($data['first_name'] ?? '') . ' ' .
-        properCase($data['middle_name'] ?? '') . ' ' .
-        properCase($data['last_name'] ?? '')
-    );
-    $recipientContact = $data['contact_no'];
-    $recipientEmail = $data['email'];
-    $recipientAltEmail = $data['alt_email'];
-    $recipientSex = $data['sex'];
-    $recipientCivilStatus = $data['civil_status'];
-    $recipientNationality = $data['nationality'];
-    $recipientAddress = $fullAddress;
+    $recipientId = $userId;
 
     $stallTransferResponse = insertStallTransfer(
         $pdo,
@@ -126,14 +102,7 @@ try {
         $applicationId,
         $transferType,
         $transferReason,
-        $recipientName,
-        $recipientContact,
-        $recipientEmail,
-        $recipientAltEmail,
-        $recipientSex,
-        $recipientCivilStatus,
-        $recipientNationality,
-        $recipientAddress
+        $recipientId
     );
 
     if (!$stallTransferResponse['success']) {
@@ -169,7 +138,6 @@ try {
         }
     }
 
-    // If there were any errors, return an error response
     if (!empty($uploadErrors)) {
         throw new Exception("Failed to upload files.");
     }
@@ -264,133 +232,5 @@ function validateApplicationData($data, $app_type)
             $errors[] = "Deceased Owner ID is required.";
         }
     }
-
-    // Validate Personal Information
-    if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "A valid Email is required.";
-    }
-
-    if (!empty($data['alt_email']) && !filter_var($data['alt_email'], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Alternate Email is invalid.";
-    }
-    if (empty($data['contact_no']) || !preg_match('/^\d{11}$/', trim($data['contact_no']))) {
-        $errors[] = "A valid 11-digit Contact Number is required.";
-    }
-    if (empty($data['first_name'])) {
-        $errors[] = "First Name is required.";
-    }
-    if (empty($data['last_name'])) {
-        $errors[] = "Last Name is required.";
-    }
-    if (empty($data['sex'])) {
-        $errors[] = "Sex is required.";
-    }
-    if (empty($data['civil_status'])) {
-        $errors[] = "Civil Status is required.";
-    }
-    if (empty($data['nationality'])) {
-        $errors[] = "Nationality is required.";
-    }
-
-    // Validate Address Information
-    if (empty($data['house_no'])) {
-        $errors[] = "House Number is required.";
-    }
-    if (empty($data['street'])) {
-        $errors[] = "Street is required.";
-    }
-    if (empty($data['barangay'])) {
-        $errors[] = "Barangay is required.";
-    }
-    if (empty($data['city'])) {
-        $errors[] = "City is required.";
-    }
-    if (empty($data['province'])) {
-        $errors[] = "Province is required.";
-    }
-    if (empty($data['zip_code']) || !preg_match('/^\d{4}$/', trim($data['zip_code']))) {
-        $errors[] = "A valid 4-digit Zip Code is required.";
-    }
-
     return $errors;
 }
-
-
-// TRANSFER DETAILS
-
-// deed_of_transfer: [object File]
-// valid_id_type_curr: Umid
-// valid_id_file_curr: [object File]
-// barangay_clearance_transfer: [object File]
-// community_tax_cert_transfer: [object File]
-// valid_id_type_new: PRC
-// valid_id_file_new: [object File]
-// application_number: APP-20250221-000208
-// market_id: 2
-// section_id: 4
-// stall_id: 5
-// market: Eastside Market
-// section: Dry Goods
-// stall: 202
-// csrf_token: 0adb2eeb128103b6b701cccd96370a3760853b745ebd76fed4abf628c775daf5
-// transfer_reason: none
-// current_first_name: test
-// current_middle_name: test
-// current_last_name: test
-// current_owner_id: 4
-// email: nreyesmine69@gmail.com
-// alt_email: dsaa@yahoo.com
-// contact_no: 09159088624
-// first_name: test
-// middle_name: test
-// last_name: test
-// sex: Male
-// civil_status: Single
-// nationality: Filipino
-// house_no: test
-// street: test
-// subdivision: test
-// province: test
-// city: tset
-// barangay: test
-// zip_code: 1234
-
-
-
-
-// SUCCESSION DETAILS
-
-// death_cert: [object File]
-// proof_of_relationship: [object File]
-// barangay_clearance_succession: [object File]
-// community_tax_cert_succession: [object File]
-// valid_id_type_succession: Voters
-// valid_id_file_succession: [object File]
-// application_type: Succession
-// market_id: 1
-// section_id: 2
-// stall_id: 2
-// market: Central Market
-// section: Vegetables
-// stall: 102
-// deceased_first_name: Nelson
-// deceased_middle_name: Doe
-// deceased_last_name: Reyes
-// current_owner_id: 4
-// email: reyes@gmail.com
-// alt_email: asdf@yahoo.com
-// contact_no: 09159088624
-// first_name: test
-// middle_name: test
-// last_name: test
-// sex: Male
-// civil_status: Married
-// nationality: Filipino
-// house_no: 98
-// street: test
-// subdivision: test
-// province: test
-// city: test
-// barangay: test
-// zip_code: 1700
-// relationship_to_deceased: none
