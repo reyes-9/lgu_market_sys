@@ -23,9 +23,9 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
             <h4>Public Market Monitoring System</h4>
             <hr>
             <ul>
-                <li><a class="footer-links" href="#">VENDOR PORTAL</a></li>
-                <li><a class="footer-links" href="#">FEEDBACK SERVICES</a></li>
-                <li><a class="footer-links" href="#">VENDOR MAPPING</a></li>
+                <li><a class="footer-links" href="http://localhost/lgu_market_sys/pages/portal/">VENDOR PORTAL</a></li>
+                <li><a class="footer-links" href="http://localhost/lgu_market_sys/pages/feedback/">FEEDBACK SERVICES</a></li>
+                <li><a class="footer-links" href="http://localhost/lgu_market_sys/pages/map/">VENDOR MAPPING</a></li>
             </ul>
         </div>
 
