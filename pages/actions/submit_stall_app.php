@@ -98,7 +98,6 @@ try {
     exit();
 } catch (Exception $e) {
 
-    unset($_SESSION['csrf_token']);
     $pdo->rollBack();
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
 

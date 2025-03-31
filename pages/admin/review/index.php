@@ -26,6 +26,7 @@ if ($applications_id) {
         app.account_id,
         app.inspection_status,
         app.inspection_date,
+        app.helper_id,
         a.user_id,
         CONCAT(u.first_name, ' ', IFNULL(u.middle_name, ''), ' ', u.last_name) AS applicant_full_name,
         v.violation_type_id,
@@ -34,7 +35,9 @@ if ($applications_id) {
         d.document_path, 
         d.status AS doc_status,
         i.name AS inspector_name,
-        st.transfer_confirmation_status
+        st.transfer_confirmation_status,
+        st.current_owner_id,
+        st.deceased_owner_id
     FROM applications app
     JOIN stalls s ON app.stall_id = s.id    
     JOIN sections sec ON app.section_id = sec.id
@@ -72,6 +75,7 @@ if ($applications_id) {
                 'section_name' => $row['section_name'],
                 'market_name' => $row['market_name'],
                 'helper_full_name' => $row['helper_full_name'],
+                'helper_id' => $row['helper_id'],
                 'extension_duration' => $row['extension_duration'],
                 'application_id' => $row['id'],
                 'account_id' => $row['account_id'],
@@ -84,6 +88,8 @@ if ($applications_id) {
                 'inspection_date' => $row['inspection_date'],
                 'inspector_name' => $row['inspector_name'],
                 'transfer_confirmation_status' => $row['transfer_confirmation_status'],
+                'current_owner_id' => $row['current_owner_id'],
+                'deceased_owner_id' => $row['deceased_owner_id'],
                 'violations' => [],
                 'documents' => []
             ];
@@ -194,6 +200,27 @@ if ($applications_id) {
             </table>
         </div>
 
+        <div id="helperValidationDiv">
+            <hr>
+            <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Checks if the helper is in the database an associated in the stall."></i>
+                Helper Validation Result:
+                <span class="spinner-border spinner-border-sm" id="helperSpinner" aria-hidden="true"></span>
+                <i class="bi bi-check-circle-fill text-success d-none" id="helperIconSuccess"></i>
+                <i class="bi bi-x-circle-fill text-danger d-none" id="helperIconFailed"></i>
+            </h6>
+            <div class="container helper d-none">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th>Helper Name: </th>
+                            <td id="helperName"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
 
         <hr>
         <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Verifies the market's availability status."></i>
@@ -232,7 +259,7 @@ if ($applications_id) {
         </div>
 
         <hr>
-        <div id="scheduleInfoSection">
+        <div class="container" id="scheduleInfoSection">
             <h5 class="fw-bold">Inspection Info:</h5>
             <table class="table table-borderless">
                 <tbody>
@@ -325,6 +352,12 @@ if ($applications_id) {
                 <input type="hidden" name="account_id" value="<?php echo !empty($app['account_id']) ? $app['account_id'] : ''; ?>">
                 <input type="hidden" name="application_type" value="<?php echo !empty($app['application_type']) ? $app['application_type'] : ''; ?>">
                 <input type="hidden" name="application_number" value="<?php echo !empty($app['application_number']) ? $app['application_number'] : ''; ?>">
+                <input type="hidden" name="stall_number" value="<?php echo !empty($app['stall_number']) ? $app['stall_number'] : ''; ?>">
+                <input type="hidden" name="current_owner_id" value="<?php echo !empty($app['current_owner_id']) ? $app['current_owner_id'] : ''; ?>">
+                <input type="hidden" name="deceased_owner_id" value="<?php echo !empty($app['deceased_owner_id']) ? $app['deceased_owner_id'] : ''; ?>">
+                <input type="hidden" name="user_id" value="<?php echo !empty($app['user_id']) ? $app['user_id'] : ''; ?>">
+                <input type="hidden" name="helper_id" value="<?php echo !empty($app['helper_id']) ? $app['helper_id'] : ''; ?>">
+                <input type="hidden" name="extension_duration" value="<?php echo !empty($app['extension_duration']) ? $app['extension_duration'] : ''; ?>">
 
                 <button type="button" class="btn btn-dark" onclick="toggleApplicationRejectionComment()">Reject</button>
                 <button type="submit" id="approve-button" name="approved" class="btn review-btn ms-3" disabled>Approve</button>
@@ -359,8 +392,6 @@ if ($applications_id) {
 
             let applications = <?php echo json_encode($applications); ?>;
             let application_id = Object.keys(applications)[0];
-
-            // console.log("Application Id: ", application_id);
 
             if (!validateScheduleInputs()) {
                 alert("Complete all the missing fields.")
@@ -463,13 +494,6 @@ if ($applications_id) {
 
             if (application) {
 
-                // // console.log(application.application_type);
-                // if (application.application_type !== "stall transfer" && application.application_type !== "stall succession") {
-                //     owner_approval_div.style.display = "none";
-                // } else {
-                //     owner_approval_div.style.display = "block";
-                // }
-
                 setTimeout(() => {
                     hideRejectedApplicationSections(application.status);
                 }, 100);
@@ -490,6 +514,8 @@ if ($applications_id) {
                 document.getElementById("marketName").innerHTML = ` ${application.market_name ?? 'N/A'}`;
                 document.getElementById("sectionName").innerHTML = ` ${application.section_name ?? 'N/A'}`;
                 document.getElementById("stallNumber").innerHTML = `${application.stall_number ?? 'N/A'}`;
+
+                document.getElementById("helperName").innerHTML = `${application.helper_full_name ?? 'N/A'}`;
 
                 const selected_inspector = document.getElementById("selectedInspector");
                 const selected_date = document.getElementById("selectedDate");
@@ -617,6 +643,10 @@ if ($applications_id) {
         function approveApplication(formData) {
             formData.append("action", "approved");
 
+            console.log("Form Data:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
             fetch("../../actions/process_application.php", {
                     method: "POST",
                     body: formData
@@ -627,7 +657,7 @@ if ($applications_id) {
                         alert(data.message);
                         setTimeout(() => {
                             window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
-                        }, 3000);
+                        }, 1000);
                     } else {
                         alert("Error: " + data.message);
                     }
@@ -637,6 +667,7 @@ if ($applications_id) {
 
         function rejectApplication(formData) {
             formData.append("action", "rejected");
+            formData.append("inspection_status", "inspection_status");
 
             fetch("../../actions/process_application.php", {
                     method: "POST",
@@ -648,7 +679,7 @@ if ($applications_id) {
                         alert(data.message);
                         setTimeout(() => {
                             window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
-                        }, 3000);
+                        }, 1000);
                     } else {
                         alert("Error: " + data.message);
                     }
@@ -736,6 +767,11 @@ if ($applications_id) {
             $application_id = !empty($application['application_id']) ? json_encode($application['application_id']) : 'null';
             $transfer_status = !empty($application['transfer_confirmation_status']) ? json_encode($application['transfer_confirmation_status']) : 'null';
             $inspection_status = !empty($application['inspection_status']) ? json_encode($application['inspection_status']) : 'null';
+            $current_owner_id = !empty($application['current_owner_id']) ? json_encode($application['current_owner_id']) : 'null';
+            $deceased_owner_id = !empty($application['deceased_owner_id']) ? json_encode($application['deceased_owner_id']) : 'null';
+            $helper_full_name = !empty($application['helper_full_name']) ? json_encode($application['helper_full_name']) : 'null';
+            $helper_id = !empty($application['helper_id']) ? json_encode($application['helper_id']) : 'null';
+
 
             // echo '<pre>';
             // print_r($application);
@@ -744,10 +780,16 @@ if ($applications_id) {
 
             const userId = <?php echo $userId; ?>;
             const stallNumber = <?php echo $stallNumber; ?>;
-            const application_type = <?php echo $application_type; ?>;
-            const application_id = <?php echo json_encode($application_id); ?>;
-            const transfer_status = <?php echo json_encode($transfer_status); ?>;
-            const inspection_status = <?php echo json_encode($inspection_status); ?>;
+            const application_type = JSON.parse(<?php echo json_encode($application_type); ?>);
+            const application_id = JSON.parse(<?php echo json_encode($application_id); ?>);
+            const transfer_status = JSON.parse(<?php echo json_encode($transfer_status); ?>);
+            const inspection_status = JSON.parse(<?php echo json_encode($inspection_status); ?>);
+            const current_owner_id = JSON.parse(<?php echo json_encode($current_owner_id); ?>);
+            const deceased_owner_id = JSON.parse(<?php echo json_encode($deceased_owner_id); ?>);
+            const helper_full_name = JSON.parse(<?php echo json_encode($helper_full_name); ?>);
+            const helper_id = JSON.parse(<?php echo json_encode($helper_id); ?>);
+
+            console.log(helper_id)
 
             let applications = <?php echo json_encode($applications, JSON_PRETTY_PRINT); ?>;
 
@@ -758,16 +800,22 @@ if ($applications_id) {
 
             assignValues(applications);
 
+            console.log(typeof helper_id, helper_id);
+
+
             fetch(`../../actions/eligibility_checker.php?user_id=${encodeURIComponent(userId)}
                                                         &stall_number=${encodeURIComponent(stallNumber)}
                                                         &application_type=${encodeURIComponent(application_type)}
                                                         &application_id=${encodeURIComponent(application_id)}
+                                                        &current_owner_id=${encodeURIComponent(current_owner_id)}
+                                                        &deceased_owner_id=${encodeURIComponent(deceased_owner_id)}
+                                                        &helper_id=${encodeURIComponent(helper_id)}
+                                                     
                 `)
                 .then(response => response.json())
                 .then(data => {
 
                     // owner Approval Validation
-
                     const approvalSpinner = document.getElementById("approvalSpinner");
                     const approvalIconSuccess = document.getElementById("approvalIconSuccess");
                     const approvalIconFailed = document.getElementById("approvalIconFailed");
@@ -812,6 +860,29 @@ if ($applications_id) {
                     }
                     setTimeout(() => {
                         if (applicantSpinner) applicantSpinner.remove(); // Remove loading spinner
+                    }, 400);
+
+
+                    // Helper Validation
+                    const helperDiv = document.querySelector(".container.helper");
+                    const helperSpinner = document.getElementById("helperSpinner");
+                    const helperIconSuccess = document.getElementById("helperIconSuccess");
+                    const helperIconFailed = document.getElementById("helperIconFailed");
+
+                    if (data.isHelper) {
+                        setTimeout(() => {
+                            helperDiv.classList.remove("d-none");
+                            helperIconSuccess.classList.remove("d-none");
+                        }, 400);
+
+                    } else {
+                        setTimeout(() => {
+                            helperDiv.classList.add("d-none");
+                            helperIconFailed.classList.remove("d-none");
+                        }, 400);
+                    }
+                    setTimeout(() => {
+                        if (helperSpinner) helperSpinner.remove();
                     }, 400);
 
 
@@ -866,60 +937,60 @@ if ($applications_id) {
                     const sched_info_div = document.getElementById("scheduleInfoSection");
                     const inspection_button = document.getElementById("scheduleInspectionBtn");
                     const ownerApprovalDiv = document.getElementById("ownerApprovalDiv");
+                    const helperValidationDiv = document.getElementById("helperValidationDiv");
 
                     let canApprove = true;
 
                     if (application_type === "stall transfer" || application_type === "stall succession") {
+                        helperValidationDiv.style.display = "none";
                         canApprove = data.isTransferApproved && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
+                    } else if (application_type === "helper") {
+                        ownerApprovalDiv.style.display = "none";
+                        canApprove = data.isHelper && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     } else {
+                        helperValidationDiv.style.display = "none";
                         ownerApprovalDiv.style.display = "none";
                         canApprove = data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     }
 
 
                     sched_info_div.style.display = inspection_status === "Approved" ? "block" : "none";
-                    console.log("Debug: Inspection Status:", inspection_status);
-                    console.log("Debug: Can Approve:", canApprove);
-                    console.log("Debug: Inspection Button:", inspection_button);
-                    console.log("Button Disabled State:", inspection_button.disabled);
-                    console.log(typeof inspection_status, inspection_status);
-                    console.log(typeof canApprove, canApprove);
+                    sched_info_div.style.display = "block";
 
 
-                    if (canApprove == true) {
+                    if (canApprove === true) {
+                        console.log(inspection_status);
+                        switch (inspection_status) {
+                            case "Pending":
+                                sched_info_div.style.display = "none";
+                                inspection_button.disabled = false;
+                                approveButton.disabled = true;
+                                break;
 
-                        if (inspection_status == "Pending") {
-                            console.log("Condition Met: Pending");
-                            inspection_button.disabled = false;
-                            approveButton.disabled = true;
-                        } else if (inspection_status == "Approved") {
-                            console.log("Condition Met: Approved");
-                            inspection_button.disabled = true;
-                            approveButton.disabled = false;
-                        } else {
-                            console.log("Condition Met: Else block");
-                            inspection_button.disabled = true;
-                            approveButton.disabled = true;
+                            case "Approved":
+                                sched_info_div.style.display = "block";
+                                inspection_button.disabled = true;
+                                approveButton.disabled = false;
+                                break;
+
+                            case "Rejected":
+                            case "Scheduled":
+                                sched_info_div.style.display = "block";
+                                inspection_button.disabled = true;
+                                approveButton.disabled = true;
+                                break;
+
+                            default:
+                                sched_info_div.style.display = "none";
+                                inspection_button.disabled = true;
+                                approveButton.disabled = true;
                         }
 
-                        // if (inspection_status == "Pending") {
-                        //     inspection_button.disabled = false;
-                        //     approveButton.disabled = true;
-                        // } else if (inspection_status == "Approved") {
-                        //     console.log("Debug: Inspection Status:", inspection_status);
-                        //     inspection_button.disabled = true;
-                        //     approveButton.disabled = false;
-                        // } else {
-
-                        //     // inspection_button.disabled = true;
-                        //     // approveButton.disabled = true;
-                        // }
                     } else {
+                        sched_info_div.style.display = "none";
                         inspection_button.disabled = true;
                         approveButton.disabled = true;
-
                     }
-
 
                 })
                 .catch(error => console.error("Error:", error));

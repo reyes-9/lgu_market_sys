@@ -488,7 +488,7 @@ if (empty($_SESSION['csrf_token'])) {
                         ownerLastNameInput.value = lastName;
 
                         data.stalls.forEach(stall => {
-                            ownerIdInput.value = stall.account_id;
+                            ownerIdInput.value = stall.user_id;
                         });
 
                         data.stalls.forEach((stall, index) => {

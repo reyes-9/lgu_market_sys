@@ -74,7 +74,7 @@ try {
     }
 
     $duration = $data['duration'];
-    $extensionResponse = insertExtension($pdo, $applicationId, $duration);
+    $extensionResponse = insertExtension($pdo, intval($data['stall_id']), $applicationId, $duration);
 
     if (!$extensionResponse['success']) {
         throw new Exception("Failed to insert extension. " . $extensionResponse['error']);
@@ -107,7 +107,6 @@ try {
     exit();
 } catch (Exception $e) {
 
-    unset($_SESSION['csrf_token']);
     $pdo->rollBack();
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
 
@@ -149,19 +148,17 @@ function validateApplicationData($data)
     return $errors;
 }
 
-function insertExtension(
-    $pdo,
-    $applicationId,
-    $duration,
-) {
+function insertExtension($pdo, $stallId, $applicationId, $duration)
+{
     try {
         $query = "INSERT INTO extensions 
-            (application_id, duration, created_at) 
+            (stall_id, application_id, duration, created_at) 
             VALUES 
-            (:application_id, :duration, NOW())";
+            (:stall_id, :application_id, :duration, NOW())";
 
         $stmt = $pdo->prepare($query);
 
+        $stmt->bindValue(':stall_id', $stallId, PDO::PARAM_INT);
         $stmt->bindValue(':application_id', $applicationId, PDO::PARAM_INT);
         $stmt->bindValue(':duration', $duration, PDO::PARAM_STR);
 

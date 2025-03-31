@@ -156,14 +156,13 @@ try {
     exit();
 } catch (Exception $e) {
 
-    unset($_SESSION['csrf_token']);
     $pdo->rollBack();
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
 
     error_log("Transaction failed: " . $e->getMessage());
     http_response_code(500);
     $response['success'] = false;
-    $response['message'] = "An error occurred. Please try again.";
+    $response['message'] = "There is an error. Please try again.";
     $response['errors'][] = $e->getMessage();
     echo json_encode($response);
     exit();
