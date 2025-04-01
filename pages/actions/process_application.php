@@ -1,17 +1,3 @@
-<!-- Setting of the expiration date when application is approved is DONE -->
-<!-- Setting of the expiration date when application is approved is DONE -->
-<!-- Setting of the expiration date when application is approved is DONE -->
-<!-- Setting of the expiration date when application is approved is DONE -->
-
-<!-- DECIDE ON WHAT'S NEXT -->
-<!-- DECIDE ON WHAT'S NEXT -->
-
-<!-- MAYBE MANAGING WHEN SOMETHING IS EXPIRED -->
-<!-- MAYBE MANAGING WHEN SOMETHING IS EXPIRED -->
-<!-- MAYBE MANAGING WHEN SOMETHING IS EXPIRED -->
-<!-- MAYBE MANAGING WHEN SOMETHING IS EXPIRED -->
-<!-- MAYBE MANAGING WHEN SOMETHING IS EXPIRED -->
-
 <?php
 require_once '../../includes/config.php';
 require "../../includes/session.php";
@@ -36,10 +22,6 @@ try {
         $applicants_user_id = $_POST['user_id'] ?? '';
         $helper_id = $_POST['helper_id'] ?? '';
         $extension_duration = $_POST['extension_duration'] ?? '';
-
-        // var_dump($deceased_owner_id);
-        // var_dump($current_owner_id);
-        // var_dump($applicants_user_id);
 
         if (empty($application_id)) {
             echo json_encode(['success' => false, 'message' => 'Application ID is required.']);
@@ -97,7 +79,7 @@ try {
             if (!$extensionActivationResult['success']) {
                 throw new Exception($extensionActivationResult['message']);
             }
-            $isSetExpiration = setExpirationDate($pdo, $application_id, $extensionActivationResult['stall_id'],  $application_type, $extension_duration);
+            $isSetExpiration = setExpirationDate($pdo, $application_id, $extensionActivationResult['extension_id'],  $application_type, $extension_duration);
             if (!$isSetExpiration['success']) {
                 throw new Exception($isSetExpiration['message']);
             }
@@ -108,7 +90,7 @@ try {
             if (!$assignStallHelperResult['success']) {
                 throw new Exception($assignStallHelperResult['message']);
             }
-            $isSetExpiration = setExpirationDate($pdo, $application_id, $assignStallHelperResult['stall_id'],  $application_type, $extension_duration);
+            $isSetExpiration = setExpirationDate($pdo, $application_id, $assignStallHelperResult['helper_id'],  $application_type, $extension_duration);
             if (!$isSetExpiration['success']) {
                 throw new Exception($isSetExpiration['message']);
             }
@@ -250,7 +232,7 @@ function activateExtension($pdo, $applicants_user_id, $stall_number)
         return [
             'success' => true,
             'message' => "Stall extension for stall number $stall_number is now active.",
-            'stall_id' => $stall_id
+            'extension_id' => $extension['id']
         ];
     } catch (PDOException $e) {
         return ['success' => false, 'message' => "Database error: " . $e->getMessage()];
@@ -345,7 +327,7 @@ function assignStallHelper($pdo, $helper_id, $stall_number)
             return [
                 "success" => true,
                 "message" => "Helper successfully assigned to stall ID $stall_number.",
-                "stall_id" => $stall['id']
+                "helper_id" => $helper_id
             ];
         } else {
             return ["success" => false, "message" => "Failed to assign helper to the stall."];

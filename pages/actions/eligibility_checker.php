@@ -1,7 +1,7 @@
 <?php
 require_once '../../includes/config.php';
-// error_reporting(E_ERROR | E_PARSE); // Show only errors, not warnings/notices
-// ini_set('display_errors', 0); // Disable output of errors on the page
+error_reporting(E_ERROR | E_PARSE); // Show only errors, not warnings/notices
+ini_set('display_errors', 0); // Disable output of errors on the page
 
 header("Content-Type: application/json");
 

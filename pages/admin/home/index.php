@@ -311,7 +311,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
           </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Announcement Modal -->
         <div class="modal fade" id="announcementModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -369,8 +369,6 @@ if ($_SESSION['user_type'] !== 'Admin') {
           </div>
         </div>
 
-
-
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
@@ -387,10 +385,23 @@ if ($_SESSION['user_type'] !== 'Admin') {
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
-              <i class="bi bi-file-earmark-text text-primary fs-2 mb-3"></i>
+              <i class="bi bi-file-earmark-text text-warning fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Applications</h5>
               <p class="card-text text-muted">Manage stall and more applications in one click.</p>
               <a class="btn btn-warning rounded-pill px-4" id="postAnnouncementBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
+                <i class="bi bi-clipboard-check"></i> Manage Applications
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex">
+          <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <i class="bi bi-calendar-x text-dark fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">View Expired Records</h5>
+              <p class="card-text text-muted">View and manage all expired records, including stalls, extensions, and helpers.</p>
+              <a class="btn btn-dark rounded-pill px-4" id="postAnnouncementBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
                 <i class="bi bi-clipboard-check"></i> Manage Applications
               </a>
             </div>
