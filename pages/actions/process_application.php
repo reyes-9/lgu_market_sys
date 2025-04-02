@@ -346,8 +346,8 @@ function setExpirationDate($pdo, $application_id, $reference_id, $application_ty
 
         // Calculate the expiration date based on the application type
         if ($application_type === 'stall') {
-            // Example: Stall lease is 1 year
-            $expiration_date = date('Y-m-d', strtotime('+1 year'));
+
+            $expiration_date = date('Y-m-d', strtotime('+1 month'));
         } elseif ($application_type === 'stall extension') {
 
             switch ($extension_duration) {
@@ -364,8 +364,7 @@ function setExpirationDate($pdo, $application_id, $reference_id, $application_ty
                     throw new Exception("Invalid extension duration: $extension_duration");
             }
         } elseif ($application_type === 'helper') {
-            // Example: Helper registration is 1 year
-            $expiration_date = date('Y-m-d', strtotime('+1 year'));
+            $expiration_date = date('Y-m-d', strtotime('+1 months'));
         }
 
         // Check if expiration date is valid

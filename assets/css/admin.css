@@ -212,12 +212,12 @@ textarea {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-.modal-container {
-  padding: 30px 40px !important;
-  color: #003366;
-  border: 3px solid #003366;
-  border-radius: 10px;
-}
+  .modal-container {
+    padding: 30px 40px !important;
+    color: #003366;
+    border: 3px solid #003366;
+    border-radius: 10px;
+  }
 
 /* Style the date input */
 input[type="date"] {

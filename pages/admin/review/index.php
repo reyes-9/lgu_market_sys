@@ -169,6 +169,15 @@ if ($applications_id) {
             </h6>
         </div>
 
+        <div class="paymentDiv" id="paymentDiv">
+            <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Checks if the owner approved the transfer."></i>
+                Stall Payment Validation Result:
+                <span class="spinner-border spinner-border-sm" id="paymentSpinner" aria-hidden="true"></span>
+                <i class="bi bi-check-circle-fill text-success d-none" id="paymentIconSuccess"></i>
+                <i class="bi bi-x-circle-fill text-danger d-none" id="paymentIconFailed"></i>
+                <i class="bi bi-clock-fill text-warning d-none" id="paymentIconPending"></i>
+            </h6>
+        </div>
 
         <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Checks if the user applicant in the database."></i>
             Applicant Validation Result:
@@ -815,7 +824,7 @@ if ($applications_id) {
                 .then(response => response.json())
                 .then(data => {
 
-                    // owner Approval Validation
+                    // Owner Approval Validation
                     const approvalSpinner = document.getElementById("approvalSpinner");
                     const approvalIconSuccess = document.getElementById("approvalIconSuccess");
                     const approvalIconFailed = document.getElementById("approvalIconFailed");
@@ -837,6 +846,26 @@ if ($applications_id) {
                     }
                     setTimeout(() => {
                         if (approvalSpinner) approvalSpinner.remove();
+                    }, 200);
+
+                    // Stall Payment Validation
+                    const paymentSpinner = document.getElementById("paymentSpinner");
+                    const paymentIconSuccess = document.getElementById("paymentIconSuccess");
+                    const paymentIconFailed = document.getElementById("paymentIconFailed");
+                    const paymentIconPending = document.getElementById("paymentIconPending");
+
+                    if (data.isStallPaid) {
+                        setTimeout(() => {
+                            paymentIconSuccess.classList.remove("d-none");
+                        }, 200);
+
+                    } else {
+                        setTimeout(() => {
+                            paymentIconFailed.classList.remove("d-none");
+                        }, 200);
+                    }
+                    setTimeout(() => {
+                        if (paymentSpinner) paymentSpinner.remove();
                     }, 200);
 
 
@@ -943,7 +972,7 @@ if ($applications_id) {
 
                     if (application_type === "stall transfer" || application_type === "stall succession") {
                         helperValidationDiv.style.display = "none";
-                        canApprove = data.isTransferApproved && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
+                        canApprove = data.isStallPaid && data.isTransferApproved && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     } else if (application_type === "helper") {
                         ownerApprovalDiv.style.display = "none";
                         canApprove = data.isHelper && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;

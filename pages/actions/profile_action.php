@@ -31,7 +31,6 @@ try {
     $stmt_stall->execute([':user_id' => $user_id]);
     $stall = $stmt_stall->fetchAll(PDO::FETCH_ASSOC);
 
-    // Prepare response
     header('Content-Type: application/json');
 
     if (empty($stall)) {
@@ -46,13 +45,11 @@ try {
         ]);
     }
 } catch (PDOException $e) {
-    // Handle database error
     header('Content-Type: application/json', true, 500);
     echo json_encode([
         'error' => 'Database error occurred: ' . $e->getMessage()
     ]);
 } catch (Exception $e) {
-    // Handle other types of errors
     header('Content-Type: application/json', true, 500);
     echo json_encode([
         'error' => 'An error occurred: ' . $e->getMessage()
@@ -60,8 +57,6 @@ try {
 }
 
 exit();
-
-
 
 // FUNCTIONS
 function checkAccountExistence($pdo, $account_id)

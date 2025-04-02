@@ -112,7 +112,7 @@ $homePath = "/lgu_market_sys/";
 
                     <li class="nav-item dropdown">
                         <a class="nav-link menu dropdown-toggle <?php echo ($currentPage == 'stall_app' || $currentPage == 'transfer_stall_app') ? 'active' : ''; ?>" href="#" id="transactionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Transactions
+                            Stall / Transfers
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="transactionsDropdown">
                             <li><a class="dropdown-item <?php echo $currentPage == 'stall_app' ? 'active' : ''; ?>" href="/lgu_market_sys/pages/stall_app">Stall Application</a></li>

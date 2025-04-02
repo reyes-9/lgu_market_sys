@@ -8,6 +8,18 @@ if ($_SESSION['user_type'] !== 'Admin') {
 }
 
 ?>
+
+<!-- NEEDS TO CMOPLETE: 
+                  
+                  INSPECTOR VIEW
+                  MANAGE EXPIRED RECORDS
+                  PAYMENT MANAGEMENT
+                  EXIPRED NOTIFICAIONS
+                  STALL EXTENSION AND VIOLATION PAYMENTS (RECEIPT, THERE IS A BACKEND FOR THAT) 
+
+                  -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,7 +75,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
     <div class="ms-auto me-5">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item acitve" aria-current="page"><a href="#">Dashboard</a></li>
+          <li class="breadcrumb-item acitve" aria-current="page">Dashboard</li>
         </ol>
       </nav>
     </div>
@@ -284,7 +296,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
         <p class="text-muted">Manage market operations efficiently with these tools.</p>
       </div>
 
-      <<div class="row g-4 d-flex justify-content-center">
+      <div class="row g-4 d-flex justify-content-center">
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
@@ -385,11 +397,11 @@ if ($_SESSION['user_type'] !== 'Admin') {
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
-              <i class="bi bi-file-earmark-text text-warning fs-2 mb-3"></i>
-              <h5 class="card-title-home fw-bold">Applications</h5>
-              <p class="card-text text-muted">Manage stall and more applications in one click.</p>
-              <a class="btn btn-warning rounded-pill px-4" id="postAnnouncementBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
-                <i class="bi bi-clipboard-check"></i> Manage Applications
+              <i class="bi bi-wallet text-secondary fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Payment Management</h5>
+              <p class="card-text text-muted">Manage and track payments related to stall rentals, including payment submissions and receipt uploads.</p>
+              <a class="btn btn-secondary rounded-pill px-4" id="managePaymentBtn" href="http://localhost/lgu_market_sys/pages/admin/payment/">
+                <i class="bi bi-wallet"></i> Manage Payments
               </a>
             </div>
           </div>
@@ -398,18 +410,19 @@ if ($_SESSION['user_type'] !== 'Admin') {
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
-              <i class="bi bi-calendar-x text-dark fs-2 mb-3"></i>
-              <h5 class="card-title-home fw-bold">View Expired Records</h5>
-              <p class="card-text text-muted">View and manage all expired records, including stalls, extensions, and helpers.</p>
-              <a class="btn btn-dark rounded-pill px-4" id="postAnnouncementBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
-                <i class="bi bi-clipboard-check"></i> Manage Applications
+              <i class="bi bi-file-earmark-text text-warning fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Applications</h5>
+              <p class="card-text text-muted">Manage stall and more applications in one click.</p>
+              <a class="btn btn-warning rounded-pill px-4" id="manageAppBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
+                <i class="bi bi-file-earmark-text"></i> Manage Applications
               </a>
             </div>
           </div>
         </div>
-  </div>
 
-  </section>
+      </div>
+
+    </section>
 
   </div>
 

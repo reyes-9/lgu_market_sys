@@ -151,3 +151,162 @@ select,
 textarea {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+
+.custom-card {
+  width: 18rem;
+  background: #f8f9fa;
+  color: #212529;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  margin: 0px 20px;
+  padding: 20px;
+  color: white !important;
+}
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+.custom-card .card-body {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+.custom-card .btn {
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+.custom-card .btn:hover {
+  background-color: #4b4b4b;
+}
+.garbage-bg {
+  background: linear-gradient(
+    135deg,
+    #1e3a8a,
+    #2563eb
+  ); /* Deep Blue to Bright Blue */
+}
+.extension-bg {
+  background: linear-gradient(
+    135deg,
+    #0a1d3c,
+    #1e40af
+  ); /* Darker Navy to Royal Blue */
+}
+.helper-bg {
+  background: linear-gradient(
+    135deg,
+    #1e3a8a,
+    #2563eb
+  ); /* Darker Royal Blue to Sky Blue */
+}
+
+.table-container {
+  background-color: #fff;
+  color: #003366;
+}
+
+#title {
+  padding-bottom: 10px;
+  border-bottom: 2px solid #003366;
+}
+
+/* Banner styling */
+.payment-banner {
+  background: linear-gradient(
+    135deg,
+    #1e3a8a,
+    #2563eb
+  ); /* Deep Blue to Bright Blue */
+  color: white;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.payment-banner .banner-text {
+  flex: 1;
+}
+
+.payment-banner h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.payment-banner p {
+  font-size: 1rem;
+}
+
+.payment-banner .submit-receipt-btn {
+  background-color: #1e40af; /* Royal Blue */
+  border-color: #1e40af;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.payment-banner .submit-receipt-btn:hover {
+  background-color: #2563eb; /* Bright Blue on hover */
+}
+
+/* Radio Button */
+/* Hide default radio */
+.radio-modern input {
+  display: none !important;
+}
+
+/* Custom radio button */
+.radio-modern {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  position: relative;
+  gap: 8px;
+}
+
+/* Outer circle */
+.radio-checkmark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #003366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+/* Inner dot */
+.radio-checkmark::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Checked state */
+.radio-modern input:checked + .radio-checkmark {
+  background-color: #003366;
+  border-color: #003366;
+  box-shadow: 0 0 8px #00336691;
+}
+
+.radio-modern input:checked + .radio-checkmark::after {
+  opacity: 1;
+}
+
+/* Hover effect */
+.radio-modern:hover .radio-checkmark {
+  border-color: #0056b3;
+}

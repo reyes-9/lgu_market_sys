@@ -151,16 +151,29 @@ function validateApplicationData($data)
 function insertExtension($pdo, $stallId, $applicationId, $duration)
 {
     try {
+
+        $duration_map = [
+            '3 months' => 3,
+            '6 months' => 6,
+            '12 months' => 12
+        ];
+
+        $stall_rent = getStallRent($pdo, $stallId);
+        $extension_rate = 0.13;
+        $duration_months = $duration_map[$duration];
+        $extension_cost = ($stall_rent * $extension_rate) * $duration_months;
+
         $query = "INSERT INTO extensions 
-            (stall_id, application_id, duration, created_at) 
+            (stall_id, application_id, duration, extension_cost, payment_status, created_at) 
             VALUES 
-            (:stall_id, :application_id, :duration, NOW())";
+            (:stall_id, :application_id, :duration, :extension_cost, 'Unpaid', NOW())";
 
         $stmt = $pdo->prepare($query);
 
         $stmt->bindValue(':stall_id', $stallId, PDO::PARAM_INT);
         $stmt->bindValue(':application_id', $applicationId, PDO::PARAM_INT);
         $stmt->bindValue(':duration', $duration, PDO::PARAM_STR);
+        $stmt->bindValue(':extension_cost', $extension_cost, PDO::PARAM_STR);
 
         $stmt->execute();
         $extensionId = $pdo->lastInsertId();
@@ -169,4 +182,15 @@ function insertExtension($pdo, $stallId, $applicationId, $duration)
         error_log("Database error: " . $e->getMessage());
         return ["success" => false, "error" => $e->getMessage()];
     }
+}
+
+function getStallRent($pdo, $stallId)
+{
+    $query = "SELECT rental_fee FROM stalls WHERE id = :stall_id";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindValue(':stall_id', $stallId, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result ? $result['rental_fee'] : null;
 }

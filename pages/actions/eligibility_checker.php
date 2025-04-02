@@ -36,12 +36,12 @@ $response = [
     "isStall" => false,
     "hasViolation" => false,
     "isTransferApproved" => false,
-    "isHelper" => false
+    "isHelper" => false,
+    "isStallPaid" => false
 ];
 
 if ($application_type === "helper") {
     // Check if helper exists and if the stall owner is the applicant
-
     if ($helper_id > 0) {
         $helper_check = $pdo->prepare("
             SELECT s.user_id AS stall_owner
@@ -51,7 +51,7 @@ if ($application_type === "helper") {
             AND s.stall_number = :stall_number
         ");
         $helper_check->bindParam(':helper_id', $helper_id, PDO::PARAM_INT);
-        $helper_check->bindParam(':stall_number', $stall_number, PDO::PARAM_INT); // Use :stall_id for the proper column
+        $helper_check->bindParam(':stall_number', $stall_number, PDO::PARAM_INT);
         $helper_check->execute();
         $helper = $helper_check->fetch(PDO::FETCH_ASSOC);
 
@@ -67,7 +67,6 @@ if ($application_type === "helper") {
     }
 }
 
-
 // Check if user exists
 $applicant_check = $pdo->prepare("SELECT id FROM users WHERE id = :user_id LIMIT 1");
 $applicant_check->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -76,9 +75,9 @@ if ($applicant_check->fetch()) {
     $response["isApplicant"] = true;
 }
 
-// Check stall information and violations
+// Check stall information, violations, and payment status
 $stall_query = $pdo->prepare("
-    SELECT s.status, s.user_id, 
+    SELECT s.status, s.user_id, s.payment_status,
            (SELECT COUNT(*) FROM violations WHERE user_id = :user_id AND status = 'Pending') AS violation_count 
     FROM stalls s 
     WHERE s.stall_number = :stall_number
@@ -95,8 +94,16 @@ if ($stall) {
         $response["isStall"] = ($stall["status"] === 'available');
     } elseif ($application_type === "stall transfer") {
         $response["isStall"] = ($stall["user_id"] == $current_owner_id);
+
+        if ($stall["payment_status"] === "Paid") {
+            $response["isStallPaid"] = true;
+        }
     } elseif ($application_type === "stall succession") {
         $response["isStall"] = ($stall["user_id"] == $deceased_owner_id);
+
+        if ($stall["payment_status"] === "Paid") {
+            $response["isStallPaid"] = true;
+        }
     }
 
     $response["hasViolation"] = ($stall["violation_count"] > 0);
