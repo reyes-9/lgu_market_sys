@@ -2,10 +2,15 @@
 require_once "../../../includes/config.php";
 require "../../../includes/session.php";
 
-if ($_SESSION['user_type'] !== 'Admin') {
-    header("Location: /lgu_market_sys/errors/err403.php");
+
+if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
+    echo '<script>
+    alert("Please log in to continue.");
+    window.location.href = "/lgu_market_sys/pages/login/index.php";
+   </script>';
     exit;
 }
+
 
 // Fetch application data
 $hashed_id = $_GET['id'] ?? null;
@@ -170,7 +175,7 @@ if ($applications_id) {
         </div>
 
         <div class="paymentDiv" id="paymentDiv">
-            <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Checks if the owner approved the transfer."></i>
+            <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Checks if the stall is paid."></i>
                 Stall Payment Validation Result:
                 <span class="spinner-border spinner-border-sm" id="paymentSpinner" aria-hidden="true"></span>
                 <i class="bi bi-check-circle-fill text-success d-none" id="paymentIconSuccess"></i>
@@ -479,7 +484,7 @@ if ($applications_id) {
                             label.innerHTML = ` <label class="radio-modern m-2 mx-3">
                                                     <input type="radio" name="inspector" value="${inspector.id}"> 
                                                     <span class="radio-checkmark"></span>
-                                                    ${inspector.name}
+                                                    ${inspector.full_name}
                                                 </label>
                            `;
                             inspectorsList.appendChild(label);
@@ -787,8 +792,8 @@ if ($applications_id) {
             // echo '</pre>';
             ?>
 
-            const userId = <?php echo $userId; ?>;
-            const stallNumber = <?php echo $stallNumber; ?>;
+            const user_id = <?php echo $userId; ?>;
+            const stall_number = <?php echo $stallNumber; ?>;
             const application_type = JSON.parse(<?php echo json_encode($application_type); ?>);
             const application_id = JSON.parse(<?php echo json_encode($application_id); ?>);
             const transfer_status = JSON.parse(<?php echo json_encode($transfer_status); ?>);
@@ -798,22 +803,19 @@ if ($applications_id) {
             const helper_full_name = JSON.parse(<?php echo json_encode($helper_full_name); ?>);
             const helper_id = JSON.parse(<?php echo json_encode($helper_id); ?>);
 
-            console.log(helper_id)
+            console.log(stall_number)
 
             let applications = <?php echo json_encode($applications, JSON_PRETTY_PRINT); ?>;
 
-            if (!userId || !stallNumber) {
+            if (!user_id || !stall_number) {
                 alert("User ID and Stall Number are required.");
                 return;
             }
 
             assignValues(applications);
 
-            console.log(typeof helper_id, helper_id);
-
-
-            fetch(`../../actions/eligibility_checker.php?user_id=${encodeURIComponent(userId)}
-                                                        &stall_number=${encodeURIComponent(stallNumber)}
+            fetch(`../../actions/eligibility_checker.php?user_id=${encodeURIComponent(user_id)}
+                                                        &stall_number=${encodeURIComponent(stall_number)}
                                                         &application_type=${encodeURIComponent(application_type)}
                                                         &application_id=${encodeURIComponent(application_id)}
                                                         &current_owner_id=${encodeURIComponent(current_owner_id)}
@@ -967,6 +969,7 @@ if ($applications_id) {
                     const inspection_button = document.getElementById("scheduleInspectionBtn");
                     const ownerApprovalDiv = document.getElementById("ownerApprovalDiv");
                     const helperValidationDiv = document.getElementById("helperValidationDiv");
+                    const paymentDiv = document.getElementById("paymentDiv");
 
                     let canApprove = true;
 
@@ -977,6 +980,7 @@ if ($applications_id) {
                         ownerApprovalDiv.style.display = "none";
                         canApprove = data.isHelper && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     } else {
+                        paymentDiv.style.display = "none";
                         helperValidationDiv.style.display = "none";
                         ownerApprovalDiv.style.display = "none";
                         canApprove = data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;

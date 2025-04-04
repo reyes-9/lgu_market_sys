@@ -1,19 +1,21 @@
 <?php
 
-session_start();
+require_once '../../../includes/session.php';
 
-if ($_SESSION['user_type'] !== 'Admin') {
-  header("Location: /lgu_market_sys/errors/err403.php");
+if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
+  echo '<script>
+   alert("Please log in to continue.");
+   window.location.href = "/lgu_market_sys/pages/login/index.php";
+  </script>';
   exit;
 }
 
 ?>
 
+
 <!-- NEEDS TO CMOPLETE: 
-                  
-                  INSPECTOR VIEW
+
                   MANAGE EXPIRED RECORDS
-                  PAYMENT MANAGEMENT
                   EXIPRED NOTIFICAIONS
                   STALL EXTENSION AND VIOLATION PAYMENTS (RECEIPT, THERE IS A BACKEND FOR THAT) 
 
@@ -35,34 +37,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
 
 <body class="body light">
 
-
   <?php include '../../../includes/nav.php'; ?>
-
-  <!-- Toast -->
-  <!-- <div class="toast-container mt-5 p-3 top-0 end-0">
-    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show" data-bs-autohide="false">
-      <div class="toast-header text-bg-warning rounded-top">
-        <svg class="mx-2" width="25" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="100" height="100" rx="20" fill="url(#grad1)" />
-          <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#ff4c4c;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#b30000;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,20 75,75 25,75" fill="white" />
-          <rect x="47" y="40" width="6" height="20" fill="#ff4c4c" />
-          <circle cx="50" cy="70" r="3" fill="#ff4c4c" />
-        </svg>
-        <strong class="me-auto">System Alerts</strong>
-        <small>11 mins ago</small>
-      </div>
-      <div class="toast-body text-light rounded-bottom p-4">
-        New system update available <br>
-        Market maintenance scheduled
-      </div>
-    </div>
-  </div> -->
 
   <div class="text-start m-3 p-3 title d-flex align-items-center">
     <div class="icon-box me-3 shadow title-icon">
@@ -80,138 +55,6 @@ if ($_SESSION['user_type'] !== 'Admin') {
       </nav>
     </div>
   </div>
-
-
-  <!-- <div class="container-fluid p-5">
-    <div class="row m-4 p-5">
-      <div class="container-fluid">
-        <div class="row announcement light p-4 m-3 text-center rounded shadow">
-          <div class="line">
-            <h3 class="stat-title mb-3">Announcements</h3>
-          </div>
-
-          <ul class="list-unstyled mt-5">
-            <li> Public holiday on October 25th - Market will be closed.</li>
-            <li> Maintenance work scheduled for next week.</li>
-          </ul>
-        </div>
-
-
-
-
-        <div class="row justify-content-center align-items-center text-center mb-4">
-
-
-          <div class="col-md-4 mb-3">
-            <div class="card light shadow position-relative">
-              <div class="icon-container">
-                <i class="bi bi-person-fill"></i>
-              </div>
-              <div class="card-body">
-                <h5 class="stat-title">Active Vendors</h5>
-                <h3 class="stat-value">762</h3>
-                <p class="text-success stat-change">+55% than last week</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <div class="card light shadow position-relative">
-              <div class="icon-container">
-                <i class="bi bi-file-earmark-fill"></i>
-              </div>
-              <div class="card-body">
-                <h5 class="stat-title">Today's Applications</h5>
-                <h3 class="stat-value">49</h3>
-                <p class="text-success stat-change">+3% than last month</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <div class="card light shadow position-relative">
-              <div class="icon-container">
-                <i class="bi bi-bag-fill"></i>
-              </div>
-              <div class="card-body">
-                <h5 class="stat-title">Pending Applications</h5>
-                <h3 class="stat-value">130</h3>
-                <p class="text-danger stat-change">-2% than yesterday</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-
-            <div class="col-md-6 mb-3">
-              <div class="card light shadow">
-                <div class="card-body">
-                  <h5 class="stat-title">Monthly Applications</h5>
-                  <canvas id="websiteViewsChart"></canvas>
-                </div>
-              </div>
-            </div>
-
-         
-            <div class="col-md-6 mb-3">
-              <div class="card light shadow">
-                <div class="card-body">
-                  <h5 class="stat-title">Violations Trend</h5>
-                  <canvas id="dailySalesChart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row g-4">
-       
-            <div class="col-md-4">
-              <div class="card border-0 shadow-sm p-3 text-center modern-card">
-                <div class="card-body">
-                  <i class="bi bi-exclamation-triangle text-danger fs-2 mb-3"></i>
-                  <h5 class="card-title fw-bold">Add Violation</h5>
-                  <p class="card-text text-muted">Report violations found during stall inspections.</p>
-                  <button class="btn btn-danger rounded-pill px-4" id="addViolationBtn">
-                    <i class="bi bi-clipboard-plus"></i> Report Violation
-                  </button>
-                </div>
-              </div>
-            </div>
-
-       
-            <div class="col-md-4">
-              <div class="card border-0 shadow-sm p-3 text-center modern-card">
-                <div class="card-body">
-                  <i class="bi bi-megaphone text-primary fs-2 mb-3"></i>
-                  <h5 class="card-title fw-bold">Market Announcements</h5>
-                  <p class="card-text text-muted">Post important updates for vendors and customers.</p>
-                  <button class="btn btn-primary rounded-pill px-4" id="postAnnouncementBtn">
-                    <i class="bi bi-pencil-square"></i> Post Announcement
-                  </button>
-                </div>
-              </div>
-            </div>
-
-   
-            <div class="col-md-4">
-              <div class="card border-0 shadow-sm p-3 text-center modern-card">
-                <div class="card-body">
-                  <i class="bi bi-upc-scan text-success fs-2 mb-3"></i>
-                  <h5 class="card-title fw-bold">QR Code Management</h5>
-                  <p class="card-text text-muted">Generate and display QR codes for stalls.</p>
-                  <button class="btn btn-success rounded-pill px-4" id="manageQrCodesBtn">
-                    <i class="bi bi-qr-code"></i> Manage QR Codes
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-      </div>
-    </div>
-  </div> -->
 
   <div class="container mt-4">
     <section class="my-5">
@@ -323,73 +166,15 @@ if ($_SESSION['user_type'] !== 'Admin') {
           </div>
         </div>
 
-        <!-- Announcement Modal -->
-        <div class="modal fade" id="announcementModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-body">
-                <div class="modal-container">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <h4 class="modal-title fw-bold" id="announcementModalLabel">New Announcement</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <p class="text-muted me-5">
-                    Announcements inform vendors and customers about important market updates, events, and policies.
-                  </p>
-                  <hr class="mb-4">
-
-                  <form id="announcementForm">
-                    <div class="mb-3">
-                      <label for="announcementTitle" class="form-label">Title</label>
-                      <input type="text" class="form-control" id="announcementTitle" required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="announcementMessage" class="form-label">Message</label>
-                      <textarea class="form-control" id="announcementMessage" rows="4" required></textarea>
-                    </div>
-
-                    <!-- Target Audience Dropdown -->
-                    <div class="mb-3">
-                      <label for="announcementAudience" class="form-label">Target Audience</label>
-                      <select class="form-select" id="announcementAudience" required>
-                        <option value="all" selected>All Users</option>
-                        <option value="vendors">Vendors</option>
-                        <option value="admins">Admins</option>
-                      </select>
-                    </div>
-
-                    <!-- Start Date and Expiry Date Inputs -->
-                    <div class="mb-3">
-                      <label for="announcementStartDate" class="form-label">Start Date</label>
-                      <input type="datetime-local" class="form-control" id="announcementStartDate" required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="announcementExpiryDate" class="form-label">Expiry Date</label>
-                      <input type="datetime-local" class="form-control" id="announcementExpiryDate" required>
-                    </div>
-
-                    <div class="text-end">
-                      <button type="submit" class="btn btn-primary">Post Announcement</button>
-                    </div>
-                  </form>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-clipboard-check text-success fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Inspection Management</h5>
-              <p class="card-text text-muted">"Inspectors can view their assigned inspections, update statuses, and mark them as completed or canceled."</p>
-              <button class="btn btn-success rounded-pill px-4" id="manageQrCodesBtn">
+              <p class="card-text text-muted">Manage assigned inspections, update statuses, and mark them as completed or canceled.</p>
+              <a class="btn btn-success rounded-pill px-4" id="manageInspectionBtn" href="http://localhost/lgu_market_sys/pages/admin/inspection/">
                 <i class="bi bi-clipboard-check"></i> Manage Inspections
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -397,10 +182,23 @@ if ($_SESSION['user_type'] !== 'Admin') {
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
-              <i class="bi bi-wallet text-secondary fs-2 mb-3"></i>
+              <i class="bi bi-file-earmark-text text-orange fs-2 mb-3"></i>
+              <h5 class="card-title-home fw-bold">Vendor Applications</h5>
+              <p class="card-text text-muted">Manage vendor applications in one click.</p>
+              <a class="btn btn-orange rounded-pill px-4" id="vendorAppBtn" href="http://localhost/lgu_market_sys/pages/admin/vendor/">
+                <i class="bi bi-file-earmark-text"></i> Manage Applications
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex">
+          <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <i class="bi bi-wallet fs-2 mb-3 text-indigo" id="paymentIcon"></i>
               <h5 class="card-title-home fw-bold">Payment Management</h5>
-              <p class="card-text text-muted">Manage and track payments related to stall rentals, including payment submissions and receipt uploads.</p>
-              <a class="btn btn-secondary rounded-pill px-4" id="managePaymentBtn" href="http://localhost/lgu_market_sys/pages/admin/payment/">
+              <p class="card-text text-muted">Manage and track receipt uploads.</p>
+              <a class="btn rounded-pill px-4 btn-indigo" id="managePaymentBtn" href="http://localhost/lgu_market_sys/pages/admin/payment/">
                 <i class="bi bi-wallet"></i> Manage Payments
               </a>
             </div>
@@ -411,7 +209,7 @@ if ($_SESSION['user_type'] !== 'Admin') {
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-file-earmark-text text-warning fs-2 mb-3"></i>
-              <h5 class="card-title-home fw-bold">Applications</h5>
+              <h5 class="card-title-home fw-bold">Market Applications</h5>
               <p class="card-text text-muted">Manage stall and more applications in one click.</p>
               <a class="btn btn-warning rounded-pill px-4" id="manageAppBtn" href="http://localhost/lgu_market_sys/pages/admin/table/">
                 <i class="bi bi-file-earmark-text"></i> Manage Applications
@@ -424,13 +222,124 @@ if ($_SESSION['user_type'] !== 'Admin') {
 
     </section>
 
+    <!-- Announcement Modal -->
+    <div class="modal fade" id="announcementModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="modal-container">
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="modal-title fw-bold" id="announcementModalLabel">New Announcement</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <p class="text-muted me-5">
+                Announcements inform vendors and customers about important market updates, events, and policies.
+              </p>
+              <hr class="mb-4">
+
+              <form id="announcementForm">
+                <div class="mb-3">
+                  <label for="announcementTitle" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="announcementTitle" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="announcementMessage" class="form-label">Message</label>
+                  <textarea class="form-control" id="announcementMessage" rows="4" required></textarea>
+                </div>
+
+                <!-- Target Audience Dropdown -->
+                <div class="mb-3">
+                  <label for="announcementAudience" class="form-label">Target Audience</label>
+                  <select class="form-select" id="announcementAudience" required>
+                    <option value="all" selected>All Users</option>
+                    <option value="vendors">Vendors</option>
+                    <option value="admins">Admins</option>
+                  </select>
+                </div>
+
+                <!-- Start Date and Expiry Date Inputs -->
+                <div class="mb-3">
+                  <label for="announcementStartDate" class="form-label">Start Date</label>
+                  <input type="datetime-local" class="form-control" id="announcementStartDate" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="announcementExpiryDate" class="form-label">Expiry Date</label>
+                  <input type="datetime-local" class="form-control" id="announcementExpiryDate" required>
+                </div>
+
+                <div class="text-end">
+                  <button type="submit" class="btn btn-primary">Post Announcement</button>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <hr>
 
   <?php include '../../../includes/footer.php'; ?>
   <?php include '../../../includes/theme.php'; ?>
+  <?php
 
+  $user_type = $_SESSION['user_type'] ?? 'default';
+  ?>
+  <script>
+    const user_type = "<?php echo $user_type; ?>";
+
+    console.log(user_type);
+
+    if (user_type === "Inspector") {
+      document.querySelectorAll(".card-body").forEach((card) => {
+        const title = card.querySelector(".card-title-home").textContent.trim();
+
+        if (title !== "Inspection Management" && title !== "Stall Violations") {
+          // Change the icon color to secondary
+          const icon = card.querySelector("i.fs-2");
+          if (icon) {
+            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo");
+            icon.classList.add("text-secondary");
+          }
+
+          // Modify the button style and disable it
+          const button = card.querySelector(".btn");
+          if (button) {
+            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo");
+            button.classList.add("btn-secondary");
+            button.disabled = true;
+            button.style.pointerEvents = "none";
+          }
+        }
+      });
+    } else {
+      document.querySelectorAll(".card-body").forEach((card) => {
+        const title = card.querySelector(".card-title-home").textContent.trim();
+
+        if (title === "Inspection Management" || title === "Stall Violations") {
+
+          const icon = card.querySelector("i.fs-2");
+          if (icon) {
+            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo");
+            icon.classList.add("text-secondary");
+          }
+
+          const button = card.querySelector(".btn");
+          if (button) {
+            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo");
+            button.classList.add("btn-secondary");
+            button.disabled = true;
+            button.style.pointerEvents = "none";
+          }
+        }
+      });
+    }
+  </script>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {

@@ -116,19 +116,19 @@
                                                 <div class="legend-item"><span class="legend-box carinderia"></span> Carinderia</div>
                                             </td>
                                             <td>
-                                                21
+                                                <span id="carinderiaStallCount"></span>
                                             </td>
                                             <td>
                                                 <div class="legend-item"><span class="legend-box meat"></span> Meat</div>
                                             </td>
                                             <td>
-                                                21
+                                                <span id="meatStallCount"></span>
                                             </td>
                                             <td>
                                                 <div class="legend-item"><span class="legend-box dry-goods"></span> Dry Goods</div>
                                             </td>
                                             <td>
-                                                22
+                                                <span id="dryGoodsStallCount"></span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -136,19 +136,19 @@
                                                 <div class="legend-item"><span class="legend-box vegetables"></span> Vegetables</div>
                                             </td>
                                             <td>
-                                                22
+                                                <span id="vegetableStallCount"></span>
                                             </td>
                                             <td>
                                                 <div class="legend-item"><span class="legend-box grocery"></span> Grocery</div>
                                             </td>
                                             <td>
-                                                22
+                                                <span id="groceryStallCount"></span>
                                             </td>
                                             <td>
                                                 <div class="legend-item"><span class="legend-box fish"></span> Fish</div>
                                             </td>
                                             <td>
-                                                22
+                                                <span id="fishStallCount"></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -360,7 +360,7 @@
 
         <script>
             let marketId;
-            let stallsData = []; // Declare globally
+            let stallsData = [];
             let previouslySelectedStall = null;
             let applyButton = document.getElementById("applyStall");
             let reviewButton = document.getElementById("reviewBtn");
@@ -368,6 +368,7 @@
             window.onload = function() {
                 fetchMarketLocations();
             };
+
 
             // Add event listener to the apply stall button
             document.getElementById("applyStall").addEventListener("click", function() {
@@ -394,6 +395,7 @@
 
                 loadMarketInfo(market_select_element);
                 loadMarketStalls(selected_market_id);
+                getSectionStallsCount(marketId)
                 formnattedMarketUrl = transformToUrl(selected_market_name);
                 // Setting up the apply button
                 applyButton.setAttribute("data-market", selected_market_name);
@@ -405,6 +407,20 @@
 
             document.getElementById("stallSearchBtn").addEventListener("click", searchStall);
 
+            function getSectionStallsCount(marketId) {
+                fetch(`../actions/get_stalls_count.php?market_id=${marketId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update each stall count in the table
+                        document.getElementById("vegetableStallCount").textContent = data.Vegetables || 0;
+                        document.getElementById("fishStallCount").textContent = data.Fish || 0;
+                        document.getElementById("dryGoodsStallCount").textContent = data["Dry Goods"] || 0;
+                        document.getElementById("carinderiaStallCount").textContent = data.Carinderia || 0;
+                        document.getElementById("groceryStallCount").textContent = data.Grocery || 0;
+                        document.getElementById("meatStallCount").textContent = data.Meat || 0;
+                    })
+                    .catch(error => console.error("Error fetching stall counts:", error));
+            }
 
             function fetchComments(stall_id) {
                 fetch(`../actions/get_comments.php?stall_id=${stall_id}`)
@@ -592,7 +608,6 @@
                     submitButton.disabled = false;
                 }
             }
-
 
             async function analyzeSentiment(message) {
                 if (message.trim() === "") {
@@ -807,53 +822,53 @@
                 const commentBox = document.getElementById("commentBox");
                 const placeholder_text = document.getElementById("placeholderText"); // Ensure this exists
 
-                // 🔹 Ensure commentBox exists
+                //  Ensure commentBox exists
                 if (!commentBox) {
                     console.error("Error: commentBox not found!");
                     return;
                 }
 
-                // 🔹 Hide placeholder if commentBox is not empty
+                //  Hide placeholder if commentBox is not empty
                 if (placeholder_text) {
                     placeholder_text.classList.add("d-none");
                 }
 
-                // 🔹 Check if the tag already exists inside the comment box
+                //  Check if the tag already exists inside the comment box
                 if (document.getElementById(`tag-${tag}`)) return;
 
-                // 🔹 Create tag span
+                //  Create tag span
                 const tagSpan = document.createElement("span");
                 tagSpan.classList.add("badge", "bg-success-subtle", "text-dark", "rounded-pill", "me-2", "p-2");
                 tagSpan.id = `tag-${tag}`;
                 tagSpan.contentEditable = "false"; // Prevent user from editing the tag itself
 
-                // 🔹 Create remove button
+                //  Create remove button
                 const removeBtn = document.createElement("button");
                 removeBtn.classList.add("btn-close", "btn-close-dark", "ms-1");
                 removeBtn.style.fontSize = "10px";
                 removeBtn.onclick = function() {
                     tagSpan.remove(); // Remove the tag on click
 
-                    // 🔹 Show placeholder text again if comment box is empty
+                    //  Show placeholder text again if comment box is empty
                     if (placeholder_text && isDivEmpty(commentBox)) {
                         placeholder_text.classList.remove("d-none");
                     }
                 };
 
-                // 🔹 Append text and button inside the span
+                // Append text and button inside the span
                 tagSpan.innerText = tag + " ";
                 tagSpan.appendChild(removeBtn);
 
-                // 🔹 Insert tag at the beginning of the comment box
+                // Insert tag at the beginning of the comment box
                 commentBox.insertBefore(tagSpan, commentBox.firstChild);
 
-                // 🔹 Add space after the tag for better formatting
+                // Add space after the tag for better formatting
                 commentBox.insertBefore(document.createTextNode(" "), commentBox.firstChild.nextSibling);
 
-                // 🔹 Move the cursor to the end of the comment box
+                // Move the cursor to the end of the comment box
                 commentBox.focus();
 
-                // 🔹 Ensure the cursor stays at the end of the comment box
+                // Ensure the cursor stays at the end of the comment box
                 const range = document.createRange();
                 const selection = window.getSelection();
                 range.selectNodeContents(commentBox);

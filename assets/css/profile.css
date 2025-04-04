@@ -1,0 +1,120 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+}
+.btn-edit {
+  background-color: #17a2b8;
+  border: none;
+}
+.btn-settings {
+  background-color: #6777ef;
+  border: none;
+}
+
+.profile-header {
+  background: linear-gradient(
+      135deg,
+      rgba(30, 58, 138, 1),
+      rgba(37, 99, 235, 0.6)
+    ),
+    url("../images/profile-market.jpg") center/cover no-repeat;
+  color: white;
+  padding: 120px 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.container {
+  border-radius: 10px;
+  position: relative;
+  z-index: 5;
+  margin-top: -100px; /* Creates the overlap */
+  padding: 20px;
+}
+
+.table td:first-child {
+  text-align: end;
+  min-width: 60px !important;
+}
+.table td:nth-child(2) {
+  text-align: start;
+}
+
+.edit-profile {
+  color: #003366 !important;
+}
+.profile-title {
+  border-bottom: 1px solid #003366;
+}
+
+.form-container {
+  background-color: #f8f9fc; /* Soft white */
+  color: #003366;
+  border-radius: 8px;
+  box-shadow: 0 1px 100px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 70% !important;
+  margin: 30px auto;
+}
+.form-container h2 {
+  font-size: 1.5rem;
+  color: #003366;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.form-section {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 50px;
+  color: #003366;
+  border-bottom: 2px solid #ffc107; /* Keeping the warning accent */
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+}
+.form-group label {
+  font-weight: 500;
+  color: #003366;
+}
+
+.form-control {
+  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #bbb; /* Lighter border */
+}
+.form-control:focus {
+  border-color: #003366;
+  box-shadow: 0 0 5px rgba(0, 51, 102, 0.3);
+}
+.form-button {
+  display: block;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  flex: 1;
+  width: 100px;
+  max-width: 200px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px auto;
+}
+.form-button:hover {
+  background-color: #002447;
+}
+
+.row {
+  margin-bottom: 25px;
+}
+input,
+select {
+  background-color: #ffffff !important; /* Pure white for better contrast */
+  color: #003366 !important;
+  border-color: #bbb !important;
+}

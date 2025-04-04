@@ -52,12 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['login_attempts']++;
             $remaining_attempts = 5 - $_SESSION['login_attempts'];
 
-            if ($_SESSION['login_attempts'] >= 5) {
+            if ($_SESSION['login_attempts'] >= 10) {
+                // Lockout user for 30 seconds
                 $_SESSION['lockout_time'] = (new DateTime())->add(new DateInterval('PT30S'))->format('Y-m-d H:i:s');
                 $response['message'] = "Too many failed login attempts. Your account is locked for 30 seconds.";
                 http_response_code(429); // Too Many Requests
             } else {
-                $response['message'] = "Incorrect email or password. You have $remaining_attempts attempt(s) left.";
+                $response['message'] = "Incorrect email or password.";
                 http_response_code(401); // Unauthorized
             }
         } else {
@@ -82,6 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'user_type' => $account['user_type']
                 ];
                 http_response_code(200); // OK
+                unset($_SESSION['csrf_token']);
             } else {
 
                 $response['message'] = "Account not found.";
@@ -94,14 +96,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-unset($_SESSION['csrf_token']);
-
 echo json_encode($response);
 exit();
 
-/**
- * ✅ Securely check user credentials
- */
+
 function checkUserPassword($pdo, $email, $password)
 {
     $stmt = $pdo->prepare("SELECT password FROM accounts WHERE email = :email LIMIT 1");

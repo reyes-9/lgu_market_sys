@@ -1,9 +1,11 @@
 <?php
+require_once '../../../includes/session.php';
 
-session_start();
-
-if ($_SESSION['user_type'] !== 'Admin') {
-    header("Location: /lgu_market_sys/errors/err403.php");
+if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
+    echo '<script>
+    alert("Please log in to continue.");
+    window.location.href = "/lgu_market_sys/pages/login/index.php";
+   </script>';
     exit;
 }
 

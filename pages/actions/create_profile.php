@@ -1,6 +1,6 @@
 <?php
 require_once '../../includes/config.php';
-session_start();
+require_once '../../includes/session.php';
 header('Content-Type: application/json');
 
 // CSRF Token Validation
@@ -28,7 +28,7 @@ foreach ($requiredFields as $field) {
 }
 
 // Sanitize & Validate Inputs
-$accountId = $_SESSION['account_id'] ?? 0; // Ensure session variable exists
+$accountId = $_SESSION['account_id'] ?? 0;
 
 $first_name = properCase(htmlspecialchars(trim($_POST['first_name'] ?? ''), ENT_QUOTES, 'UTF-8'));
 $middle_name = properCase(htmlspecialchars(trim($_POST['middle_name'] ?? ''), ENT_QUOTES, 'UTF-8'));
@@ -112,9 +112,13 @@ if ($stmt->fetch()) {
 $pdo->beginTransaction();
 
 try {
-    // Insert into users table
-    $stmt = $pdo->prepare("INSERT INTO users (account_id, first_name, middle_name, last_name, email, alt_email, contact_no, address, sex, civil_status, nationality, created_at) 
-                           VALUES (:accountId, :first_name, :middle_name, :last_name, :email, :altEmail, :contact_no, :address, :sex, :civil_status, :nationality, NOW())");
+
+    $application_status = "Pending";
+    $stmt = $pdo->prepare("INSERT INTO vendors_application 
+    (account_id, first_name, middle_name, last_name, email, alt_email, contact_no, sex, civil_status, nationality, address, application_status, application_date)
+    VALUES 
+    (:accountId, :first_name, :middle_name, :last_name, :email, :altEmail, :contact_no, :sex, :civil_status, :nationality, :address, :application_status, NOW())");
+
     $stmt->execute([
         'accountId' => $accountId,
         'first_name' => $first_name,
@@ -123,10 +127,11 @@ try {
         'email' => $email,
         'altEmail' => $altEmail,
         'contact_no' => $contact_no,
-        'address' => $address,
         'sex' => $sex,
         'civil_status' => $civil_status,
         'nationality' => $nationality,
+        'address' => $address,
+        'application_status' => $application_status,
     ]);
 
     // Update user_type in accounts table

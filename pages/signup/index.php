@@ -94,7 +94,7 @@
                     <p class="text-danger" id="passwordError"></p>
                     <button type="submit" class="form-button">Sign Up</button>
 
-                    <p class="my-4">Already have an account? <a href="/lgu_market_sys/pages/actions/login.php">Login here</a></p>
+                    <p class="my-4">Already have an account? <a href="/lgu_market_sys/pages/login/index.php">Login here</a></p>
 
                     <p class="text-muted mt-3 text-center small">
                         By proceeding, you agree to the
@@ -152,7 +152,7 @@
         function submitSignupForm() {
             let formData = new FormData(document.getElementById("signupForm"));
 
-            fetch("signup_action.php", {
+            fetch("../actions/signup_action.php", {
                     method: "POST",
                     body: formData
                 })
@@ -162,7 +162,7 @@
                     if (data.success) {
                         document.getElementById("signupForm").reset();
                         setTimeout(function() {
-                            window.location.href = "/lgu_market_sys/pages/actions/login.php";
+                            window.location.href = "/lgu_market_sys/pages/login/index.php";
                         }, 2000);
                     }
 

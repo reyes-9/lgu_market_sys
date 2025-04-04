@@ -1,8 +1,11 @@
 <?php
-session_start();
+require_once '../../../includes/session.php';
 
-if ($_SESSION['user_type'] !== 'Admin') {
-    header("Location: /lgu_market_sys/errors/err403.php");
+if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
+    echo '<script>
+    alert("Please log in to continue.");
+    window.location.href = "/lgu_market_sys/pages/login/index.php";
+   </script>';
     exit;
 }
 
@@ -24,38 +27,12 @@ if ($_SESSION['user_type'] !== 'Admin') {
 
     <?php include '../../../includes/nav.php'; ?>
 
-    <!-- Toast -->
-    <!-- <div class="toast-container mt-5 p-3 top-0 end-0">
-             <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show" data-bs-autohide="false">
-                <div class="toast-header text-bg-warning rounded-top">
-             <svg class="mx-2" width="25" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="100" height="100" rx="20" fill="url(#grad1)" />
-          <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#ff4c4c;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#b30000;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,20 75,75 25,75" fill="white" />
-          <rect x="47" y="40" width="6" height="20" fill="#ff4c4c" />
-          <circle cx="50" cy="70" r="3" fill="#ff4c4c" />
-         </svg>
-            <strong class="me-auto">System Alerts</strong>
-            <small>11 mins ago</small>
-                </div>
-                    <div class="toast-body text-light rounded-bottom p-4">
-                     New system update available <br>
-                Market maintenance scheduled
-             </div>
-            </div>
-        </div> -->
-
     <div class="text-start m-3 p-3 title d-flex align-items-center">
         <div class="icon-box me-3 shadow title-icon">
             <i class="bi bi-bar-chart-line-fill"></i>
         </div>
         <div>
-            <h4 class="m-0">Admin - Violations</h4>
+            <h4 class="m-0">Inspector - Violations</h4>
             <p class="text-muted mb-0">Manage and track vendor violations to ensure compliance with market regulations.</p>
         </div>
         <div class="ms-auto me-5">

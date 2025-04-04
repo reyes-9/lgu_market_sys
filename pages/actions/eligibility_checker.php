@@ -16,7 +16,6 @@ $application_type = trim($_GET['application_type'] ?? '');
 
 // Ensure numeric values are properly cast
 $user_id = (int) $user_id;
-$stall_number = (int) $stall_number;
 $application_id = (int) $application_id;
 $helper_id = (int) $helper_id;
 
@@ -25,7 +24,7 @@ if ($user_id <= 0) {
     exit;
 }
 
-if ($stall_number <= 0) {
+if ($stall_number === null) {
     echo json_encode(["success" => false, "message" => "Invalid Stall Number."]);
     exit;
 }

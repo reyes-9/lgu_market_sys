@@ -13,15 +13,15 @@ try {
     }
 
     $stmt = $pdo->prepare("
-SELECT 
-      CONCAT(u.first_name, ' ', u.last_name) AS author, 
-    s.comment, 
-    s.rating, 
-    s.created_at
-FROM stall_reviews AS s
-JOIN users AS u ON s.user_id = u.id
-WHERE s.stall_id = :stall_id
-ORDER BY s.created_at DESC;
+    SELECT 
+          CONCAT(u.first_name, ' ', u.last_name) AS author, 
+        s.comment, 
+        s.rating, 
+        s.created_at
+    FROM stall_reviews AS s
+    JOIN users AS u ON s.user_id = u.id
+    WHERE s.stall_id = :stall_id
+    ORDER BY s.created_at DESC;
     ");
     $stmt->execute(['stall_id' => $stallId]);
     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);

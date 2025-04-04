@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once '../../includes/session.php';
 ?>
 
 <head>
@@ -172,7 +170,7 @@ if (empty($_SESSION['csrf_token'])) {
     <?php include '../../includes/nav.php'; ?>
 
     <div class="form-container">
-        <h2> Register as a Vendor</h2>
+        <h2>Create Vendor Profile</h2>
         <p class="text-muted">Apply for market stalls, track your application status, and manage your vendor profile with ease.</p>
 
         <div class="form-section">Personal Information</div>
@@ -183,7 +181,7 @@ if (empty($_SESSION['csrf_token'])) {
             <div class="row">
                 <div class="form-group col-md-4">
                     <label>Email: <small class="error-message"></small></label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <input type="email" class="form-control" id="email" name="email" readonly>
                     <small id="emailError" class="d-none">Invalid email format.</small>
                 </div>
                 <div class="form-group col-md-4">
@@ -222,6 +220,7 @@ if (empty($_SESSION['csrf_token'])) {
                             <option value="">Select</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
+                            <option value="Other">Other</option>
                         </select>
                         <i class="bi bi-chevron-down dropdown-icon"></i>
                     </div>
@@ -286,7 +285,7 @@ if (empty($_SESSION['csrf_token'])) {
                     <small id="zipError" class="d-none">ZIP code must be exactly 4 digits.</small>
                 </div>
             </div>
-            <button type="button" class="form-button" id="regBtn">Register</button>
+            <button type="button" class="form-button" id="regBtn">Create</button>
         </form>
 
 
@@ -299,6 +298,7 @@ if (empty($_SESSION['csrf_token'])) {
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("regBtn").addEventListener("click", validateDetailsForm);
+            getEmail();
         });
 
         function getSelectedText(selectId) {
@@ -391,7 +391,7 @@ if (empty($_SESSION['csrf_token'])) {
             }
 
 
-            fetch("register_vendor.php", {
+            fetch("../actions/create_profile.php", {
                     method: "POST",
                     body: formData
                 })
@@ -404,7 +404,8 @@ if (empty($_SESSION['csrf_token'])) {
                             location.reload();
                         }, 2000);
                     } else {
-                        displayToast(data.message || "Registration failed. Please try again.", "error");
+                        console.error(data.message);
+                        displayToast("Registration failed. Please try again.", "error");
                     }
                 })
                 .catch(error => {
@@ -452,6 +453,22 @@ if (empty($_SESSION['csrf_token'])) {
                 input.classList.remove("error");
                 return true;
             }
+        }
+
+        function getEmail() {
+            fetch('../actions/get_email.php')
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.success) {
+                        document.getElementById('email').value = data.email;
+                    } else {
+                        console.error('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching email:', error);
+                });
         }
     </script>
 

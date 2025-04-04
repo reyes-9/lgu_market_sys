@@ -7,25 +7,25 @@
     <title>Home - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="images/logo.png">
     <link rel="stylesheet" href="assets/css/index.css">
-    <?php include_once "includes\cdn-resources.php" ?>
+    <?php include_once "includes/cdn-resources.php" ?>
 </head>
 <?php
 
-session_start();
+require 'includes/session.php';
 // Check if user is logged in
 if (!isset($_SESSION['account_id'])) {
     echo '<script>
             alert("Please log in to continue.");
-            window.location.href = "/lgu_market_sys/pages/actions/signup.php";
+            window.location.href = "/lgu_market_sys/pages/login/index.php";
            </script>';
     exit();
 }
 
 // Only allow vendors
-if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' && $_SESSION['user_type'] !== 'Admin') {
+if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' && $_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
     echo '<script>
    alert("Please log in to continue.");
-   window.location.href = "/lgu_market_sys/pages/actions/signup.php";
+   window.location.href = "/lgu_market_sys/pages/signup/index.php";
   </script>';
     exit();
 }
@@ -53,8 +53,6 @@ if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' 
 
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
-    <?php include 'includes/theme.php'; ?>
-
 
 </body>
 

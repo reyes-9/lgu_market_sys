@@ -128,13 +128,13 @@ $homePath = "/lgu_market_sys/";
 
             <ul class="navbar-nav ms-auto d-flex align-items-center">
                 <?php
-                if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Admin') : ?>
+                if (isset($_SESSION['user_type']) && ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Inspector')) : ?>
                     <li class="nav-item">
                         <a href="http://localhost/lgu_market_sys/pages/admin/home/" class="btn links">Admin</a>
                     </li>
                 <?php endif; ?>
                 <?php echo $isLogin ? '' : '       <li class="nav-item">
-                    <a href="http://localhost/lgu_market_sys/pages/actions/login.php" class="btn login px-3 rounded-pill">Login</a>
+                    <a href="http://localhost/lgu_market_sys/pages/login/" class="btn login px-3 rounded-pill">Login</a>
                 </li>' ?>
                 <li class="nav-item">
                     <?php if ($isLogin): ?>
@@ -143,7 +143,7 @@ $homePath = "/lgu_market_sys/";
                 </li>
 
                 <li class="nav-item">
-                    <a href="http://localhost/lgu_market_sys/pages/actions/signup.php" class="btn links">Sign up</a>
+                    <a href="http://localhost/lgu_market_sys/pages/signup/" class="btn links">Sign up</a>
                 </li>
             </ul>
 

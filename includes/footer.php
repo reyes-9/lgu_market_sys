@@ -13,6 +13,84 @@
         font-size: 0.1rem !important;
         /* Adjust as needed */
     }
+
+
+    /* Footer styles */
+    footer {
+        padding: 20px 0;
+    }
+
+    footer.dark {
+        background-color: #020d18;
+        color: #c9d1d9;
+    }
+
+    footer.light {
+        background-color: #ffffff;
+        color: #003366;
+    }
+
+    .footer-links.dark {
+        color: #a0c3e8;
+    }
+
+    .footer-links.light {
+        color: #003366;
+    }
+
+    .footer-container {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .footer-section {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    .footer-section:last-child {
+        margin-right: 0;
+    }
+
+    .footer-section h4 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .footer-section p {
+        margin-bottom: 10px;
+    }
+
+    .footer-section ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .footer-section ul li {
+        margin-bottom: 8px;
+    }
+
+    .footer-section ul li a {
+        text-decoration: none;
+    }
+
+    .footer-section ul li a:hover {
+        text-decoration: underline;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding: 10px 0;
+        border-top: 1px solid #ccc;
+    }
+
+    .footer-bottom p {
+        margin: 0;
+    }
 </style>
 <?php
 $isLogin = isset($_SESSION['account_id']) ? true : false;
@@ -62,10 +140,10 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
 
         <?php if (!empty($isLogin) && $_SESSION['user_type'] === 'Visitor') : ?>
             <div class="footer-section">
-                <h4>Vendor Account</h4>
-                <p class="text-muted small_text">Register now to access the Vendor Portal—manage your stalls, track applications, and grow your business with ease!</p>
+                <h4>Create Profile</h4>
+                <p class="text-muted small_text">Create now to access the Vendor Portal—manage your stalls, track applications, and grow your business with ease!</p>
 
-                <a href="http://localhost/lgu_market_sys/pages/actions/vendor_register.php" class="btn links">Register now</a>
+                <a href="http://localhost/lgu_market_sys/pages/create_profile/index.php" class="btn links">Create now</a>
                 <hr>
             </div>
         <?php endif; ?>
@@ -74,8 +152,8 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
             <h4>Account</h4>
             <hr>
             <div class="button-group mb-3">
-                <a href="http://localhost/lgu_market_sys/pages/actions/login.php" class="btn login px-3 rounded-pill me-2">Login</a>
-                <a href="http://localhost/lgu_market_sys/pages/actions/signup.php" class="btn links">Sign up</a>
+                <a href="http://localhost/lgu_market_sys/pages/login/" class="btn login px-3 rounded-pill me-2">Login</a>
+                <a href="http://localhost/lgu_market_sys/pages/signup/" class="btn links">Sign up</a>
             </div>
             <hr>
 
@@ -85,3 +163,20 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
     <div class="footer-bottom">
         <p>&copy; 2024 Public Market Monitoring System. All rights reserved.</p>
     </div>
+
+    <?php
+    $isVendor = ($isLogin === true && $_SESSION['user_type'] === 'Vendor') ? 'true' : 'false';
+    ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let isVendor = <?php echo $isVendor; ?>;
+            let vendorPortalLink = document.querySelector("a.footer-links[href*='portal']");
+
+            vendorPortalLink.addEventListener("click", function(event) {
+                if (!isVendor) {
+                    event.preventDefault();
+                    alert("Access Denied! Only vendors can access the Vendor Portal.");
+                }
+            });
+        });
+    </script>

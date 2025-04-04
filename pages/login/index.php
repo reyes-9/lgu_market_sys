@@ -94,7 +94,7 @@
                     </div>
 
                     <button class="form-button" type="submit">Login</button>
-                    <p class="my-4">Don't have an account? <a href="/lgu_market_sys/pages/actions/signup.php">Sign up here</a></p>
+                    <p class="my-4">Don't have an account? <a href="/lgu_market_sys/pages/signup/index.php">Sign up here</a></p>
 
 
                     <p class="text-muted mt-3 text-center small">
@@ -144,7 +144,7 @@
             let formData = new FormData(document.forms["login"]);
 
             // Send data to backend
-            fetch("login_action.php", {
+            fetch("../actions/login_action.php", {
                     method: "POST",
                     body: formData
                 })
