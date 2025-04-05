@@ -300,17 +300,16 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         const title = card.querySelector(".card-title-home").textContent.trim();
 
         if (title !== "Inspection Management" && title !== "Stall Violations") {
-          // Change the icon color to secondary
+
           const icon = card.querySelector("i.fs-2");
           if (icon) {
-            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo");
+            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo", "text-orange");
             icon.classList.add("text-secondary");
           }
 
-          // Modify the button style and disable it
           const button = card.querySelector(".btn");
           if (button) {
-            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo");
+            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo", "btn-orange");
             button.classList.add("btn-secondary");
             button.disabled = true;
             button.style.pointerEvents = "none";
@@ -325,13 +324,13 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
           const icon = card.querySelector("i.fs-2");
           if (icon) {
-            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo");
+            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo", "text-orange");
             icon.classList.add("text-secondary");
           }
 
           const button = card.querySelector(".btn");
           if (button) {
-            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo");
+            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo", "btn-orange");
             button.classList.add("btn-secondary");
             button.disabled = true;
             button.style.pointerEvents = "none";

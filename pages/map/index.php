@@ -516,6 +516,7 @@
 
                 return starsHTML;
             }
+
             async function submitFeedback() {
                 const placeholderText = document.getElementById("placeholderText"); // Ensure it's defined
                 // Get review details
@@ -1028,11 +1029,13 @@
                     const indicatorId = `${stall.stall_number.toLowerCase()}_indicator`;
                     const indicatorElement = document.getElementById(indicatorId);
 
+                    console.log("INDICATOR ELEMENT: ", indicatorElement);
+
                     if (indicatorElement) {
                         if (stall.status === "occupied") {
-                            indicatorElement.style.fill = "red"; // Set occupied stalls to red
+                            indicatorElement.style.fill = "red";
                         } else {
-                            indicatorElement.style.fill = "green"; // Set vacant stalls to green
+                            indicatorElement.style.fill = "green";
                         }
                     } else {
                         console.warn(`Indicator not found for stall: ${stall.stall_number}`);

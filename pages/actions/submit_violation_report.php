@@ -4,7 +4,6 @@ include "notifications.php";
 include "log_admin_actions.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     try {
         // Validate required fields
         if (
@@ -15,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Sanitize input
-        $vendor_first_name = htmlspecialchars(trim(properCase($_POST["vendor_first_name"]))); // the vendor name is not used in the query
+        $vendor_first_name = htmlspecialchars(trim(properCase($_POST["vendor_first_name"]))); // not used in DB query
         $vendor_middle_name = htmlspecialchars(trim(properCase($_POST["vendor_middle_name"])));
         $vendor_last_name = htmlspecialchars(trim(properCase($_POST["vendor_last_name"])));
         $user_id = htmlspecialchars(trim($_POST["user_id"]));
@@ -31,7 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $image_path = uploadEvidenceImage($_FILES["evidence_image"]);
 
-        // Insert into database
+        // Begin transaction
+        $pdo->beginTransaction();
+
+        // Insert into violations table
         $stmt = $pdo->prepare("INSERT INTO violations (
             user_id, stall_id, violation_type_id, violation_description, 
             evidence_image_path, violation_date, created_at, updated_at 
@@ -52,16 +54,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $violation_id = $pdo->lastInsertId();
         $account_id = getAccountID($pdo, $user_id);
-        $admin_id = $_SESSION['admin_id'];
+        $inspector_id = $_SESSION['inspector_id'];
 
         if (!$account_id) {
             throw new Exception("Failed to get account ID.");
         }
 
-        logAdminAction($pdo, $admin_id, "Issued Violation", "Issued Violation ID: $violation_id");
+        // Insert into expiration_dates
+        $exp_stmt = $pdo->prepare("INSERT INTO expiration_dates (
+            reference_id, application_id, type, expiration_date, status
+        ) VALUES (
+            :reference_id, NULL, 'violation', :expiration_date, 'active'
+        )");
+
+        $expiration_date = date('Y-m-d', strtotime('+15 days'));
+
+        $exp_stmt->execute([
+            ':reference_id'   => $violation_id,
+            ':expiration_date' => $expiration_date,
+        ]);
+
+        // Log and notify
+        logAdminAction($pdo, $inspector_id, "Issued Violation", "Issued Violation ID: $violation_id");
         insertNotification($pdo, $account_id, "Violation Issued", "A violation has been recorded under your stall. Please check your account for details.", 'unread');
+
+        // Commit all changes
+        $pdo->commit();
+
         echo json_encode(["success" => true, "message" => "Violation reported successfully."]);
     } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 } else {

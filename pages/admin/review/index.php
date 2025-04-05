@@ -39,10 +39,11 @@ if ($applications_id) {
         d.document_name, 
         d.document_path, 
         d.status AS doc_status,
-        i.name AS inspector_name,
         st.transfer_confirmation_status,
         st.current_owner_id,
-        st.deceased_owner_id
+        st.deceased_owner_id,
+        -- Inspector Name
+        CONCAT(ins.first_name, ' ', IFNULL(ins.middle_name, ''), ' ', ins.last_name) AS inspector_name
     FROM applications app
     JOIN stalls s ON app.stall_id = s.id    
     JOIN sections sec ON app.section_id = sec.id
@@ -50,13 +51,53 @@ if ($applications_id) {
     JOIN applicants a ON app.id = a.application_id
     JOIN users u ON a.user_id = u.id
     JOIN documents d ON app.id = d.application_id 
-    LEFT JOIN inspectors i ON app.inspector_id = i.id
     LEFT JOIN violations v ON a.user_id = v.user_id AND v.status = 'Pending'
     LEFT JOIN violation_types vt ON v.violation_type_id = vt.id
     LEFT JOIN extensions e ON app.id = e.application_id  
     LEFT JOIN helpers h ON h.id = app.helper_id
     LEFT JOIN stall_transfers st ON app.id = st.application_id 
+    -- Join for inspector (filter by user_type 'Inspector')
+    LEFT JOIN users ins ON app.inspector_id = ins.id AND ins.user_type = 'Inspector'
     WHERE app.id = :id;";
+
+    // $query = "SELECT 
+    //     s.stall_number, 
+    //     sec.section_name AS section_name, 
+    //     m.market_name AS market_name,
+    //     CONCAT(h.first_name, ' ', IFNULL(h.middle_name, ''), ' ', h.last_name) AS helper_full_name,
+    //     e.duration AS extension_duration,
+    //     app.id,
+    //     app.application_type,
+    //     app.application_number,
+    //     app.status,
+    //     app.created_at,
+    //     app.account_id,
+    //     app.inspection_status,
+    //     app.inspection_date,
+    //     app.helper_id,
+    //     a.user_id,
+    //     CONCAT(u.first_name, ' ', IFNULL(u.middle_name, ''), ' ', u.last_name) AS applicant_full_name,
+    //     v.violation_type_id,
+    //     vt.violation_name,
+    //     d.document_name, 
+    //     d.document_path, 
+    //     d.status AS doc_status,
+    //     st.transfer_confirmation_status,
+    //     st.current_owner_id,
+    //     st.deceased_owner_id
+    // FROM applications app
+    // JOIN stalls s ON app.stall_id = s.id    
+    // JOIN sections sec ON app.section_id = sec.id
+    // JOIN market_locations m ON app.market_id = m.id
+    // JOIN applicants a ON app.id = a.application_id
+    // JOIN users u ON a.user_id = u.id
+    // JOIN documents d ON app.id = d.application_id 
+    // LEFT JOIN violations v ON a.user_id = v.user_id AND v.status = 'Pending'
+    // LEFT JOIN violation_types vt ON v.violation_type_id = vt.id
+    // LEFT JOIN extensions e ON app.id = e.application_id  
+    // LEFT JOIN helpers h ON h.id = app.helper_id
+    // LEFT JOIN stall_transfers st ON app.id = st.application_id 
+    // WHERE app.id = :id;";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute(['id' => $applications_id]);

@@ -71,27 +71,29 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
             try {
                 // Fetch violations with joined tables for user, stall, and violation type
                 $stmt = $pdo->query("
-        SELECT 
-            v.id, 
-            CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS vendor_name,
-            u.account_id,
-            s.stall_number, 
-            vt.violation_name, 
-            vt.fine_amount,
-            vt.criticality,
-            v.violation_description, 
-            v.evidence_image_path, 
-            v.violation_date, 
-            v.status, 
-            v.created_at,
-            v.appeal_text,
-            v.appeal_document_path
-        FROM violations v
-        JOIN users u ON v.user_id = u.id
-        JOIN stalls s ON v.stall_id = s.id
-        JOIN violation_types vt ON v.violation_type_id = vt.id
-        ORDER BY v.created_at DESC
-    ");
+                       SELECT 
+                    v.id, 
+                    CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS vendor_name,
+                    u.account_id,
+                    s.stall_number, 
+                    vt.violation_name, 
+                    vt.fine_amount,
+                    vt.criticality,
+                    v.violation_description, 
+                    v.evidence_image_path, 
+                    v.violation_date, 
+                    v.status, 
+                    v.created_at,
+                    v.appeal_text,
+                    v.appeal_document_path,
+                    v.payment_status
+                FROM violations v
+                JOIN users u ON v.user_id = u.id
+                JOIN stalls s ON v.stall_id = s.id
+                JOIN violation_types vt ON v.violation_type_id = vt.id
+                LEFT JOIN expriration_dates ed ON v.id = ed.reference_id
+                ORDER BY v.payment_status ASC;
+                ");
                 $violations = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
                 die("Database Error: " . $e->getMessage());
@@ -117,6 +119,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                         <th>Violation Description</th>
                         <th>Evidence Image</th>
                         <th>Violation Date</th>
+                        <th>Payment Status</th>
                         <th>Fine Amount</th>
                         <th>Status</th>
                         <th>ViolationAppeal</th>
@@ -144,6 +147,19 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                                 <?php endif; ?>
                             </td>
                             <td><?= htmlspecialchars($violation['violation_date']) ?></td>
+                            <td>
+                                <?php
+                                $statusClass = match ($violation['payment_status']) {
+                                    'Paid' => 'text-success',
+                                    'Unpaid' => 'text-danger',
+                                    'Pending' => 'text-warning',
+                                    default => '',
+                                };
+                                ?>
+                                <strong class="<?= $statusClass ?>">
+                                    <?= htmlspecialchars($violation['payment_status']) ?>
+                                </strong>
+                            </td>
                             <td><?= htmlspecialchars($violation['fine_amount']) ?></td>
                             <td id="status-<?= $violation['id'] ?>"><?= htmlspecialchars($violation['status']) ?></td>
                             <td>
@@ -155,16 +171,25 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                             </td>
                             <td><?= htmlspecialchars($violation['created_at']) ?></td>
                             <td>
-                                <?php if ($violation['status'] !== 'Resolved' && $violation['status'] !== 'Deleted'): ?>
-                                    <button class="btn btn-success btn-sm mb-1 w-100" onclick="resolveViolation(<?= $violation['id'] ?>, <?= $violation['account_id'] ?>)">
-                                        <i class="bi bi-check-circle-fill"></i> Resolve
-                                    </button>
-                                <?php endif; ?>
-                                <?php if ($violation['status'] !== 'Deleted'): ?>
-                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteViolation(<?= $violation['id'] ?>)">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                <?php endif; ?>
+                                <?php
+                                $isResolvedOrDeleted = $violation['status'] === 'Resolved' || $violation['status'] === 'Deleted';
+                                $isDeleted = $violation['status'] === 'Deleted';
+                                $isUnpaid = $violation['payment_status'] === 'Unpaid';
+                                $isPending = $violation['payment_status'] === 'Pending';
+                                $resolveDisabled = $isResolvedOrDeleted || $isUnpaid || $isPending ? 'disabled' : '';
+                                $deleteDisabled = $isDeleted || $isUnpaid || $isPending ? 'disabled' : '';
+                                ?>
+                                <button class="btn btn-success btn-sm mb-1 w-100"
+                                    onclick="resolveViolation(<?= $violation['id'] ?>, <?= $violation['account_id'] ?>)"
+                                    <?= $resolveDisabled ?>>
+                                    <i class="bi bi-check-circle-fill"></i> Resolve
+                                </button>
+
+                                <button class="btn btn-danger btn-sm w-100"
+                                    onclick="deleteViolation(<?= $violation['id'] ?>)"
+                                    <?= $deleteDisabled ?>>
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
                             </td>
                         </tr>
 

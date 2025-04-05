@@ -21,10 +21,12 @@ try {
                     s.market_id,
                     s.user_id,
                     sec.section_name AS section_name, 
-                    m.market_name AS market_name 
+                    m.market_name AS market_name,
+                    e.expiration_date AS expiration_date 
                 FROM stalls s
             JOIN sections sec ON s.section_id = sec.id
             JOIN market_locations m ON s.market_id = m.id
+            LEFT JOIN expiration_dates e ON s.id = e.reference_id AND e.type = 'stall'
             WHERE s.user_id = :user_id
         ");
 

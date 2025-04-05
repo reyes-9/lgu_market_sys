@@ -17,9 +17,8 @@ try {
         JOIN market_locations m ON s.market_id = m.id
         JOIN sections sc ON s.section_id = sc.id
         WHERE e.type = 'stall' 
-          AND e.status = 'active' 
-          AND e.expiration_date > NOW()
-          AND s.payment_status = 'Unpaid'
+          AND e.status IN ('unpaid', 'expired', 'payment_period')
+          AND s.payment_status IN ('Unpaid', 'Overdue', 'Payment_Period')
           AND s.user_id = :user_id;
     ");
 

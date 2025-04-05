@@ -41,6 +41,7 @@
                   <th><strong>Stall No.</strong></th>
                   <th><strong>Stall Size</strong></th>
                   <th><strong>Rental Fee</strong></th>
+                  <th><strong>Rent Expiration Date</strong></th>
                 </tr>
               </thead>
               <tbody id="stallsContainer">
@@ -233,6 +234,7 @@
           console.log(data);
           if (data.success) {
             alert('Payment successfully submitted!');
+            location.reload();
           } else {
             alert('Error: ' + data.message); // Display the error message if not successful
           }
@@ -274,12 +276,23 @@
         stalls.forEach(stall => {
           const row = document.createElement('tr');
           row.innerHTML = `
-                <td>${stall.market_name}</td>
-                <td>${stall.section_name}</td>
-                <td>${stall.stall_number}</td>
-                <td>${stall.stall_size}</td>
-                <td>${stall.rental_fee}</td>
-            `;
+                                        <td>${stall.market_name}</td>
+                                        <td>${stall.section_name}</td>
+                                        <td>${stall.stall_number}</td>
+                                        <td>${stall.stall_size}</td>
+                                        <td>${stall.rental_fee}</td>
+                                       <td class="${
+                                        new Date(stall.expiration_date) < new Date()
+                                    ? 'text-danger'
+                                               : (new Date(stall.expiration_date) <= new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                                                 ? 'text-success'
+                                                : '')
+            }">                     
+                <strong>${stall.expiration_date ? new Date(stall.expiration_date).toLocaleDateString() : 'N/A'}</strong>
+            </td>
+
+
+                                    `;
           stallsContainer.appendChild(row);
         });
 
@@ -303,19 +316,25 @@
             const row = document.createElement('tr');
             console.log(stall)
             row.innerHTML = `
-                    <td>
-                        <label class="radio-modern">
-                            <input type="radio" name="selected_stall_id" value="${stall.id}">
-                            <span class="radio-checkmark"></span>
-                        </label>
-                    </td>
-                    <td>${stall.stall_number}</td>
-                    <td>${stall.market_name || 'N/A'}</td>
-                    <td>${stall.section_name || 'N/A'}</td>
-                    <td>${stall.rental_fee || 'N/A'}</td>
-                    <td>${stall.payment_status || 'N/A'}</td>
-                    <td>${stall.expiration_date ? stall.expiration_date.split(' ')[0] : 'N/A'}</td>
-                `;
+                  <td>
+                       <label class="radio-modern">
+                           <input type="radio" name="selected_stall_id" value="${stall.id}">
+                           <span class="radio-checkmark"></span>
+                       </label>
+                   </td>
+                   <td>${stall.stall_number}</td>
+                   <td>${stall.market_name || 'N/A'}</td>
+                   <td>${stall.section_name || 'N/A'}</td>
+                  <td>${stall.rental_fee || 'N/A'}</td>
+                  <td class="${
+                    stall.payment_status === 'Overdue' ? 'text-secondary' :
+                    stall.payment_status === 'Unpaid' ? 'text-danger' :
+                    stall.payment_status === 'Payment_Period' ? 'text-success' :
+                    '' }">
+                       <strong>${stall.payment_status || 'N/A'}</strong> 
+                      </td>
+                                <td>${stall.expiration_date ? stall.expiration_date.split(' ')[0] : 'N/A'}</td>
+                            `;
             recieptStallsContainer.appendChild(row);
             console.log(stall.expiration_date)
 

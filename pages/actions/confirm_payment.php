@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Begin transaction
         $pdo->beginTransaction();
 
-        // Update payment status to 'Paid'
+        // Update payment status to 'Paid' in the payments table
         $query = $pdo->prepare("UPDATE payments SET payment_status = 'Paid' WHERE id = :payment_id");
         $query->bindParam(':payment_id', $payment_id, PDO::PARAM_INT);
         $query->execute();
@@ -53,6 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $updateStmt->bindParam(':payment_type', $payment_type, PDO::PARAM_STR);
                 $updateStmt->execute();
             }
+
+            // Update payment status to 'Paid' in the stalls table
+            $updateStallStmt = $pdo->prepare("UPDATE stalls SET payment_status = 'Paid' WHERE id = :stall_id");
+            $updateStallStmt->bindParam(':stall_id', $reference_id, PDO::PARAM_INT);
+            $updateStallStmt->execute();
 
             // Commit transaction
             $pdo->commit();

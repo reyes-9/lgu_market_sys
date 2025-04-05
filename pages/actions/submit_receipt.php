@@ -31,6 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $filePath = $uploadResult['filePath'];
 
+        // Start a transaction to ensure both the insert and update are handled together
+        $pdo->beginTransaction();
+
+        // Insert payment record into payments table
         $stmt = $pdo->prepare("INSERT INTO payments (user_id, stall_id, source_type, amount, payment_date, receipt_path) 
                                VALUES (:user_id, :stall_id, :source_type, :amount, NOW(), :receipt_path)");
 
@@ -43,9 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $stmt->execute();
 
+        // Now, update the payment status to "Pending" in the stalls table
+        $updateStmt = $pdo->prepare("UPDATE stalls SET payment_status = 'Pending' WHERE id = :stall_id");
+        $updateStmt->bindParam(':stall_id', $stall_id, PDO::PARAM_INT);
+        $updateStmt->execute();
+
+        // Commit the transaction
+        $pdo->commit();
+
         // Send success response
-        echo json_encode(['success' => true, 'message' => 'Payment successfully submitted!']);
+        echo json_encode(['success' => true, 'message' => 'Payment successfully submitted and status updated to Pending!']);
     } catch (PDOException $e) {
+        // If something goes wrong, rollback the transaction
+        $pdo->rollBack();
         // Handle database errors
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     } catch (Exception $e) {

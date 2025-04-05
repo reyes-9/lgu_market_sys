@@ -73,9 +73,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user_type'] = $account['user_type'];
                 $_SESSION['account_id'] = $account['id'];
 
-                if ($account['user_type'] === 'Admin') {
-                    $_SESSION['admin_id'] = $account['id'];
-                    logAdminAction($pdo, $_SESSION['admin_id'], "Logged In", "IP: " . $_SERVER['REMOTE_ADDR']);
+                switch ($account['user_type']) {
+                    case 'Admin':
+                        $_SESSION['admin_id'] = $account['id'];
+                        logAdminAction($pdo, $_SESSION['admin_id'], "Logged In", "IP: " . $_SERVER['REMOTE_ADDR']);
+                        break;
+
+                    case 'Inspector':
+                        $_SESSION['inspector_id'] = $account['id'];
+                        logAdminAction($pdo, $_SESSION['inspector_id'], "Logged In", "IP: " . $_SERVER['REMOTE_ADDR']);
+                        break;
                 }
 
                 $response = [

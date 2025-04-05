@@ -297,6 +297,15 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                 document.getElementById("modal-inspection-date").textContent = row.dataset.inspectionDate || "N/A";
                 document.getElementById("modal-created-at").textContent = row.dataset.createdAt || "N/A";
 
+                // Disable buttons if inspection status is "Approved" or "Rejected"
+                if (row.dataset.inspectionStatus === "Approved" || row.dataset.inspectionStatus === "Rejected") {
+                    document.getElementById("approve-btn").disabled = true;
+                    document.getElementById("reject-btn").disabled = true;
+                } else {
+                    document.getElementById("approve-btn").disabled = false;
+                    document.getElementById("reject-btn").disabled = false;
+                }
+
                 modal.show();
             }
         });

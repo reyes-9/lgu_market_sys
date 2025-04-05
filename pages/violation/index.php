@@ -14,6 +14,70 @@
 
     <?php include '../../includes/nav.php'; ?>
 
+    <div class="payment-banner d-flex justify-content-between align-items-center px-5 py-4">
+        <div class="banner-text">
+            <h4 class="text-white">Violation Payment</h4>
+            <p class="text-white mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
+        </div>
+        <button class="btn btn-warning submit-receipt-btn" data-bs-toggle="modal" data-bs-target="#submitReceiptModal">Submit Receipt</button>
+    </div>
+
+    <!-- Submit Receipt Modal -->
+    <div class="modal fade" id="submitReceiptModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="submitReceiptModal" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-container">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 class="modal-title fw-bold" id="submitReceiptModalLabel">Upload Reciept</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <p class="text-muted me-5">
+                            Upload your payment receipt for verification and to avoid violations.
+                        </p>
+                        <hr class="mb-4">
+
+                        <form id="submitRecieptForm" enctype="multipart/form-data">
+
+                            <table class="table table-borderless table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Violation</th>
+                                        <th>Date Issued <br> (YYYY-MM-DD)</th>
+                                        <th>Fine Amount</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recieptStallsContainer">
+
+                                </tbody>
+                            </table>
+                            <h5 id="receipt_stall_message"></h5>
+                            <div class="container text-start w-50 m-0">
+
+                                <div class="mb-3">
+                                    <label for="receiptFile" class="form-label">Upload Reciept (PDF or Image)</label>
+                                    <input type="file" class="form-control" id="receiptFile" name="receipt_file" accept=".pdf, image/*">
+                                </div>
+
+                                <label for="receiptFile" class="form-label">Paid Amount</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">₱</span>
+                                    <input type="number" class="form-control" id="paidAmount" name="paid_amount" aria-label="Amount (to the nearest dollar)">
+                                </div>
+                                <input type="hidden" id="sourceType" name="source_type" value="stall">
+                            </div>
+
+                            <button class="btn btn-dark mt-3" id="uploadPaymentReceipt" type="button">Upload</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container mt-5 vh-100">
         <div class="container mt-3 p-0">
             <a href="../portal/" class="btn btn-outline btn-return mb-3">
@@ -354,6 +418,46 @@
             if (activeButton) {
                 activeButton.classList.add('active');
             }
+        }
+
+        function fetchvUnpaidViolations() {
+            fetch('backend/get_unpaid_violations.php') // Adjust path as needed
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        displayUnpaidViolations(data.violations);
+                    } else {
+                        console.error("Error:", data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Fetch error:", error);
+                });
+        }
+
+        function displayUnpaidViolations(violations) {
+            const container = document.getElementById('unpaidViolationsList');
+            container.innerHTML = ''; // Clear previous content
+
+            if (violations.length === 0) {
+                container.innerHTML = '<p>No unpaid violations found.</p>';
+                return;
+            }
+
+            violations.forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'violation-card';
+                div.innerHTML = `
+            <h4>Violation ID: ${v.id}</h4>
+            <p><strong>Date:</strong> ${v.violation_date}</p>
+            <p><strong>Description:</strong> ${v.violation_description}</p>
+            <p><strong>Status:</strong> ${v.status}</p>
+        `;
+                container.appendChild(div);
+            });
         }
     </script>
 
