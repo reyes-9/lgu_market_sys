@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "../../includes/config.php";
+require 'mailer.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -52,6 +53,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Start PDO Transaction
         $pdo->beginTransaction();
 
+        // Generate OTP
+        $otp_code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $otp_expiry = date('Y-m-d H:i:s', strtotime('+5 minutes')); // OTP expires in 5 minutes
+
         // Check if email is already registered
         $stmt = $pdo->prepare("SELECT id FROM accounts WHERE email = :email");
         $stmt->execute(['email' => $email]);
@@ -59,31 +64,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt->rowCount() > 0) {
             $pdo->rollBack(); // Rollback transaction if email exists
             http_response_code(400); // Bad Request
-            echo json_encode(['success' => false, 'message' => 'Invalid Email.']);
+            echo json_encode(['success' => false, 'message' => 'Email already registered.']);
             exit;
         }
 
-        // Insert new account
-        $stmt = $pdo->prepare("INSERT INTO accounts (email, password) VALUES (:email, :password)");
+        // Insert new account (do this before sending the OTP)
+        $stmt = $pdo->prepare("INSERT INTO accounts (email, password, otp_code, otp_expiry) VALUES (:email, :password, :otp_code, :otp_expiry)");
         $insertSuccess = $stmt->execute([
             'email' => $email,
-            'password' => $hashed_password
+            'password' => $hashed_password,
+            'otp_code' => $otp_code,
+            'otp_expiry' => $otp_expiry
         ]);
 
-        if ($insertSuccess) {
-            $pdo->commit(); // Commit transaction if everything is successful
+        // Send OTP email
+        $subject = "Your Verification Code";
+        $body = "<p>Your OTP code is: <strong>$otp_code</strong><br>This code will expire in 5 minutes.</p>";
+
+        if (sendEmail($email, $subject, $body)) {
+            // If OTP is sent successfully, commit the transaction
+            $pdo->commit();
             unset($_SESSION['csrf_token']);
             http_response_code(201); // Created
             echo json_encode(['success' => true, 'message' => 'Account successfully created!']);
+            exit;
         } else {
-            $pdo->rollBack(); // Rollback transaction on failure
+            // If email sending failed, rollback transaction
+            $pdo->rollBack();
             http_response_code(500); // Internal Server Error
-            echo json_encode(['success' => false, 'message' => 'Error signing up.']);
+            echo json_encode(['success' => false, 'message' => 'Failed to send verification email.']);
+            exit;
         }
     } catch (PDOException $e) {
-        $pdo->rollBack(); // Ensure rollback on exception
+        // Ensure rollback on exception
+        $pdo->rollBack();
         http_response_code(500); // Internal Server Error
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        exit;
     }
-    exit;
 }

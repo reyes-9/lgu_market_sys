@@ -49,6 +49,75 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
+        .form-button:hover {
+            background-color: rgb(2, 40, 78);
+            color: white;
+        }
+
+        /* OTP */
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .otp-box {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            font-size: 22px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .otp-box:focus {
+            border-color: #007bff;
+        }
+
+
+        .otp-button {
+            background-color: #003366;
+            color: white;
+        }
+
+        .otp-button:hover {
+            background-color: rgb(2, 40, 78);
+            color: white;
+        }
+
+        /* Add animation to the form when it becomes visible */
+        .otp_form.show {
+            animation: slideUp 0.1s ease-out;
+            display: block;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Slide-up animation */
+        @keyframes slideUp {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
@@ -67,8 +136,35 @@
         <div class="row w-100">
             <!-- Left Side: Form -->
             <div class=" form-container col-md-4 p-5 m-5">
+
                 <h2 class="mb-3"> Sign Up for Public Market Monitoring System</h2>
                 <p class="text-muted">Create an account to view markets and stalls. </p>
+
+                <div class="form-container otp_form d-none">
+                    <div class="row justify-content-center w-75">
+                        <form method="POST" action="verify.php" class="p-4">
+                            <input type="hidden" name="email" value="<?php echo htmlspecialchars($_GET['email'] ?? '') ?>">
+
+                            <div class="mb-4 text-center">
+                                <h3>Enter Code</h3>
+                                <p class="text-muted">We've already sent the code, please check your email.</p>
+                            </div>
+
+                            <div class="otp-container mb-4 text-center">
+                                <input type="text" name="otp[]" maxlength="1" class="otp-box form-control d-inline-block text-center bg-white rounded shadow" required autofocus>
+                                <input type="text" name="otp[]" maxlength="1" class="otp-box form-control d-inline-block text-center bg-white rounded shadow" required>
+                                <input type="text" name="otp[]" maxlength="1" class="otp-box form-control d-inline-block text-center bg-white rounded shadow" required>
+                                <input type="text" name="otp[]" maxlength="1" class="otp-box form-control d-inline-block text-center bg-white rounded shadow" required>
+                                <input type="text" name="otp[]" maxlength="1" class="otp-box form-control d-inline-block text-center bg-white rounded shadow" required>
+                                <input type="text" name="otp[]" maxlength="1" class="otp-box form-control d-inline-block text-center bg-white rounded shadow" required>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn otp-button">Verify</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <form class="ms-4 w-75 py-3 m-auto" id="signupForm">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
@@ -102,6 +198,7 @@
                         <a href="#" class="text-decoration-none">Privacy Policy</a>.
                     </p>
                 </form>
+
             </div>
 
             <!-- Right Side: Illustration -->
@@ -161,9 +258,14 @@
                     displayToast(data.message, data.success ? "success" : "error");
                     if (data.success) {
                         document.getElementById("signupForm").reset();
-                        setTimeout(function() {
-                            window.location.href = "/lgu_market_sys/pages/login/index.php";
-                        }, 2000);
+
+                        var otpForm = document.querySelector(".otp_form");
+                        otpForm.classList.remove("d-none"); // Remove the hidden class
+                        otpForm.classList.add("show"); // Add the animation class to trigger animation
+
+                        // setTimeout(function() {
+                        //     window.location.href = "/lgu_market_sys/pages/login/index.php";
+                        // }, 2000);
                     }
 
                 })
@@ -186,7 +288,22 @@
             }
         }
     </script>
+    <script>
+        document.querySelectorAll('.otp-box').forEach((input, index, inputs) => {
+            input.addEventListener('input', () => {
 
+                // Automatically move focus to the next input box
+                if (input.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+
+                // If user deletes a value, focus on the previous input
+                if (input.value.length === 0 && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
