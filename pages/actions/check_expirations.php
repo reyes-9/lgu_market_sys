@@ -4,7 +4,7 @@ require_once '../../includes/config.php';
 try {
   $currentDate = date('Y-m-d');
 
-  // 1. Mark as 'payment_period' if within 7 days BEFORE expiration date
+  // Mark as 'payment_period' if within 7 days BEFORE expiration date
   $updatePaymentPeriodQuery = "
         UPDATE expiration_dates
         SET status = 'payment_period'
@@ -20,7 +20,7 @@ try {
   $stmt->bindParam(':toDate', $threeDaysLater);
   $stmt->execute();
 
-  // 2. Mark as 'expired' if expiration date has passed
+  // Mark as 'expired' if expiration date has passed
   $updateExpiredQuery = "
         UPDATE expiration_dates
         SET status = 'expired'
@@ -31,7 +31,7 @@ try {
   $stmt->bindParam(':currentDate', $currentDate);
   $stmt->execute();
 
-  // 3. Set stalls.payment_status = 'Payment_Period' if status is in payment_period
+  // Set stalls.payment_status = 'Payment_Period' if status is in payment_period
   $updateStallsPaymentPeriodQuery = "
         UPDATE stalls s
         JOIN expiration_dates ed ON s.id = ed.reference_id
@@ -42,7 +42,7 @@ try {
   $stmt = $pdo->prepare($updateStallsPaymentPeriodQuery);
   $stmt->execute();
 
-  // 4. Set stalls.payment_status = 'Expired' if status is expired
+  // Set stalls.payment_status = 'Expired' if status is expired
   $updateStallsExpiredQuery = "
         UPDATE stalls s
         JOIN expiration_dates ed ON s.id = ed.reference_id
@@ -53,9 +53,9 @@ try {
   $stmt = $pdo->prepare($updateStallsExpiredQuery);
   $stmt->execute();
 
-  echo "✅ Expiration dates and stall payment statuses have been updated successfully.";
+  echo "Expiration dates and stall payment statuses have been updated successfully.";
 } catch (PDOException $e) {
-  $errorMessage = "❌ Error: " . $e->getMessage() . "\n";
+  $errorMessage = "Error: " . $e->getMessage() . "\n";
   error_log($errorMessage);
   echo $errorMessage;
 }

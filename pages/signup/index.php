@@ -35,6 +35,10 @@
             color: #003366 !important;
         }
 
+        #signupBtn {
+            background-color: #003366;
+        }
+
         .form-button {
             display: block;
             background-color: #003366;
@@ -140,14 +144,14 @@
                 <h2 class="mb-3"> Sign Up for Public Market Monitoring System</h2>
                 <p class="text-muted">Create an account to view markets and stalls. </p>
 
-                <div class="form-container otp_form d-none">
+                <div class="form-container otp_form d-none" id="otp_div">
                     <div class="row justify-content-center w-75">
-                        <form method="POST" action="verify.php" class="p-4">
-                            <input type="hidden" name="email" value="<?php echo htmlspecialchars($_GET['email'] ?? '') ?>">
+                        <form method="POST" class="p-4" id="otpForm">
+                            <input type="hidden" name="otp_email" id="otpEmail">
 
                             <div class="mb-4 text-center">
-                                <h3>Enter Code</h3>
-                                <p class="text-muted">We've already sent the code, please check your email.</p>
+                                <h3>Verify Your Email</h3>
+                                <p class="text-muted">We’ve sent a 6-digit verification code to your email. Please enter it below to continue.</p>
                             </div>
 
                             <div class="otp-container mb-4 text-center">
@@ -160,9 +164,17 @@
                             </div>
 
                             <div class="text-center">
-                                <button type="submit" class="btn otp-button">Verify</button>
+                                <button type="submit" class="btn otp-button" id="verifyOtpBtn">Verify</button>
                             </div>
                         </form>
+                        <div class="mb-3 text-center">
+                            <span class="text-muted"><span id="otpTimer"><b>05:00</b></span></span>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p class="text-muted mb-1">Didn't receive the code?</p>
+                            <a href="#" id="resendOtpLink">Resend OTP</a>
+                            <span id="resendStatus" class="text-muted d-block mt-2"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -188,7 +200,12 @@
                         </button>
                     </div>
                     <p class="text-danger" id="passwordError"></p>
-                    <button type="submit" class="form-button">Sign Up</button>
+                    <!-- <button type="submit" class="form-button" id="signupBtn">Sign Up</button> -->
+                    <button class="btn btn-primary" type="submit" id="signupBtn">
+                        <span class="spinner-border spinner-border-sm d-none" aria-hidden="true" id="signupSpinner"></span>
+                        <span id="signupStatus">Sign Up</span>
+                    </button>
+
 
                     <p class="my-4">Already have an account? <a href="/lgu_market_sys/pages/login/index.php">Login here</a></p>
 
@@ -212,67 +229,217 @@
     <?php include '../../includes/footer.php'; ?>
     <script src="../../assets/js/toast.js"></script>
     <script>
-        document.getElementById("signupForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+        document.addEventListener("DOMContentLoaded", function() {
 
-            let email = document.getElementById("email").value.trim();
-            let password = document.getElementById("password").value;
-            let confirmPassword = document.getElementById("confirmPassword").value;
-            let passwordError = document.getElementById("passwordError");
+            document.getElementById("signupForm").addEventListener("submit", function(event) {
+                event.preventDefault();
 
-            // Email validation (basic regex check)
-            let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (!emailRegex.test(email)) {
-                alert("Please enter a valid email address.");
-                return;
+                let email = document.getElementById("email").value.trim();
+                let password = document.getElementById("password").value;
+                let confirmPassword = document.getElementById("confirmPassword").value;
+                let passwordError = document.getElementById("passwordError");
+
+                // Email validation (basic regex check)
+                let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                if (!emailRegex.test(email)) {
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+                if (password.length < 8) {
+                    passwordError.textContent = "Password must be at least 8 characters long.";
+                    displayToast('Password too short', "error");
+                    return;
+                } else {
+                    passwordError.textContent = "";
+                }
+
+                if (password !== confirmPassword) {
+                    passwordError.textContent = "Passwords do not match.";
+                    displayToast('Incorrect Inputs', "error");
+                    return;
+                } else {
+                    passwordError.textContent = "";
+                }
+
+                submitSignupForm();
+            });
+
+        });
+
+        document.getElementById("resendOtpLink").addEventListener("click", async function(e) {
+            e.preventDefault();
+            const resendLink = this;
+            const resendStatus = document.getElementById("otpTimer");
+            const email = document.getElementById("otpEmail").value;
+            const verifyBtn = document.getElementById("verifyOtpBtn");
+
+            resendLink.style.pointerEvents = "none";
+            clearInterval(window.otpInterval); // Always clear the old timer
+            resendStatus.textContent = "Resending OTP...";
+            verifyBtn.disabled = true;
+
+            try {
+                const response = await fetch("../actions/resend_otp.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email
+                    })
+                });
+
+                const result = await response.json();
+                console.log(result);
+                resendStatus.textContent = result.message;
+
+                if (result.success && result.otp_expiry && result.expires_in) {
+                    const otpExpiry = new Date(result.otp_expiry).getTime() / 1000;
+                    const now = Math.floor(Date.now() / 1000);
+                    startOTPTimer(result.expires_in);
+                    verifyBtn.disabled = false;
+                }
+
+                // Disable resend for 30 seconds
+                let countdown = 30;
+                const interval = setInterval(() => {
+                    resendLink.textContent = `Resend OTP (${countdown}s)`;
+                    if (--countdown < 0) {
+                        clearInterval(interval);
+                        resendLink.textContent = "Resend OTP";
+                        resendLink.style.pointerEvents = "auto";
+                    }
+                }, 1000);
+            } catch (error) {
+                resendStatus.textContent = "Failed to resend OTP. Try again.";
+                resendLink.style.pointerEvents = "auto";
             }
-            if (password.length < 8) {
-                passwordError.textContent = "Password must be at least 8 characters long.";
-                displayToast('Password too short', "error");
-                return;
-            } else {
-                passwordError.textContent = "";
-            }
-
-            if (password !== confirmPassword) {
-                passwordError.textContent = "Passwords do not match.";
-                displayToast('Incorrect Inputs', "error");
-                return;
-            } else {
-                passwordError.textContent = "";
-            }
-
-            submitSignupForm();
         });
 
 
-        function submitSignupForm() {
-            let formData = new FormData(document.getElementById("signupForm"));
 
-            fetch("../actions/signup_action.php", {
+
+        const verify_btn = document.getElementById("verifyOtpBtn");
+        if (verify_btn) {
+            verify_btn.addEventListener("click", async function(e) {
+                e.preventDefault();
+                await verifyOTP(); // Call the async function directly
+            });
+        }
+
+        async function verifyOTP() {
+            const form = document.getElementById("otpForm");
+            const otpInputs = form.querySelectorAll("input[name='otp[]']");
+            const otp_email = document.getElementById("otpEmail").value.trim();
+
+            let otp = "";
+            otpInputs.forEach(input => otp += input.value.trim());
+
+            if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+                alert("Please enter a valid 6-digit code.");
+                return;
+            }
+
+            // Prepare form data
+            const formData = new URLSearchParams();
+            formData.append("otp_email", otp_email);
+            formData.append("otp", otp);
+
+            try {
+                const response = await fetch("../actions/verify_otp.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayToast(result.message, "success");
+                    setTimeout(() => {
+                        window.location.href = "http://localhost/lgu_market_sys/pages/login/";
+                    }, 1500);
+                } else {
+                    displayToast(result.message, "error");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while verifying OTP.");
+            }
+        }
+
+
+
+        async function submitSignupForm() {
+            const form = document.getElementById("signupForm");
+            const submitButton = document.getElementById("signupBtn");
+            const spinner = document.getElementById("signupSpinner");
+            const statusText = document.getElementById("signupStatus");
+            const otp_email = document.getElementById("otpEmail");
+            const email = document.getElementById("email").value.trim();
+
+            // Show spinner and update text
+            spinner.classList.remove("d-none");
+            statusText.textContent = "Sending verification code...";
+            submitButton.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch("../actions/signup_action.php", {
                     method: "POST",
                     body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    displayToast(data.message, data.success ? "success" : "error");
-                    if (data.success) {
-                        document.getElementById("signupForm").reset();
-
-                        var otpForm = document.querySelector(".otp_form");
-                        otpForm.classList.remove("d-none"); // Remove the hidden class
-                        otpForm.classList.add("show"); // Add the animation class to trigger animation
-
-                        // setTimeout(function() {
-                        //     window.location.href = "/lgu_market_sys/pages/login/index.php";
-                        // }, 2000);
-                    }
-
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    displayToast("Something went wrong. Please try again.", "error");
                 });
+
+                const data = await response.json();
+                displayToast(data.message, data.success ? "success" : "error");
+
+                if (data.success) {
+                    form.reset();
+                    form.classList.add("d-none");
+
+                    otp_email.value = email;
+                    const otpForm = document.getElementById("otp_div");
+                    otpForm.classList.remove("d-none");
+                    otpForm.classList.add("show");
+                    startOTPTimer(300); // ⏱️ Start 5-minute timer
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                displayToast("Something went wrong. Please try again.", "error");
+            } finally {
+                // Reset button state
+                spinner.classList.add("d-none");
+                statusText.textContent = "Sign Up";
+                submitButton.disabled = false;
+            }
+        }
+
+        function startOTPTimer(duration) {
+            let timer = duration;
+            const display = document.getElementById("otpTimer");
+            const verifyBtn = document.getElementById("verifyOtpBtn");
+
+            if (window.otpInterval) clearInterval(window.otpInterval); // Clear previous
+
+            window.otpInterval = setInterval(() => {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+
+                verifyBtn.disabled = false;
+
+                display.textContent = `OTP Expires in: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (--timer < 0) {
+                    clearInterval(window.otpInterval);
+                    display.textContent = "";
+                    display.textContent = "OTP expired. Please request a new one.";
+                    verifyBtn.disabled = true;
+                    verifyBtn.classList.add("disabled");
+                }
+            }, 1000);
         }
     </script>
 

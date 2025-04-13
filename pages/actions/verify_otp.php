@@ -1,9 +1,15 @@
 <?php
 require_once "../../includes/config.php";
+header('Content-Type: application/json');
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $otp = implode('', $_POST['otp'] ?? []);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST['otp_email'] ?? '';
+    $otp = $_POST['otp'] ?? '';
+
+    if (empty($email) || empty($otp)) {
+        echo json_encode(['success' => false, 'message' => 'Missing email or OTP.']);
+        exit;
+    }
 
     $stmt = $pdo->prepare("SELECT otp_code, otp_expiry FROM accounts WHERE email = :email");
     $stmt->execute(['email' => $email]);
@@ -25,8 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Mark account as verified
-    $pdo->prepare("UPDATE accounts SET is_verified = 1, otp_code = NULL, otp_expiry = NULL WHERE email = :email")
-        ->execute(['email' => $email]);
+    $update = $pdo->prepare("UPDATE accounts SET is_verified = 1, otp_code = NULL, otp_expiry = NULL WHERE email = :email");
+    $update->execute(['email' => $email]);
 
     echo json_encode(['success' => true, 'message' => 'Account verified successfully.']);
+    exit;
 }

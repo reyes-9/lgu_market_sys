@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Generate OTP
         $otp_code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        $otp_expiry = date('Y-m-d H:i:s', strtotime('+5 minutes')); // OTP expires in 5 minutes
+        $otp_expiry = date('Y-m-d H:i:s', strtotime('+5 minutes'));
 
         // Check if email is already registered
         $stmt = $pdo->prepare("SELECT id FROM accounts WHERE email = :email");
@@ -68,31 +68,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        // Insert new account (do this before sending the OTP)
-        $stmt = $pdo->prepare("INSERT INTO accounts (email, password, otp_code, otp_expiry) VALUES (:email, :password, :otp_code, :otp_expiry)");
+        $otp_sent_count = 1;
+        $last_otp_sent = date("Y-m-d H:i:s");
+
+        // Insert new account
+        $stmt = $pdo->prepare("INSERT INTO accounts 
+            (email, password, otp_code, otp_expiry, otp_sent_count, last_otp_sent)
+            VALUES (:email, :password, :otp_code, :otp_expiry, :otp_sent_count, :last_otp_sent)");
+
         $insertSuccess = $stmt->execute([
             'email' => $email,
             'password' => $hashed_password,
             'otp_code' => $otp_code,
-            'otp_expiry' => $otp_expiry
+            'otp_expiry' => $otp_expiry,
+            'otp_sent_count' => $otp_sent_count,
+            'last_otp_sent' => $last_otp_sent
         ]);
 
         // Send OTP email
         $subject = "Your Verification Code";
-        $body = "<p>Your OTP code is: <strong>$otp_code</strong><br>This code will expire in 5 minutes.</p>";
+        $body = "
+        Hello,
 
-        if (sendEmail($email, $subject, $body)) {
+        This is an automated message from Public Market Monitoring System. Please DO NOT reply to this email.
+                <br><br>
+        Your OTP code is: <b>$otp_code</b>
+                <br><br>
+        Keep it secure and do not share it with anyone.
+                <br><br>
+        Thank you,<br>
+        Public Market Monitoring System
+        ";
+        $altBody = "Hello,\n\nYour OTP code is: $otp_code\n\nPlease do not share this code with anyone.\n\nRegards,\nPublic Market Monitoring System";
+
+        if (sendEmail($email, $subject, $body, $altBody)) {
             // If OTP is sent successfully, commit the transaction
             $pdo->commit();
             unset($_SESSION['csrf_token']);
             http_response_code(201); // Created
-            echo json_encode(['success' => true, 'message' => 'Account successfully created!']);
+            echo json_encode(['success' => true, 'message' => 'Verification code sent! Please check your email for the OTP and enter it below to continue.']);
             exit;
         } else {
             // If email sending failed, rollback transaction
             $pdo->rollBack();
+            $error_message = sendEmail($email, $subject, $body, $altBody);
+            // error_log($error_message);
             http_response_code(500); // Internal Server Error
-            echo json_encode(['success' => false, 'message' => 'Failed to send verification email.']);
+            echo json_encode(['success' => false, 'message' => 'Failed to send the otp verification.']);
             exit;
         }
     } catch (PDOException $e) {

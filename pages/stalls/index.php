@@ -225,7 +225,7 @@
 
     function submitPayment() {
       const formData = new FormData(document.getElementById('submitRecieptForm'));
-      fetch('../actions/submit_receipt.php', {
+      fetch('../actions/submit_stall_receipt.php', {
           method: 'POST',
           body: formData
         })
