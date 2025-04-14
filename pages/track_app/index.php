@@ -23,7 +23,7 @@
             <h2 class="text-light">Your Applications</h2>
 
             <div class="container my-4">
-                <div class="row g-5 fixed-row">
+                <div class="row g-5 fixed-row" id="cardsContainer">
 
                 </div>
                 <nav class="mt-4">
@@ -80,6 +80,7 @@
         }
 
         function generateCards(data) {
+
             const container = document.querySelector('.row.g-5');
             container.innerHTML = '';
             data.forEach((app, index) => {
@@ -90,12 +91,20 @@
                 <span class="card-status ${
                     app.status === 'Draft' ? 'status-draft' :
                     app.status === 'Submitted' ? 'status-submitted' :
+                    app.status === 'Under Review' && app.inspection_status === "Approved" ? 'status-inspection-approved' : 
+                    app.status === 'Under Review' && app.inspection_status === "Rejected" ? 'status-inspection-rejected' : 
                     app.status === 'Under Review' ? 'status-under-review' : 
                     app.status === 'Approved' ? 'status-approved' :
                     app.status === 'Rejected' ? 'status-rejected' :
-                    app.status === 'Withdrawn' ? 'status-withdrawn' : ''
+                    app.status === 'Withdrawn' ? 'status-withdrawn' : 
+                    ''
                     }">
-                    ${app.status}
+                    
+                    ${
+                    app.inspection_status === "Approved" && app.status === 'Under Review' ? 'Inspected' :
+                    app.inspection_status === "Rejected" && app.status === 'Under Review' ? 'Inspected' :
+                    app.status
+                    }
                 </span>
                 <h4 class="my-4"><strong>${app.application_type} Application</strong></h4>
                 <table class="table">
@@ -152,7 +161,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="progress-tracker-modern my-5 d-flex flex-column flex-md-row align-items-center justify-content-between" data-status="${app.status}">
-                                ${generateProgressSteps(app.status)}
+                                ${generateProgressSteps(app.status, app.inspection_status)}
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -185,7 +194,7 @@
             });
         }
 
-        function generateProgressSteps(status) {
+        function generateProgressSteps(status, inspection_status) {
             const steps = [{
                     id: 1,
                     label: 'Submitted',
@@ -198,47 +207,82 @@
                 },
                 {
                     id: 3,
-                    label: 'Scheduled for Inspection',
-                    icon: ''
-                },
-                {
-                    id: 4,
-                    label: 'Inspection Completed',
+                    label: 'Inspection',
                     icon: ''
                 },
                 {
                     id: 5,
-                    label: 'Final Decision',
+                    label: 'Official Result',
                     icon: ''
                 }
             ];
 
-            let statusIndex = steps.findIndex(step => step.label === status);
+            let statusIndex;
 
+            statusIndex = steps.findIndex(step => step.label === status);
+
+            if (status === "Rejected") {
+                statusIndex = 3;
+            }
+
+            if (status === "Approved") {
+                statusIndex = 3;
+            }
+
+            if (status === "Under Review" && inspection_status === "Approved") {
+                statusIndex = 2;
+            }
+
+            if (status === "Under Review" && inspection_status === "Rejected") {
+                statusIndex = 2;
+            }
+
+            console.log("Status Index: ", statusIndex)
             return steps.map((step, index) => {
-                let stepClass = 'pending'; // Default class for pending
 
-                if (index < statusIndex) {
-                    stepClass = 'completed';
-                    step.icon = 'bi-check-circle-fill';
-                } else if (index === statusIndex) {
-                    stepClass = 'ongoing';
-                    step.icon = 'bi bi-hourglass-split';
-                }
+                console.log("Index", index)
+
+                let stepClass = 'pending';
+                let icon = '';
 
                 if (status === 'Submitted' && index === statusIndex) {
                     stepClass = 'completed';
-                    step.icon = 'bi-check-circle-fill';
+                    icon = 'bi-check-circle-fill';
+                } else if (status === 'Under Review' && inspection_status === "Approved" && index === statusIndex) {
+                    stepClass = 'completed';
+                    icon = 'bi-check-circle-fill';
+                } else if (status === 'Under Review' && inspection_status === "Rejected" && index === statusIndex) {
+                    stepClass = 'rejected';
+                    icon = 'bi-x-circle-fill';
+                } else if (status === 'Approved' && index === statusIndex) {
+                    stepClass = 'completed';
+                    icon = 'bi-check-circle-fill';
+                } else if (status === 'Rejected' && index === statusIndex) {
+                    stepClass = 'rejected';
+                    icon = 'bi-x-circle-fill';
+                } else if (index < statusIndex) {
+                    stepClass = 'completed';
+                    icon = 'bi-check-circle-fill';
+                } else if (index === statusIndex) {
+                    stepClass = 'ongoing';
+                    icon = 'bi bi-hourglass-split';
                 }
 
+
                 return `<div class="step-modern ${stepClass}">
-                <div class="circle">
-                    ${step.icon ? `<i class="bi ${step.icon}"></i>` : `<span>${step.id}</span>`}
-                </div>
-                <div class="label mt-2">${step.label}</div>
-                <small class="timestamp">${stepClass === 'completed' ? 'Completed' : stepClass === 'ongoing' ? 'Ongoing' : 'Pending'}</small>
-            </div>`
+                                       <div class="circle">
+                            ${icon ? `<i class="bi ${icon}"></i>` : `<span>${step.id}</span>`}
+                                </div>
+                                        <div class="label mt-2">${step.label}</div>
+                                        <small class="timestamp">${
+                                        stepClass === 'completed' ? 'Completed' : 
+                                        stepClass === 'ongoing' ? 'Ongoing' : 
+                                        stepClass === 'rejected' ? 'Rejected' : 
+
+                                        'Pending'}</small>
+                                    </div>`
             }).join('');
+
         }
 
         function generatePagination(totalPages, currentPage) {
@@ -316,9 +360,16 @@
                         ...item,
                         application_type: capitalizeWords(item.application_type)
                     }));
-                    const totalPages = json.pagination.total_pages;
-                    generateCards(data);
-                    generatePagination(totalPages, page);
+
+                    if (data.length === 0) {
+                        const container = document.getElementById('cardsContainer');
+                        container.innerHTML = '<h5 class="text-secondary shadow">Currently, you have no pending applications. </h5>';
+                    } else {
+                        const totalPages = json.pagination.total_pages;
+                        console.log(data);
+                        generateCards(data);
+                        generatePagination(totalPages, page);
+                    }
                 })
                 .catch(error => {
                     console.error("Error fetching data:", error);
@@ -327,20 +378,23 @@
 
 
 
+
         function attachWithdrawListeners() {
             document.querySelector(".row.g-5").addEventListener("click", function(event) {
                 if (event.target.classList.contains("confirmWithdraw")) {
                     let appId = event.target.dataset.id;
-                    let appName = event.target.dataset.app_name;
+                    let appType = event.target.dataset.app_name;
 
-                    fetch("../actions/track_action.php", {
+                    console.log("Application Id and Type: ", appId, "-", appType);
+
+                    fetch("../actions/withdraw_application.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
                                 id: appId,
-                                name: appName
+                                type: appType
                             })
                         })
                         .then(response => response.json())

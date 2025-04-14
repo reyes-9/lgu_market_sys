@@ -76,6 +76,8 @@ try {
                 app.application_type,
                 app.application_number,
                 app.status,
+                app.reviewing_admin_id,
+                app.inspection_status,
                 app.created_at
             FROM applications app
             JOIN stalls s ON app.stall_id = s.id    

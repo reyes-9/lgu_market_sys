@@ -49,6 +49,12 @@ body {
 .status-under-review {
   background-color: #6f42c1;
 }
+.status-inspection-approved {
+  background-color: #28a745;
+}
+.status-inspection-rejected {
+  background-color: #dc3545;
+}
 .status-approved {
   background-color: #28a745;
 }
@@ -111,6 +117,7 @@ body {
 /* Progress Tracker Container */
 .progress-tracker-modern {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
   position: relative;
@@ -150,6 +157,11 @@ body {
   box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
 }
 
+.step-modern.rejected .circle {
+  background: #dc3545;
+  box-shadow: 0 4px 6px #dc354681;
+}
+
 .step-modern.ongoing .circle {
   background: #f0b504;
   box-shadow: 0 4px 6px rgba(176, 173, 75, 0.361);
@@ -161,6 +173,7 @@ body {
   font-weight: 600;
   color: #383d42;
   margin-top: 0.5rem;
+  height: 45px;
 }
 
 .timestamp {
