@@ -152,23 +152,26 @@ $homePath = "/lgu_market_sys/";
                 <li class="nav-item">
                     <i class="bi bi-brightness-high me-3"></i>
                 </li>
+
+                <?php echo !$isLogin ? '' : '
                 <li class="nav-item position-relative">
                     <i class="bi bi-bell me-3" id="notificationBell"></i>
                     <div class="notifications position-absolute bg-white shadow rounded p-2" id="notificationsList" style="display:none; width: 300px; right:0; top:40px;">
                         <p class="m-0">No new notifications</p>
                     </div>
                 </li>
+       
                 <ul class="navbar-nav d-flex align-items-center justify-content-center w-100">
                     <li class="nav-item dropdown">
+                       
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle" style="cursor: pointer;"></i>
                         </a>
-                        <?php echo !$isLogin ? '' : '
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="http://localhost/lgu_market_sys/pages/actions/logout.php">Logout</a></li>
-                        </ul>' ?>
+                        </ul>
                     </li>
-                </ul>
+                </ul> ' ?>
             </ul>
 
         </div>

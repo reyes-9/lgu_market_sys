@@ -141,9 +141,6 @@
             <!-- Left Side: Form -->
             <div class=" form-container col-md-4 p-5 m-5">
 
-                <h2 class="mb-3"> Sign Up for Public Market Monitoring System</h2>
-                <p class="text-muted">Create an account to view markets and stalls. </p>
-
                 <div class="form-container otp_form d-none" id="otp_div">
                     <div class="row justify-content-center w-75">
                         <form method="POST" class="p-4" id="otpForm">
@@ -179,6 +176,12 @@
                 </div>
 
                 <form class="ms-4 w-75 py-3 m-auto" id="signupForm">
+
+                    <div class="mb-5">
+                        <h2 class="mb-3"> Sign Up for Public Market Monitoring System</h2>
+                        <p class="text-muted">Create an account to view markets and stalls. </p>
+                    </div>
+
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="mb-3">
                         <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
@@ -317,8 +320,6 @@
         });
 
 
-
-
         const verify_btn = document.getElementById("verifyOtpBtn");
         if (verify_btn) {
             verify_btn.addEventListener("click", async function(e) {
@@ -369,8 +370,6 @@
                 alert("An error occurred while verifying OTP.");
             }
         }
-
-
 
         async function submitSignupForm() {
             const form = document.getElementById("signupForm");

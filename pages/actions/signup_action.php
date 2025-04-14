@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "../../includes/config.php";
-require 'mailer.php';
+require_once 'mailer.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 

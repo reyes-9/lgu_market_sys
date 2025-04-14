@@ -170,7 +170,12 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let isVendor = <?php echo $isVendor; ?>;
+            let isLogin = <?php echo json_encode($isLogin); ?>;
             let vendorPortalLink = document.querySelector("a.footer-links[href*='portal']");
+            let feedbackLink = document.querySelector("a.footer-links[href*='feedback']");
+            let mapsLink = document.querySelector("a.footer-links[href*='map']");
+
+            console.log(isLogin);
 
             vendorPortalLink.addEventListener("click", function(event) {
                 if (!isVendor) {
@@ -178,5 +183,21 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
                     alert("Access Denied! Only vendors can access the Vendor Portal.");
                 }
             });
+
+            feedbackLink.addEventListener("click", function(event) {
+                if (!isLogin) {
+                    event.preventDefault();
+                    alert("Access Denied! Login to continue.");
+                }
+            });
+
+            mapsLink.addEventListener("click", function(event) {
+                if (!isLogin) {
+                    event.preventDefault();
+                    alert("Access Denied! Login to continue.");
+                }
+            });
+
+
         });
     </script>
