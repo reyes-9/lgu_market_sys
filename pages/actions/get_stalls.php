@@ -1,6 +1,8 @@
 <?php
 
 require_once '../../includes/config.php';
+require_once '../../includes/session.php';
+
 if (isset($_GET['market_id']) && isset($_GET['section_id'])) {
     $market_id = $_GET['market_id'];
     $section_id = $_GET['section_id'];

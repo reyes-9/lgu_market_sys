@@ -11,12 +11,13 @@
     <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 <?php
-session_start();
+require_once '../../includes/session.php';
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 ?>
+
 
 <body class="body light">
     <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>

@@ -23,7 +23,7 @@ function submitGarbageComplaint($market_id, $pdo)
 
         // Prepare complaint data if request count is 20 or more
         $subject = "Garbage Collection Request Limit Reached for Market: $market_name (ID: $market_id)";
-        $email = "admin@example.com"; // Admin or system email
+        $email = "info.publicmarketmonitoring@gmail.com"; // Admin or system email
         $description = "The request count for garbage collection for Market '$market_name' (ID: $market_id) has reached 20. Please take action.";
 
         // Prepare the complaint API data

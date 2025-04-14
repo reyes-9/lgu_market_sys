@@ -1,5 +1,6 @@
 <?php
 require_once "../../includes/config.php";
+require_once '../../includes/session.php';
 
 header("Content-Type: application/json");
 $data = json_decode(file_get_contents("php://input"), true);

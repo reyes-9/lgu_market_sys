@@ -10,6 +10,10 @@
   <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 
+<?php
+require_once '../../includes/session.php';
+?>
+
 <body class="body light">
 
   <?php include '../../includes/nav.php'; ?>

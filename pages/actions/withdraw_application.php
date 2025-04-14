@@ -1,6 +1,6 @@
 <?php
-require_once '../../includes/config.php'; // Adjust this to your actual DB connection file
-
+require_once '../../includes/config.php';
+require_once '../../includes/session.php';
 header('Content-Type: application/json');
 
 try {

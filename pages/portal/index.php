@@ -10,6 +10,10 @@
   <?php include "../../includes/cdn-resources.php"; ?>
 </head>
 
+<?php
+require_once '../../includes/session.php';
+?>
+
 <body class="body light">
 
   <?php include '../../includes/nav.php'; ?>
@@ -142,7 +146,6 @@
 
 
   <?php include '../../includes/footer.php'; ?>
-  <?php include '../../includes/theme.php'; ?>
 
   <script>
     var notifcation_section = document.getElementById('notificationsSection');

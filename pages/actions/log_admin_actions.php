@@ -1,4 +1,5 @@
 <?php
+require_once '../../includes/session.php';
 
 function logAdminAction($pdo, $admin_id, $action, $details = null)
 {

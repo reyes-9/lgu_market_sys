@@ -1,6 +1,6 @@
 <?php
 
-require 'includes/session.php';
+require '../../../includes/session.php';
 // Check if user is logged in
 if (!isset($_SESSION['account_id'])) {
     echo '<script>

@@ -1,5 +1,6 @@
 <?php
 require_once "../../includes/config.php";
+require_once '../../includes/session.php';
 
 if (!isset($_GET['application_id'])) {
     echo json_encode(['error' => 'No application ID provided']);

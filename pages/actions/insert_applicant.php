@@ -1,4 +1,5 @@
 <?php
+require_once '../../includes/session.php';
 
 function insertApplicant($pdo, $user_id, $application_id)
 {

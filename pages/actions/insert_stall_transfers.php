@@ -1,4 +1,6 @@
 <?php
+require_once '../../includes/session.php';
+
 function insertStallTransfer(
     $pdo,
     $ownerId,

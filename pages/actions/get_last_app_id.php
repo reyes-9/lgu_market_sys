@@ -1,6 +1,6 @@
 <?php
 require_once "../../includes/config.php";
-
+require_once '../../includes/session.php';
 // Fetch the last application ID from the database
 $query = "SELECT id FROM applications ORDER BY id DESC LIMIT 1"; // Get the last ID inserted
 $stmt = $pdo->query($query);

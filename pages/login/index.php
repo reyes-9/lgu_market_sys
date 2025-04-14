@@ -119,7 +119,7 @@
 <body>
 
     <?php
-    session_start();
+    require_once '../../includes/session.php';
 
     // Check if user is logged in
     if (isset($_SESSION['account_id'])) {

@@ -1,5 +1,6 @@
 <?php
 require_once "../../includes/config.php";
+require_once '../../includes/session.php';
 
 // Get the stall_id from the URL query string
 if (isset($_GET['stall_id'])) {

@@ -1,5 +1,6 @@
 <?php
 require_once '../../includes/config.php';
+require_once '../../includes/session.php';
 error_reporting(E_ERROR | E_PARSE); // Show only errors, not warnings/notices
 ini_set('display_errors', 0); // Disable output of errors on the page
 

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../includes/config.php';
+require_once '../../includes/session.php';
 require 'get_user_id.php';
 
 $account_id = $_SESSION['account_id'];

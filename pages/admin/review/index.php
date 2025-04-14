@@ -2,7 +2,6 @@
 require_once "../../../includes/config.php";
 require "../../../includes/session.php";
 
-
 if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
     echo '<script>
     alert("Please log in to continue.");

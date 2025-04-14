@@ -1,5 +1,5 @@
 <?php
-
+require_once '../../includes/session.php';
 function uploadApplication($pdo, $applicationNumber, $accountId, $stallId, $sectionId, $marketId, $applicationType, $helperId = null, $extensionId = null)
 {
     try {

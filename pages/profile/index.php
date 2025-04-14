@@ -9,6 +9,10 @@
     <?php include_once "../../includes/cdn-resources.php" ?>
 </head>
 
+<?php
+require_once '../../includes/session.php';
+?>
+
 <body>
     <?php include '../../includes/nav.php'; ?>
 

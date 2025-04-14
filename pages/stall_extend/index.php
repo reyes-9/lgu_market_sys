@@ -11,7 +11,8 @@
     <?php include '../../includes/cdn-resources.php'; ?>
 </head>
 <?php
-session_start();
+
+require_once '../../includes/session.php';
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

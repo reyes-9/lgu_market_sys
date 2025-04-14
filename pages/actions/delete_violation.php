@@ -1,5 +1,6 @@
 <?php
 require_once "../../includes/config.php";
+require_once '../../includes/session.php';
 include "notifications.php";
 include "log_admin_actions.php";
 
@@ -19,7 +20,7 @@ $stmt = $pdo->prepare("UPDATE violations SET status = 'Deleted' WHERE id = ?");
 
 if ($stmt->execute([$id])) {
     logAdminAction($pdo, $admin_id, "Deleted Violation", "Deleted Violation ID: $id");
-    echo json_encode(["success" => true, "message" => "Violation ID #$id has been marked as resolved."]); 
+    echo json_encode(["success" => true, "message" => "Violation ID #$id has been marked as resolved."]);
 } else {
     echo json_encode(["success" => false, "message" => "Failed to update violation status. Please try again."]);
 }

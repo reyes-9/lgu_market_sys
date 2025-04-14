@@ -1,5 +1,6 @@
 <?php
 require_once '../../includes/config.php';
+require_once '../../includes/session.php';
 include_once "notifications.php";
 error_reporting(E_ERROR);  // Disable warnings and notices, only show errors
 

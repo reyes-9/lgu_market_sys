@@ -1,6 +1,8 @@
 <?php
 require_once "../../includes/config.php";
+require_once '../../includes/session.php';
 require_once '../../vendor/autoload.php';
+
 error_reporting(E_ALL & ~E_WARNING);
 
 use PHPMailer\PHPMailer\PHPMailer;

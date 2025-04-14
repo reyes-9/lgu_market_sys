@@ -1,4 +1,6 @@
 <?php
+require_once '../../includes/session.php';
+
 header("Content-Type: application/json");
 
 loadEnv(__DIR__ . '/../../.env');

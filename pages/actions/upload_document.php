@@ -1,5 +1,5 @@
 <?php
-
+require_once '../../includes/session.php';
 function uploadDocument($pdo, $fileInputName, $applicationId, $documentType, $uploadDir = 'uploads/')
 {
     if (!isset($_FILES[$fileInputName]) || $_FILES[$fileInputName]['error'] !== UPLOAD_ERR_OK) {
