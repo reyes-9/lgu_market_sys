@@ -38,12 +38,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if ($expiration) {
                     // Extend expiration date by one month
                     $new_expiration_date = date('Y-m-d', strtotime($expiration['expiration_date'] . ' +1 month'));
-
+                    $status = "active";
                     // Update expiration date
-                    $updateStmt = $pdo->prepare("UPDATE expiration_dates SET expiration_date = :new_expiration_date WHERE reference_id = :reference_id AND type = :payment_type");
+                    $updateStmt = $pdo->prepare("UPDATE expiration_dates SET expiration_date = :new_expiration_date, status = :status WHERE reference_id = :reference_id AND type = :payment_type");
                     $updateStmt->bindParam(':new_expiration_date', $new_expiration_date);
                     $updateStmt->bindParam(':reference_id', $reference_id, PDO::PARAM_INT);
                     $updateStmt->bindParam(':payment_type', $payment_type, PDO::PARAM_STR);
+                    $updateStmt->bindParam(':status', $status, PDO::PARAM_STR);
                     $updateStmt->execute();
                 }
             } elseif ($payment_type === "stall_extension" || $payment_type === "violation") {

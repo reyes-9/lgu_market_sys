@@ -290,6 +290,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
   $user_type = $_SESSION['user_type'] ?? 'default';
   ?>
+
   <script>
     const user_type = "<?php echo $user_type; ?>";
 
@@ -340,6 +341,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     }
   </script>
 
+  <!-- Post Announcement -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const announcementForm = document.getElementById("announcementForm");
@@ -397,8 +399,8 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     }
   </script>
 
+  <!-- Chart.js Configuration -->
   <script>
-    // Chart.js Configuration
     const ctx = document.getElementById('analyticsChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',

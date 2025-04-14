@@ -4,20 +4,18 @@ require_once '../../includes/config.php';
 try {
   $currentDate = date('Y-m-d');
 
-  // Mark as 'payment_period' if within 7 days BEFORE expiration date
+  // Mark as 'payment_period' for the whole month before the expiration date
   $updatePaymentPeriodQuery = "
-        UPDATE expiration_dates
-        SET status = 'payment_period'
-        WHERE expiration_date BETWEEN :fromDate AND :toDate
-          AND status = 'active'
-    ";
-
-  $currentDate = date('Y-m-d');
-  $threeDaysLater = date('Y-m-d', strtotime($currentDate . ' +7 days'));
+      UPDATE expiration_dates
+      SET status = 'payment_period'
+      WHERE expiration_date = :expirationDate
+      AND status = 'active'
+      AND :currentDate BETWEEN DATE_SUB(expiration_date, INTERVAL 1 MONTH) AND expiration_date
+  ";
 
   $stmt = $pdo->prepare($updatePaymentPeriodQuery);
-  $stmt->bindParam(':fromDate', $currentDate);
-  $stmt->bindParam(':toDate', $threeDaysLater);
+  $stmt->bindParam(':expirationDate', $expirationDate);  // The expiration date from your database
+  $stmt->bindParam(':currentDate', $currentDate);  // Today's date
   $stmt->execute();
 
   // Mark as 'expired' if expiration date has passed

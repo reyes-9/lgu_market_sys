@@ -281,13 +281,8 @@
                                         <td>${stall.stall_number}</td>
                                         <td>${stall.stall_size}</td>
                                         <td>${stall.rental_fee}</td>
-                                       <td class="${
-                                        new Date(stall.expiration_date) < new Date()
-                                    ? 'text-danger'
-                                               : (new Date(stall.expiration_date) <= new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-                                                 ? 'text-success'
-                                                : '')
-            }">                     
+                                        <td class="${new Date(stall.expiration_date) < new Date() ? 'text-danger' : 'text-success'}">
+
                 <strong>${stall.expiration_date ? new Date(stall.expiration_date).toLocaleDateString() : 'N/A'}</strong>
             </td>
 
@@ -298,6 +293,15 @@
 
       }
     }
+
+
+    // <td class="${
+    //                                     new Date(stall.expiration_date) < new Date()
+    //                                 ? 'text-danger'
+    //                                            : (new Date(stall.expiration_date) <= new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    //                                              ? 'text-success'
+    //                                             : '')
+    //         }">   
 
     function populateSubmitReceiptTable() {
       fetch('../actions/get_unpaid_stalls.php')

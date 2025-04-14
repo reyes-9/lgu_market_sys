@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $altBody = "Hello,\n\nYour OTP code is: $otp_code\n\nPlease do not share this code with anyone.\n\nRegards,\nPublic Market Monitoring System";
 
                     if (sendEmail($email, $subject, $body, $altBody)) {
-                        // If OTP is sent successfully, commit the transaction
+
                         unset($_SESSION['csrf_token']);
                         http_response_code(201); // Created
                         echo json_encode([
@@ -153,38 +153,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 }
 
-                // Send Login Email Notification
-                $subject = "Login Alert - Public Market Monitoring System";
-                $body = "
-                    Hello,
+                // // Send Login Email Notification
+                // $subject = "Login Alert - Public Market Monitoring System";
+                // $body = "
+                //     Hello,
 
-                    This is an automated message from the Public Market Monitoring System. Please DO NOT reply to this email.
-                    <br><br>
-                    We noticed a login to your account just now.
-                    <br><br>
-                    <b>Date & Time:</b> " . date("F j, Y, g:i a") . "<br>
-                    <b>IP Address:</b> " . $_SERVER['REMOTE_ADDR'] . "<br>
-                    <b>Device/Browser:</b> " . $_SERVER['HTTP_USER_AGENT'] . "
-                    <br><br>
-                    If this was you, no further action is needed.
-                    <br>
-                    If this wasn't you, please reset your password immediately or contact our support team.
-                    <br><br>
-                    Thank you,<br>
-                    Public Market Monitoring System
-                ";
-                $altBody = "Hello,\n\nThis is an automated login alert from the Public Market Monitoring System.\n\n"
-                    . "Date & Time: " . date("F j, Y, g:i a") . "\n"
-                    . "IP Address: " . $_SERVER['REMOTE_ADDR'] . "\n"
-                    . "Device/Browser: " . $_SERVER['HTTP_USER_AGENT'] . "\n\n"
-                    . "If this was not you, please reset your password immediately or contact support.\n\n"
-                    . "Thank you,\nPublic Market Monitoring System";
+                //     This is an automated message from the Public Market Monitoring System. Please DO NOT reply to this email.
+                //     <br><br>
+                //     We noticed a login to your account just now.
+                //     <br><br>
+                //     <b>Date & Time:</b> " . date("F j, Y, g:i a") . "<br>
+                //     <b>IP Address:</b> " . $_SERVER['REMOTE_ADDR'] . "<br>
+                //     <b>Device/Browser:</b> " . $_SERVER['HTTP_USER_AGENT'] . "
+                //     <br><br>
+                //     If this was you, no further action is needed.
+                //     <br>
+                //     If this wasn't you, please reset your password immediately or contact our support team.
+                //     <br><br>
+                //     Thank you,<br>
+                //     Public Market Monitoring System
+                // ";
+                // $altBody = "Hello,\n\nThis is an automated login alert from the Public Market Monitoring System.\n\n"
+                //     . "Date & Time: " . date("F j, Y, g:i a") . "\n"
+                //     . "IP Address: " . $_SERVER['REMOTE_ADDR'] . "\n"
+                //     . "Device/Browser: " . $_SERVER['HTTP_USER_AGENT'] . "\n\n"
+                //     . "If this was not you, please reset your password immediately or contact support.\n\n"
+                //     . "Thank you,\nPublic Market Monitoring System";
 
 
-                if (!sendEmail($email, $subject, $body, $altBody)) {
-                    $error_message = sendEmail($email, $subject, $body, $altBody);
-                    error_log($error_message);
-                }
+                // if (!sendEmail($email, $subject, $body, $altBody)) {
+                //     $error_message = sendEmail($email, $subject, $body, $altBody);
+                //     error_log($error_message);
+                // }
 
                 $_SESSION['user_type'] = $account['user_type'];
                 $_SESSION['account_id'] = $account['id'];
@@ -206,6 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'isVerified' => true,
                     'user_type' => $account['user_type']
                 ];
+
                 http_response_code(200); // OK
                 unset($_SESSION['csrf_token']);
             } else {

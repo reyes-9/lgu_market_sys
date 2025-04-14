@@ -67,10 +67,21 @@ if ($application_type === "helper") {
 }
 
 // Check if user exists
-$applicant_check = $pdo->prepare("SELECT id FROM users WHERE id = :user_id LIMIT 1");
+$applicant_check = $pdo->prepare("
+                SELECT 
+                    u.id, 
+                    u.account_id,
+                    a.is_verified
+                FROM users u
+                JOIN accounts a ON u.account_id = a.id 
+                WHERE u.id = :user_id LIMIT 1
+            ");
+
 $applicant_check->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $applicant_check->execute();
-if ($applicant_check->fetch()) {
+$result = $applicant_check->fetch(PDO::FETCH_ASSOC);
+
+if ($result && $result['is_verified'] === 1) {       // Corrected this line
     $response["isApplicant"] = true;
 }
 
