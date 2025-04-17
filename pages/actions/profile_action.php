@@ -8,7 +8,18 @@ $account_id = $_SESSION['account_id'];
 $user_id = getUserIdByAccountId($pdo, $account_id);
 
 try {
-    $stmt_user = $pdo->prepare("SELECT CONCAT(first_name, ' ', middle_name, ' ', last_name) AS name, email, address, contact_no FROM users WHERE account_id = :account_id");
+    $stmt_user = $pdo->prepare("SELECT CONCAT_WS(' ',
+                                    last_name,
+                                CASE 
+                                  WHEN LOWER(TRIM(middle_name)) = 'n/a' THEN NULL
+                                  ELSE middle_name
+                                END,
+                                    first_name
+                                ) AS name,
+                                            email,
+                                            address,
+                                            contact_no 
+                                FROM users WHERE account_id = :account_id");
     $stmt_user->execute([':account_id' => $account_id]);
     $users = $stmt_user->fetchAll(PDO::FETCH_ASSOC);
 

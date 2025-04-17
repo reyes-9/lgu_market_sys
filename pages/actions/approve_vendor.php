@@ -64,7 +64,7 @@ try {
             $pdo->commit();
 
             $type = 'Vendor Application';
-            $message = sprintf('Your %s has been successfully approved. Please login again to reflect changes.', $type);
+            $message = sprintf('Your %s has been successfully approved.', $type);
             insertNotification($pdo, $account_id, $type, $message, 'unread');
             echo json_encode(['success' => true, 'message' => 'Vendor approved and data copied to users table.']);
         } else {

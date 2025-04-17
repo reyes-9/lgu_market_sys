@@ -215,6 +215,10 @@ require_once '../../includes/session.php';
         .then(data => {
           if (data.user && data.user.length > 0) {
             const user = data.user[0];
+            // Split the name and add a comma after the first name
+            user.name = user.name.split(' ').map((part, index) =>
+              index === 0 ? part + ',' : part
+            ).join(' ');
             document.getElementById('name').textContent = user.name;
             document.getElementById('email').textContent = user.email;
             document.getElementById('profile-birthdate').textContent = user.birthdate;
