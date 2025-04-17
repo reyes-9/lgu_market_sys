@@ -4,7 +4,6 @@ require_once '../../includes/session.php';
 require_once "log_admin_actions.php";
 require_once 'mailer.php';
 
-session_start();
 header('Content-Type: application/json');
 
 $response = ['success' => false, 'message' => '', 'user_type' => null];

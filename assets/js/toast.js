@@ -25,6 +25,6 @@ function displayToast(message, type) {
   
     setTimeout(() => {
       toastElement.remove();
-    }, 4500);
+    }, 7000);
   }
   

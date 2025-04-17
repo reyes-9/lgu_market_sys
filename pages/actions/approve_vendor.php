@@ -15,10 +15,10 @@ $account_id = $_POST['account_id'];
 $application_id = $_POST['application_id'];
 
 try {
-    // Start the transaction to ensure both queries are executed successfully
+
     $pdo->beginTransaction();
 
-    // Step 1: Update the vendor application status to "Approved" and set the status_date
+    // Update the vendor application status to "Approved" and set the status_date
     $stmt = $pdo->prepare("UPDATE vendors_application 
                             SET application_status = 'Approved', status_date = NOW() 
                             WHERE account_id = :account_id AND id = :application_id");
@@ -29,7 +29,7 @@ try {
 
     // Check if the update was successful
     if ($stmt->rowCount() > 0) {
-        // Step 2: Copy the approved vendor's data to the users table
+        // Copy the approved vendor's data to the users table
         $stmt = $pdo->prepare("SELECT first_name, middle_name, last_name, email, alt_email, contact_no, sex, civil_status, nationality, address 
                                FROM vendors_application 
                                WHERE account_id = :account_id AND id = :application_id");
@@ -64,17 +64,17 @@ try {
             $pdo->commit();
 
             $type = 'Vendor Application';
-            $message = sprintf('Your %s has been successfully approved. Your Application Form Number is: %s.', $type, $application_number);
+            $message = sprintf('Your %s has been successfully approved.', $type);
             insertNotification($pdo, $account_id, $type, $message, 'unread');
             echo json_encode(['success' => true, 'message' => 'Vendor approved and data copied to users table.']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Vendor data not found.']);
-            $pdo->rollBack(); // Rollback if vendor data was not found
+            $pdo->rollBack();
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'Vendor not found or already approved.']);
     }
 } catch (PDOException $e) {
-    $pdo->rollBack(); // Rollback in case of error
+    $pdo->rollBack();
     echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 }

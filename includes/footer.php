@@ -140,7 +140,7 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
 
         <?php if (!empty($isLogin) && $_SESSION['user_type'] === 'Visitor') : ?>
             <div class="footer-section">
-                <h4>Create Profile</h4>
+                <h4>Vendor Profile</h4>
                 <p class="text-muted small_text">Create now to access the Vendor Portal—manage your stalls, track applications, and grow your business with ease!</p>
 
                 <a href="http://localhost/lgu_market_sys/pages/create_profile/index.php" class="btn links">Create now</a>

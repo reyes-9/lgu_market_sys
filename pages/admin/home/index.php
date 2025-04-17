@@ -32,7 +32,6 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
   <link rel="icon" type="image/png" href="../logo.png">
   <link rel="stylesheet" href="../../../assets/css/admin.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <?php include '../../../includes/cdn-resources.php'; ?>
 </head>
 
 <body class="body light">
@@ -68,17 +67,24 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
           <div class="card p-3">
             <div class="head d-flex justify-content-between align-items-center p-3">
               <h5 class="fw-bold">Market Utilization Trend</h5>
-
               <div class="btn-group">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Select Market
-                </button>
-                <ul class="dropdown-menu">
-                  ...
-                </ul>
+
+                <div class="mb-3 form-group shadow-lg">
+                  <select class="form-select" id="market">
+                    <option value="" disabled selected>Select Market</option>
+                  </select>
+                </div>
+
+                <div class="mb-3 ms-3 form-group shadow-lg">
+                  <select class="form-select" id="market" required>
+                    <option value="">Daily</option>
+                    <option value="">Monthly</option>
+                    <option value="">Annual</option>
+                  </select>
+                </div>
+
               </div>
             </div>
-
             <canvas id="analyticsChart"></canvas>
           </div>
         </div>
@@ -285,9 +291,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
   <hr>
 
   <?php include '../../../includes/footer.php'; ?>
-  <?php include '../../../includes/theme.php'; ?>
   <?php
-
   $user_type = $_SESSION['user_type'] ?? 'default';
   ?>
 
@@ -399,6 +403,48 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     }
   </script>
 
+  <!-- Fetch Markets -->
+  <script>
+    fetch('../../actions/get_market.php')
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        console.log('Received data:', data);
+        const select = document.getElementById('market');
+        select.innerHTML = '';
+
+        data.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.id;
+          option.textContent = item.market_name;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
+
+    function getUtilizationRate() {
+      const marketselect = document.getElementById("")
+      const url = `../../actions/get_market_utilization_rate.php?market_id${encodeURIComponent(marketId)}`
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          console.log('Received data:', data);
+
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+    }
+  </script>
+
   <!-- Chart.js Configuration -->
   <script>
     const ctx = document.getElementById('analyticsChart').getContext('2d');
@@ -410,8 +456,8 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
           label: 'Performance',
           data: [45, 50, 60, 80, 70, 90, 85],
           borderColor: '#007bff',
-          backgroundColor: 'rgba(0, 123, 255, 0.1)',
-          borderWidth: 2,
+          backgroundColor: 'rgba(0, 123, 255, 0.18)',
+          borderWidth: 3,
           pointRadius: 4,
           fill: true,
           tension: 0.3

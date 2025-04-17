@@ -397,11 +397,14 @@ if (empty($_SESSION['csrf_token'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        displayToast("Registration successful!", "success");
+                        displayToast(
+                            "<strong>Registration successful.</strong><br> Your account is pending admin approval. You’ll be notified once it’s activated.",
+                            "success"
+                        );
                         form.reset();
                         setTimeout(() => {
                             location.reload();
-                        }, 2000);
+                        }, 7500);
                     } else {
                         console.error(data.message);
                         displayToast("Registration failed. Please try again.", "error");
@@ -412,7 +415,6 @@ if (empty($_SESSION['csrf_token'])) {
                     displayToast("An error occurred. Please try again later.", "error");
                 });
         }
-
 
         function isMobileValid() {
             const mobileInput = document.getElementById("mobile");
