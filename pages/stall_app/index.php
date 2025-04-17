@@ -220,7 +220,7 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="row">
                     <div class="form-group col-md-12">
                         <label>What will you sell? <small class="error-message"></small></label>
-                        <input type="text" class="form-control" name="market_items">
+                        <input type="text" class="form-control" name="products" id="products">
                     </div>
                 </div>
 
@@ -324,6 +324,10 @@ if (empty($_SESSION['csrf_token'])) {
                 }
             });
 
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
             fetch("../actions/submit_stall_app.php", {
                     method: "POST",
                     body: formData
@@ -343,6 +347,62 @@ if (empty($_SESSION['csrf_token'])) {
                     displayToast("An error occurred while submitting the application", "error");
                 });
         });
+
+        function generateAndSubmitApplication() {
+            // Function to fetch the last application ID from the server
+            function getLastApplicationId() {
+                return $.ajax({
+                    url: '../actions/get_last_app_id.php', // Endpoint to get the last application ID
+                    type: 'GET',
+                    dataType: 'json'
+                });
+            }
+
+            // Function to generate application number
+            function generateApplicationNumber(lastApplicationId) {
+                let currentDate = new Date();
+                let formattedDate = currentDate.getFullYear() +
+                    ("0" + (currentDate.getMonth() + 1)).slice(-2) +
+                    ("0" + currentDate.getDate()).slice(-2); // YYYYMMDD format
+
+                let applicationNumber = "APP-" + formattedDate + "-" + String(lastApplicationId + 1).padStart(6, '0');
+                return applicationNumber;
+            }
+
+            // When the page loads, generate the application number
+            getLastApplicationId().done(function(response) {
+                // Assuming the response contains the last application ID
+                let lastApplicationId = response.last_application_id; // Example: 123
+                let applicationNumber = generateApplicationNumber(lastApplicationId);
+                document.getElementById('app_number').textContent = applicationNumber;
+
+                // Set the generated application number in the input field
+                $('#applicationNumber').val(applicationNumber);
+
+                // Handle form submission
+                $('#c').submit(function(e) {
+                    e.preventDefault();
+
+                    // Get the application number
+                    let applicationNumber = $('#applicationNumber').val();
+
+                    // Send the form data to the server for saving
+                    $.ajax({
+                        url: 'submit_stall_app.php',
+                        type: 'POST',
+                        data: {
+                            application_number: applicationNumber
+                        },
+                        contentType: 'application/x-www-form-urlencoded',
+                        success: function(response) {
+                            alert(response.message);
+                        }
+                    });
+                });
+            }).fail(function() {
+                console.error('Error fetching last application ID');
+            });
+        }
 
         function setSelectedValuesFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -401,7 +461,6 @@ if (empty($_SESSION['csrf_token'])) {
             return urlParams.has("from") && urlParams.get("from") === "mapping";
         }
 
-
         function fillStallApplicationForm() {
             // Get URL parameters
             const urlParams = new URLSearchParams(window.location.search);
@@ -423,64 +482,6 @@ if (empty($_SESSION['csrf_token'])) {
             if (stallField) stallField.value = stallNumber || "";
             if (sectionField) sectionField.value = section || "";
             if (marketField) marketField.value = market || "";
-        }
-
-
-        // Function to generate and submit application form
-        function generateAndSubmitApplication() {
-            // Function to fetch the last application ID from the server
-            function getLastApplicationId() {
-                return $.ajax({
-                    url: '../actions/get_last_app_id.php', // Endpoint to get the last application ID
-                    type: 'GET',
-                    dataType: 'json'
-                });
-            }
-
-            // Function to generate application number
-            function generateApplicationNumber(lastApplicationId) {
-                let currentDate = new Date();
-                let formattedDate = currentDate.getFullYear() +
-                    ("0" + (currentDate.getMonth() + 1)).slice(-2) +
-                    ("0" + currentDate.getDate()).slice(-2); // YYYYMMDD format
-
-                let applicationNumber = "APP-" + formattedDate + "-" + String(lastApplicationId + 1).padStart(6, '0');
-                return applicationNumber;
-            }
-
-            // When the page loads, generate the application number
-            getLastApplicationId().done(function(response) {
-                // Assuming the response contains the last application ID
-                let lastApplicationId = response.last_application_id; // Example: 123
-                let applicationNumber = generateApplicationNumber(lastApplicationId);
-                document.getElementById('app_number').textContent = applicationNumber;
-
-                // Set the generated application number in the input field
-                $('#applicationNumber').val(applicationNumber);
-
-                // Handle form submission
-                $('#c').submit(function(e) {
-                    e.preventDefault();
-
-                    // Get the application number
-                    let applicationNumber = $('#applicationNumber').val();
-
-                    // Send the form data to the server for saving
-                    $.ajax({
-                        url: 'submit_stall_app.php',
-                        type: 'POST',
-                        data: {
-                            application_number: applicationNumber
-                        },
-                        contentType: 'application/x-www-form-urlencoded',
-                        success: function(response) {
-                            alert(response.message);
-                        }
-                    });
-                });
-            }).fail(function() {
-                console.error('Error fetching last application ID');
-            });
         }
 
         function switchForm(hideFormId, showFormId) {

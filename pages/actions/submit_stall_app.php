@@ -50,7 +50,8 @@ try {
         intval($data['stall_id']),
         intval($data['section_id']),
         intVal($data['market_id']),
-        'stall'
+        'stall',
+        $data['products']
     );
 
     if (!$applicationId || !is_numeric($applicationId)) {
@@ -180,8 +181,8 @@ function validateApplicationData($data)
     }
 
     // Validate Market Information
-    if (empty($data['market_items'])) {
-        $errors[] = "Market Items field is required.";
+    if (empty($data['products'])) {
+        $errors[] = "Products field is required.";
     }
 
     // Validate Document Information
