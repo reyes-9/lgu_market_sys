@@ -20,7 +20,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     <title>Review Application - Public Market Monitoring System</title>
     <link rel="icon" type="image/png" href="../logo.png">
     <link rel="stylesheet" href="../../../assets/css/admin.css">
-    <?php include '../../../includes/cdn-resources.php'; ?>
+    <?php include_once '../../../includes/cdn-resources.php'; ?>
 </head>
 
 <body class="body light">
