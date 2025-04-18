@@ -108,8 +108,8 @@ if (empty($_SESSION['csrf_token'])) {
                     </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="owner_id">Stall Owner ID:<small class="error-message"></small></label>
-                    <input type="text" class="form-control" id="ownerId" name="owner_id" readonly />
+                    <label for="owner_id">Stall Owner Account ID:<small class="error-message"></small></label>
+                    <input type="text" class="form-control" id="ownerId" name="so_user_id" readonly />
                 </div>
 
                 <div class="form-section"> Helper's Personal Information </div>
@@ -712,7 +712,7 @@ if (empty($_SESSION['csrf_token'])) {
                         ownerLastNameInput.value = lastName;
 
                         data.stalls.forEach(stall => {
-                            ownerIdInput.value = stall.account_id;
+                            ownerIdInput.value = stall.user_id;
                         });
 
                         data.stalls.forEach((stall, index) => {

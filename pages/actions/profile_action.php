@@ -34,10 +34,21 @@ try {
                     s.user_id,
                     sec.section_name AS section_name, 
                     m.market_name AS market_name,
-                    e.expiration_date AS expiration_date 
-                FROM stalls s
+                    e.expiration_date AS expiration_date,
+                    ext.updated_at AS extension_duration,
+                    CONCAT_WS(' ',
+                                    h.first_name,
+                                CASE 
+                                  WHEN LOWER(TRIM(h.middle_name)) = 'n/a' THEN NULL
+                                  ELSE h.middle_name
+                                END,
+                                    h.last_name
+                                ) AS helper_name
+            FROM stalls s
             JOIN sections sec ON s.section_id = sec.id
             JOIN market_locations m ON s.market_id = m.id
+            LEFT JOIN helpers h ON h.stall_id = s.id 
+            LEFT JOIN extensions ext ON s.id = ext.stall_id AND ext.status = 'active'
             LEFT JOIN expiration_dates e ON s.id = e.reference_id AND e.type = 'stall'
             WHERE s.user_id = :user_id
         ");

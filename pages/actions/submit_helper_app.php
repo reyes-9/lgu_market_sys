@@ -57,11 +57,12 @@ try {
     ];
 
     $fullAddress = implode(', ', array_filter($addressParts));
+    $user_id = filter_var($data['so_user_id'], FILTER_VALIDATE_INT) !== false ? (int)$data['so_user_id'] : throw new Exception("Invalid user ID");
 
     $helperResponse = insertHelper(
         $pdo,
         intval($data['stall_id'] ?? 0),
-        $account_id,
+        $user_id,
         properCase($data['first_name'] ?? ''),
         properCase($data['last_name'] ?? ''),
         properCase($data['middle_name'] ?? ''),
@@ -95,12 +96,7 @@ try {
         throw new Exception("Failed to submit application.");
     }
 
-    $userId = getUserId($pdo, $account_id, $data['owner_first_name'], $data['owner_middle_name'], $data['owner_last_name']);
-    if (!$userId) {
-        throw new Exception("User not found.");
-    }
-
-    $isApplicantInserted = insertApplicant($pdo, $userId, intval($applicationId));
+    $isApplicantInserted = insertApplicant($pdo, $user_id, intval($applicationId));
     if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
         throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
@@ -221,7 +217,7 @@ function validateApplicationData($data)
 function insertHelper(
     $pdo,
     $stallId,
-    $accountId,
+    $userId,
     $firstName,
     $middle_name,
     $lastName,
@@ -231,23 +227,22 @@ function insertHelper(
     $phoneNumber,
     $civilStatus,
     $nationality,
-    $fullAddress,
-
+    $fullAddress
 ) {
     try {
         // Prepare SQL query for inserting applicant
         $query = "INSERT INTO helpers 
-            (stall_id, account_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
+            (stall_id, so_user_id, first_name, middle_name, last_name, sex, email, alt_email, phone_number, 
             civil_status, nationality, address, created_at) 
             VALUES 
-            (:stall_id, :account_id, :first_name, :middle_name, :last_name, :sex, :email, :alt_email, :phone_number, 
+            (:stall_id, :so_user_id, :first_name, :middle_name, :last_name, :sex, :email, :alt_email, :phone_number, 
             :civil_status, :nationality, :address, NOW())";
 
         $stmt = $pdo->prepare($query);
 
         // Handle null values properly
         $stmt->bindValue(':stall_id', $stallId, PDO::PARAM_INT);
-        $stmt->bindValue(':account_id', $accountId, PDO::PARAM_INT);
+        $stmt->bindValue(':so_user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
         $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
         $stmt->bindValue(':middle_name', $middle_name, PDO::PARAM_STR);

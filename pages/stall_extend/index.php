@@ -120,8 +120,8 @@ if (empty($_SESSION['csrf_token'])) {
                     </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="owner_id">Stall Owner ID:<small class="error-message"></small></label>
-                    <input type="text" class="form-control" id="ownerId" name="owner_id" readonly />
+                    <label for="owner_id">Stall Owner Account Id:<small class="error-message"></small></label>
+                    <input type="text" class="form-control" id="ownerId" name="so_user_id" readonly />
                 </div>
 
 
@@ -510,7 +510,6 @@ if (empty($_SESSION['csrf_token'])) {
                     `;
                             stallsContainer.appendChild(row);
 
-                            // Add click event listener to each row
                             row.addEventListener("click", function() {
                                 // Remove 'table-active' from all rows
                                 document.querySelectorAll("#stallsContainer tr").forEach(tr => tr.classList.remove("table-active"));

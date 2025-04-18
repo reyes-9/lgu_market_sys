@@ -12,14 +12,6 @@
 <?php
 
 require_once 'includes/session.php';
-// Check if user is logged in
-if (!isset($_SESSION['account_id'])) {
-    echo '<script>
-            alert("Please log in to continue.");
-            window.location.href = "/lgu_market_sys/pages/login/index.php";
-           </script>';
-    exit();
-}
 
 // Only allow vendors
 if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' && $_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {

@@ -14,6 +14,7 @@
 require_once '../../includes/session.php';
 ?>
 
+
 <body class="body light">
 
   <?php include '../../includes/nav.php'; ?>
@@ -46,6 +47,8 @@ require_once '../../includes/session.php';
                   <th><strong>Stall Size</strong></th>
                   <th><strong>Rental Fee</strong></th>
                   <th><strong>Rent Expiration Date</strong></th>
+                  <th><strong>Extension</strong></th>
+                  <th><strong>Helper</strong></th>
                 </tr>
               </thead>
               <tbody id="stallsContainer">
@@ -174,12 +177,12 @@ require_once '../../includes/session.php';
             <form id="garbageRequestForm">
               <div class="mb-3">
                 <label for="marketName" class="form-label">Market:</label>
-                <select class="form-select" id="market" onchange="getStallData()" required>
+                <select class="form-select" id="market" required>
                   <option value="" disabled selected>-- Select Market --</option>
                 </select>
               </div>
               <div class="text-end">
-                <button type="submit" class="btn btn-primary" id="requestCollectionBtn">Submit Request</button>
+                <button type="submit" class="btn btn-primary" id="requestCollectionBtn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The garbage collection request will be submitted when the request count reached 20 request.">Submit Request</button>
               </div>
             </form>
           </div>
@@ -197,6 +200,7 @@ require_once '../../includes/session.php';
       // Fetch and populate stalls data
       fetchStallsData();
       populateSubmitReceiptTable()
+      fetchMarkets();
 
       const uploadButton = document.getElementById('uploadPaymentReceipt');
 
@@ -218,8 +222,8 @@ require_once '../../includes/session.php';
         fetch('../actions/profile_action.php')
           .then(response => response.json())
           .then(data => {
+            console.log(data);
             populateViewStallsTable(data.stalls);
-            // populateSubmitReceiptTable(data.stalls);
           })
           .catch(error => {
             console.error('Error fetching data:', error);
@@ -286,10 +290,10 @@ require_once '../../includes/session.php';
                                         <td>${stall.stall_size}</td>
                                         <td>${stall.rental_fee}</td>
                                         <td class="${new Date(stall.expiration_date) < new Date() ? 'text-danger' : 'text-success'}">
-
-                <strong>${stall.expiration_date ? new Date(stall.expiration_date).toLocaleDateString() : 'N/A'}</strong>
-            </td>
-
+                                          <strong>${stall.expiration_date ? new Date(stall.expiration_date).toLocaleDateString() : 'N/A'}</strong>
+                                        </td>
+                                        <td>${stall.extension_duration != null ? stall.extension_duration : 'N/A'}</td>
+                                        <td>${stall.helper_name && stall.helper_name.trim() !== '' ? stall.helper_name : 'N/A'}</td>
 
                                     `;
           stallsContainer.appendChild(row);
@@ -400,6 +404,35 @@ require_once '../../includes/session.php';
           alert("An error occurred. Please try again.");
         });
     }
+
+    function fetchMarkets() {
+      fetch('../actions/get_market.php')
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          console.log('Received data:', data);
+          const select = document.getElementById('market');
+          select.innerHTML = '';
+
+          data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.market_name;
+            select.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+    }
+  </script>
+  <script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl)
+    })
   </script>
 </body>
 

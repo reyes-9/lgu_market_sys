@@ -58,18 +58,9 @@ try {
         throw new Exception("Failed to submit application.");
     }
 
-    $userId = getUserId(
-        $pdo,
-        $account_id,
-        properCase($data['owner_first_name'] ?? ''),
-        properCase($data['owner_middle_name'] ?? ''),
-        properCase($data['owner_last_name'] ?? '')
-    );
-    if (!$userId) {
-        throw new Exception("User not found.");
-    }
+    $user_id = filter_var($data['so_user_id'], FILTER_VALIDATE_INT) !== false ? (int)$data['so_user_id'] : throw new Exception("Invalid user ID");
 
-    $isApplicantInserted = insertApplicant($pdo, $userId, intval($applicationId));
+    $isApplicantInserted = insertApplicant($pdo, $user_id, intval($applicationId));
     if (!is_array($isApplicantInserted) || !$isApplicantInserted['success']) {
         throw new Exception("Failed to insert applicant. Database Error: " . $isApplicantInserted['error']);
     }
