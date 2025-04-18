@@ -1,16 +1,16 @@
 <?php
-require_once '../../includes/config.php'; // Adjust the path as needed
-require_once '../../includes/session.php'; // Adjust the path as needed
-include 'get_user_id.php'; // Adjust the path as needed
+require_once '../../includes/config.php';
+require_once '../../includes/session.php';
+include 'get_user_id.php';
+error_reporting(E_ERROR | E_PARSE);
 
 $account_id = $_SESSION['account_id'];
 $user_id = getUserIdByAccountId($pdo, $account_id);
 
-// Function to submit a complaint when the request count reaches 20
 function submitGarbageComplaint($market_id, $pdo)
 {
     try {
-        // Retrieve market name from market_locations table using the market_id
+
         $stmt = $pdo->prepare("SELECT market_name FROM market_locations WHERE id = ?");
         $stmt->execute([$market_id]);
         $marketRow = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -84,8 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     try {
-        // Get today's date
-        $today = date('Y-m-d'); // Current date in Y-m-d format
+        $today = date('Y-m-d');
 
         // Check if the user has already requested for the given market today
         $stmt = $pdo->prepare("SELECT id FROM garbage_requests WHERE market_id = ? AND user_id = ? AND DATE(request_date) = ?");
@@ -116,12 +115,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Check if the request count has reached 20
         if ($row['request_count'] + 1 >= 20) {
             // Call the function to submit the complaint if request count reaches 20
-            $response = submitGarbageComplaint($market_id, $pdo);
-            echo $response;
-            exit;
+            $response = json_decode(submitGarbageComplaint($market_id, $pdo), true);
+            if ($response && $response['success'] === true) {
+                $stmt = $pdo->prepare("UPDATE garbage_requests SET request_count = 0 WHERE market_id = ?");
+                $stmt->execute([$market_id]);
+                echo json_encode(["success" => true, "message" => "Garbage request submitted successfully."]);
+                exit;
+            } else {
+                echo json_encode(["success" => false, "message" => "Failed to submit complaint via API."]);
+            }
         }
-
-        echo json_encode(["success" => true, "message" => "Garbage request submitted successfully."]);
+        echo json_encode(["success" => true, "message" => "Garbage request added successfully."]);
     } catch (PDOException $e) {
         echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
     }

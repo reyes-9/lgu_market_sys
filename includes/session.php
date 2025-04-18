@@ -3,6 +3,13 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+$isLoginPage = strpos($_SERVER['REQUEST_URI'], '/pages/login/') !== false;
+
+// if (!isset($_SESSION['account_id']) && !$isLoginPage) {
+//     header('Location: /lgu_market_sys/pages/login/');
+//     exit;
+// }
+
 $isInActionsFolder = strpos($_SERVER['REQUEST_URI'], '/actions/') !== false;
 $isInAdminFolder = strpos($_SERVER['REQUEST_URI'], '/admin/') !== false;
 ?>
@@ -40,6 +47,32 @@ $isInAdminFolder = strpos($_SERVER['REQUEST_URI'], '/admin/') !== false;
             </div>
         </div>
     </div>
+
+    <?php if (!isset($_SESSION['account_id']) && !$isLoginPage): ?>
+        <!-- Not Logged In Modal -->
+        <div class="modal fade" id="notLoggedInModal" tabindex="-1" aria-labelledby="notLoggedInModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="notLoggedInModalLabel">Login Required</h5>
+                    </div>
+                    <div class="modal-body">
+                        You need to log in to continue using the system. Please enter your credentials.
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/lgu_market_sys/pages/login/" class="btn btn-primary">Go to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const notLoggedInModal = new bootstrap.Modal(document.getElementById('notLoggedInModal'));
+                notLoggedInModal.show();
+            });
+        </script>
+    <?php endif; ?>
 
     <script>
         // PHP value passed to JS
