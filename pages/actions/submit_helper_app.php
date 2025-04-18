@@ -79,7 +79,10 @@ try {
         throw new Exception("Failed to insert helper.");
     }
 
-    $helperId = $helperResponse['id'];
+    $helperId = filter_var($helperResponse['id'] ?? null, FILTER_VALIDATE_INT);
+    if ($helperId === false || $helperId <= 0) {
+        throw new Exception("Failed to get helper id.");
+    }
 
     $applicationId = uploadApplication(
         $pdo,
@@ -89,6 +92,7 @@ try {
         intval($data['section_id']),
         intVal($data['market_id']),
         'helper',
+        null,
         $helperId
     );
 

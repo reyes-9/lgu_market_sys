@@ -62,7 +62,6 @@ try {
             }
         }
 
-
         if ($action === 'approved' && $application_type === "stall transfer") {
             $transferStallOwnershipResult = transferStallOwnership($pdo, $current_owner_id, $stall_number, $applicants_user_id);
             if (!$transferStallOwnershipResult['success']) {

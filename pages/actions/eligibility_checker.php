@@ -50,6 +50,7 @@ if ($application_type === "helper") {
             WHERE h.id = :helper_id 
             AND s.stall_number = :stall_number
         ");
+
         $helper_check->bindParam(':helper_id', $helper_id, PDO::PARAM_INT);
         $helper_check->bindParam(':stall_number', $stall_number, PDO::PARAM_INT);
         $helper_check->execute();
@@ -64,6 +65,8 @@ if ($application_type === "helper") {
         } else {
             $response["error"] = "Helper not found.";
         }
+    } else {
+        $response["error"] = "Helper Id is required.";
     }
 }
 
@@ -98,28 +101,32 @@ $stall_query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stall_query->execute();
 $stall = $stall_query->fetch(PDO::FETCH_ASSOC);
 
-if ($stall) {
-    $response["isStall"] = ($stall["user_id"] == $user_id);
-
-    if ($application_type === "stall") {
-        $response["isStall"] = ($stall["status"] === 'available');
-    } elseif ($application_type === "stall transfer") {
-        $response["isStall"] = ($stall["user_id"] == $current_owner_id);
-
-        if ($stall["payment_status"] === "Paid") {
-            $response["isStallPaid"] = true;
-        }
-    } elseif ($application_type === "stall succession") {
-        $response["isStall"] = ($stall["user_id"] == $deceased_owner_id);
-
-        if ($stall["payment_status"] === "Paid") {
-            $response["isStallPaid"] = true;
-        }
-    }
-
-    $response["hasViolation"] = ($stall["violation_count"] > 0);
-} else {
+if (!$stall) {
     $response["error"] = "Stall not found";
+    echo json_encode($response);
+    exit;
+}
+
+$response["hasViolation"] = ($stall["violation_count"] > 0);
+$response["isStallPaid"] = ($stall["payment_status"] === "Paid");
+
+switch ($application_type) {
+    case "stall":
+        $response["isStall"] = ($stall["status"] === "available");
+        break;
+
+    case "stall transfer":
+        $response["isStall"] = ($stall["user_id"] == $current_owner_id);
+        break;
+
+    case "stall succession":
+        $response["isStall"] = ($stall["user_id"] == $deceased_owner_id);
+        break;
+
+    default:
+        // For other application types, fallback to simple ownership check
+        $response["isStall"] = ($stall["user_id"] == $user_id);
+        break;
 }
 
 // Check stall transfer approval status

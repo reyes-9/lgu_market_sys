@@ -376,7 +376,7 @@ if ($applications_id) {
             $firstKey = isset($applications) ? array_key_first($applications) : null;
             ?>
 
-            <form method="POST" action="" class="approval-actions">
+            <form method="POST" action="" class="approval-actions d-flex">
 
                 <input type="hidden" name="application_id" value="<?php echo !empty($app['application_id']) ? htmlspecialchars($app['application_id']) : ''; ?>">
                 <input type="hidden" name="account_id" value="<?php echo !empty($app['account_id']) ? $app['account_id'] : ''; ?>">
@@ -545,7 +545,8 @@ if ($applications_id) {
                 document.getElementById("sectionName").innerHTML = ` ${application.section_name ?? 'N/A'}`;
                 document.getElementById("stallNumber").innerHTML = `${application.stall_number ?? 'N/A'}`;
 
-                document.getElementById("helperName").innerHTML = `${application.helper_full_name ?? 'N/A'}`;
+                let helperFullName = application.helper_full_name?.replace(/n\/a/gi, '').trim() || 'N/A';
+                document.getElementById("helperName").innerHTML = helperFullName;
 
                 const selected_inspector = document.getElementById("selectedInspector");
                 const selected_date = document.getElementById("selectedDate");
@@ -821,8 +822,7 @@ if ($applications_id) {
             const helper_full_name = JSON.parse(<?php echo json_encode($helper_full_name); ?>);
             const helper_id = JSON.parse(<?php echo json_encode($helper_id); ?>);
 
-            console.log(stall_number)
-
+            console.log("Helper Id", helper_id);
             let applications = <?php echo json_encode($applications, JSON_PRETTY_PRINT); ?>;
 
             if (!user_id || !stall_number) {
@@ -996,7 +996,11 @@ if ($applications_id) {
                         canApprove = data.isStallPaid && data.isTransferApproved && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     } else if (application_type === "helper") {
                         ownerApprovalDiv.style.display = "none";
-                        canApprove = data.isHelper && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
+                        canApprove = data.isStallPaid && data.isHelper && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
+                    } else if (application_type === 'stall extension') {
+                        helperValidationDiv.style.display = "none";
+                        ownerApprovalDiv.style.display = "none";
+                        canApprove = data.isStallPaid && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     } else {
                         paymentDiv.style.display = "none";
                         helperValidationDiv.style.display = "none";
