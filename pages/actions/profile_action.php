@@ -34,12 +34,13 @@ try {
                     s.user_id,
                     sec.section_name AS section_name, 
                     m.market_name AS market_name,
-                    e.expiration_date AS expiration_date,
-                    ext.updated_at AS extension_duration,
+                    es.expiration_date AS stall_expiration_date,
+                    ex.expiration_date AS extension_expiration_date,
+          
                     CONCAT_WS(' ',
                                     h.first_name,
                                 CASE 
-                                  WHEN LOWER(TRIM(h.middle_name)) = 'n/a' THEN NULL
+                                  WHEN LOWER(TRIM(h.middle_name)) = 'N/A' THEN NULL
                                   ELSE h.middle_name
                                 END,
                                     h.last_name
@@ -49,7 +50,8 @@ try {
             JOIN market_locations m ON s.market_id = m.id
             LEFT JOIN helpers h ON h.stall_id = s.id 
             LEFT JOIN extensions ext ON s.id = ext.stall_id AND ext.status = 'active'
-            LEFT JOIN expiration_dates e ON s.id = e.reference_id AND e.type = 'stall'
+            LEFT JOIN expiration_dates es ON s.id = es.reference_id AND es.type = 'stall'
+            LEFT JOIN expiration_dates ex ON ext.id = ex.reference_id AND ex.type = 'stall extension'
             WHERE s.user_id = :user_id
         ");
 

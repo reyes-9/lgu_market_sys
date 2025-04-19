@@ -1008,10 +1008,8 @@ if ($applications_id) {
                         canApprove = data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
                     }
 
-
                     sched_info_div.style.display = inspection_status === "Approved" ? "block" : "none";
                     sched_info_div.style.display = "block";
-
 
                     if (canApprove === true) {
                         console.log(inspection_status);

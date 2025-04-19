@@ -23,13 +23,26 @@ require_once '../../includes/session.php';
     <div class="container-fluid">
 
       <!-- Banner Section -->
-      <div class="payment-banner d-flex justify-content-between align-items-center px-5 py-4 shadow">
-        <div class="banner-text">
-          <h4 class="text-white">Stall Payment</h4>
-          <p class="text-white mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
+      <div class="payment-banner d-flex flex-column justify-content-center px-5 py-4 shadow">
+        <div class="d-flex">
+          <div class="banner-text">
+            <h4 class="text-white">Stall Payment</h4>
+            <p class="text-white mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
+          </div>
 
+          <button class="btn submit-receipt-btn my-auto" data-bs-toggle="modal" data-bs-target="#submitStallReceiptModal">Stall Receipt</button>
         </div>
-        <button class="btn btn-primary submit-receipt-btn" data-bs-toggle="modal" data-bs-target="#submitReceiptModal">Submit Receipt</button>
+
+        <hr>
+
+        <div class="d-flex">
+          <div class="banner-text">
+            <h4 class="text-white">Stall Extension Payment</h4>
+            <p class="text-white mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
+          </div>
+          <button class="btn submit-receipt-btn my-auto" data-bs-toggle="modal" data-bs-target="#submitExtensionReceiptModal">Extension Receipt</button>
+        </div>
+
       </div>
 
       <div class="row m-5 py-5 px-3 mx-auto shadow rounded-4 w-75 table-container">
@@ -46,8 +59,8 @@ require_once '../../includes/session.php';
                   <th><strong>Stall No.</strong></th>
                   <th><strong>Stall Size</strong></th>
                   <th><strong>Rental Fee</strong></th>
-                  <th><strong>Rent Expiration Date</strong></th>
-                  <th><strong>Extension</strong></th>
+                  <th><strong>Rent Exp. Date</strong></th>
+                  <th><strong>Extension Exp. Date</strong></th>
                   <th><strong>Helper</strong></th>
                 </tr>
               </thead>
@@ -60,6 +73,7 @@ require_once '../../includes/session.php';
       </div>
 
       <hr>
+      <!-- Cards -->
       <div class="container mb-5">
 
         <div class="mt-5 d-flex flex-wrap justify-content-center gap-4">
@@ -101,14 +115,14 @@ require_once '../../includes/session.php';
     </div>
   </div>
 
-  <!-- Submit Receipt Modal -->
-  <div class="modal fade" id="submitReceiptModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="submitReceiptModal" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+  <!-- Stall Receipt Modal -->
+  <div class="modal fade" id="submitStallReceiptModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="submitStallReceiptModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: 100%; margin: 0;">
       <div class="modal-content">
         <div class="modal-body">
           <div class="modal-container">
             <div class="d-flex align-items-center justify-content-between">
-              <h4 class="modal-title fw-bold" id="submitReceiptModalLabel">Upload Reciept</h4>
+              <h4 class="modal-title fw-bold" id="submitStallReceiptModalLabel">Upload Stall Receipt</h4>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <p class="text-muted me-5">
@@ -116,7 +130,7 @@ require_once '../../includes/session.php';
             </p>
             <hr class="mb-4">
 
-            <form id="submitRecieptForm" enctype="multipart/form-data">
+            <form id="submitStallRecieptForm" enctype="multipart/form-data">
 
               <table class="table table-borderless table-hover">
                 <thead>
@@ -138,19 +152,77 @@ require_once '../../includes/session.php';
               <div class="container text-start w-50 m-0">
 
                 <div class="mb-3">
-                  <label for="receiptFile" class="form-label">Upload Reciept (PDF or Image)</label>
-                  <input type="file" class="form-control" id="receiptFile" name="receipt_file" accept=".pdf, image/*">
+                  <label for="stallReceiptFile" class="form-label">Upload Reciept (PDF or Image)</label>
+                  <input type="file" class="form-control" id="stallReceiptFile" name="stall_receipt_file" accept=".pdf, image/*">
+                </div>
+
+                <label for="stallReceiptFile" class="form-label">Paid Amount</label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text">₱</span>
+                  <input type="number" class="form-control" id="stallPaidAmount" name="stall_paid_amount" aria-label="Amount (to the nearest dollar)">
+                </div>
+                <input type="hidden" id="sourceType" name="source_type" value="stall">
+              </div>
+
+              <button class="btn btn-dark mt-3" id="uploadStallPaymentReceipt" type="button">Upload</button>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extension Receipt Modal -->
+  <div class="modal fade" id="submitExtensionReceiptModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="submitExtensionReceiptModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl w-100" style="max-width: 100%; margin: 0;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="modal-container">
+            <div class="d-flex align-items-center justify-content-between">
+              <h4 class="modal-title fw-bold" id="submitExtensionReceiptModalLabel">Upload Extension Reciept</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <p class="text-muted me-5">
+              Upload your payment receipt for verification and to avoid violations.
+            </p>
+            <hr class="mb-4">
+
+            <form id="submitExtensionRecieptForm" enctype="multipart/form-data">
+              <table class="table table-borderless table-hover">
+                <thead>
+                  <tr>
+                    <th><strong>Select</strong></th>
+                    <th><strong>Stall No.</strong></th>
+                    <th><strong>Market</strong></th>
+                    <th><strong>Section</strong></th>
+                    <th><strong>Payment Status</strong></th>
+                    <th><strong>Extension Cost</strong></th>
+                    <th><strong>Extension Duration</strong></th>
+                    <th><strong>Expiration Date</strong></th>
+                  </tr>
+                </thead>
+                <tbody id="receiptExtensionContainer">
+
+                </tbody>
+              </table>
+              <h5 id="receipt_extension_message"></h5>
+              <div class="container text-start w-50 m-0">
+
+                <div class="mb-3">
+                  <label for="extensionReceiptFile" class="form-label">Upload Reciept (PDF or Image)</label>
+                  <input type="file" class="form-control" id="extensionReceiptFile" name="extension_receipt_file" accept=".pdf, image/*">
                 </div>
 
                 <label for="receiptFile" class="form-label">Paid Amount</label>
                 <div class="input-group mb-3">
                   <span class="input-group-text">₱</span>
-                  <input type="number" class="form-control" id="paidAmount" name="paid_amount" aria-label="Amount (to the nearest dollar)">
+                  <input type="number" class="form-control" id="extensionPaidAmount" name="extension_paid_amount" aria-label="Amount (to the nearest peso)">
                 </div>
-                <input type="hidden" id="sourceType" name="source_type" value="stall">
+                <input type="hidden" id="sourceType" name="source_type" value="extension">
               </div>
 
-              <button class="btn btn-dark mt-3" id="uploadPaymentReceipt" type="button">Upload</button>
+              <button class="btn btn-dark mt-3" id="uploadExtensionPaymentReceipt" type="button">Upload</button>
 
             </form>
           </div>
@@ -182,7 +254,7 @@ require_once '../../includes/session.php';
                 </select>
               </div>
               <div class="text-end">
-                <button type="submit" class="btn btn-primary" id="requestCollectionBtn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The garbage collection request will be submitted when the request count reached 20 request.">Submit Request</button>
+                <button type="button" class="btn btn-primary" id="requestCollectionBtn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The garbage collection request will be submitted when the request count reached 20 request.">Submit Request</button>
               </div>
             </form>
           </div>
@@ -199,20 +271,69 @@ require_once '../../includes/session.php';
 
       // Fetch and populate stalls data
       fetchStallsData();
-      populateSubmitReceiptTable()
+      populateSubmitStallReceiptTable();
+      populateSubmitExtensionReceiptTable();
       fetchMarkets();
 
-      const uploadButton = document.getElementById('uploadPaymentReceipt');
-
-      uploadButton.addEventListener('click', function() {
-        const selectedStall = document.querySelector('input[name="selected_stall_id"]:checked');
-        const fileInput = document.getElementById('receiptFile');
-        const paid_amount = document.getElementById('paidAmount').value;
-
-        if (validateReceiptForm(selectedStall, fileInput, paid_amount)) {
-          submitPayment();
+      // Stall
+      const stallModal = document.getElementById('submitStallReceiptModal');
+      stallModal.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault(); // Stops the form from submitting or closing the modal
         }
       });
+
+      const uploadStallButton = document.getElementById('uploadStallPaymentReceipt');
+      uploadStallButton.addEventListener('click', function() {
+        const selectedStall = document.querySelector('input[name="selected_stall_id"]:checked');
+        const selectedRow = selectedStall.closest('tr');
+        const fileInput = document.getElementById('stallReceiptFile');
+        const paid_amount = parseFloat(document.getElementById('stallPaidAmount').value);
+        const rental_fee = parseFloat(selectedRow.querySelector('td:nth-child(5)').textContent.trim());
+
+        if (!selectedStall) {
+          alert("Please select a stall before uploading a receipt.");
+          return;
+        }
+
+
+        if (validateReceiptForm(selectedStall, fileInput, paid_amount, rental_fee)) {
+          const stall_form = document.getElementById('submitStallRecieptForm')
+          submitPayment(stall_form);
+        }
+
+      });
+
+      // Extension
+      const extensionModal = document.getElementById('submitExtensionReceiptModal');
+      extensionModal.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault(); // Stops the form from submitting or closing the modal
+        }
+      });
+
+      const uploadExtensionButton = document.getElementById('uploadExtensionPaymentReceipt');
+      uploadExtensionButton.addEventListener('click', function() {
+        const selectedStall = document.querySelector('input[name="selected_stall_id"]:checked');
+        const selectedRow = selectedStall.closest('tr');
+        const fileInput = document.getElementById('extensionReceiptFile');
+        const paid_amount = document.getElementById('extensionPaidAmount').value;
+        const rental_fee = parseFloat(selectedRow.querySelector('td:nth-child(6)').textContent.trim());
+
+        console.log(selectedStall);
+
+        if (!selectedRow) {
+          alert("Please select a stall before uploading a receipt.");
+          return;
+        }
+
+
+        if (validateReceiptForm(selectedStall, fileInput, paid_amount, rental_fee)) {
+          const extension_form = document.getElementById('submitExtensionRecieptForm');
+          submitPayment(extension_form);
+        }
+      });
+
 
       // Event listener for garbage request form submission
       const form = document.getElementById("garbageRequestForm");
@@ -231,34 +352,11 @@ require_once '../../includes/session.php';
       }
     });
 
-    function submitPayment() {
-      const formData = new FormData(document.getElementById('submitRecieptForm'));
-      fetch('../actions/submit_stall_receipt.php', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          if (data.success) {
-            alert('Payment successfully submitted!');
-            location.reload();
-          } else {
-            alert('Error: ' + data.message); // Display the error message if not successful
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while submitting the payment.'); // Display a generic error if the fetch fails
-        });
-
-    }
-
     // Validate Receipt Form
-    function validateReceiptForm(stall, fileInput, paid_amount) {
+    function validateReceiptForm(stall, fileInput, paid_amount, amount_due) {
       let valid = true;
 
-      // Validate file input
+      // Validate file input and stall
       if (!fileInput.files.length || !stall || !paid_amount) {
         alert("Please complete the form.");
         valid = false;
@@ -269,9 +367,46 @@ require_once '../../includes/session.php';
           alert("Invalid file type. Only PDF or image files are allowed.");
           valid = false;
         }
-
-        return valid;
       }
+
+      // Additional validation for paid_amount and amount_due
+      if (valid && paid_amount < amount_due) {
+        alert("Paid amount cannot be less than the amount due.");
+        valid = false;
+      }
+
+      if (valid && paid_amount > amount_due) {
+        alert("Paid amount cannot be greater than the amount due.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function submitPayment(form) {
+      const formData = new FormData(form);
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+      fetch('../actions/submit_receipt.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.success) {
+            alert('Payment successfully submitted!');
+            location.reload();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while submitting the payment.');
+        });
+
     }
 
     function populateViewStallsTable(stalls) {
@@ -289,10 +424,12 @@ require_once '../../includes/session.php';
                                         <td>${stall.stall_number}</td>
                                         <td>${stall.stall_size}</td>
                                         <td>${stall.rental_fee}</td>
-                                        <td class="${new Date(stall.expiration_date) < new Date() ? 'text-danger' : 'text-success'}">
-                                          <strong>${stall.expiration_date ? new Date(stall.expiration_date).toLocaleDateString() : 'N/A'}</strong>
+                                        <td class="${new Date(stall.stall_expiration_date) < new Date() ? 'text-danger' : 'text-success'}">
+                                          <strong>${stall.stall_expiration_date ? new Date(stall.stall_expiration_date).toLocaleDateString() : 'N/A'}</strong>
                                         </td>
-                                        <td>${stall.extension_duration != null ? stall.extension_duration : 'N/A'}</td>
+                                         <td class="${new Date(stall.extension_expiration_date) < new Date() ? 'text-danger' : 'text-success'}">
+                                          <strong>${stall.extension_expiration_date ? new Date(stall.extension_expiration_date).toLocaleDateString() : 'N/A'}</strong>
+                                        </td>
                                         <td>${stall.helper_name && stall.helper_name.trim() !== '' ? stall.helper_name : 'N/A'}</td>
 
                                     `;
@@ -302,16 +439,63 @@ require_once '../../includes/session.php';
       }
     }
 
+    function populateSubmitExtensionReceiptTable() {
+      fetch('../actions/get_unpaid_extensions.php')
+        .then(response => response.json())
+        .then(data => {
+          const recieptExtensionsContainer = document.getElementById('receiptExtensionContainer');
+          recieptExtensionsContainer.innerHTML = '';
 
-    // <td class="${
-    //                                     new Date(stall.expiration_date) < new Date()
-    //                                 ? 'text-danger'
-    //                                            : (new Date(stall.expiration_date) <= new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-    //                                              ? 'text-success'
-    //                                             : '')
-    //         }">   
+          // Check if response is valid
+          if (!data.success || !data.unpaid_extensions || data.unpaid_extensions.length === 0) {
+            document.getElementById('receipt_extension_message').textContent = 'No stalls available.';
+            return;
+          }
 
-    function populateSubmitReceiptTable() {
+          data.unpaid_extensions.forEach(stall => {
+            const row = document.createElement('tr');
+            console.log(stall);
+            row.innerHTML = `
+                  <td>
+                       <label class="radio-modern">
+                           <input type="radio" name="selected_stall_id" value="${stall.stall_id}">
+                           <span class="radio-checkmark"></span>
+                       </label>
+                       <input type="hidden" id="selectedExtensionId" name="selected_extension_id" value="${stall.extension_id}">
+                  </td>
+                  <td>${stall.stall_number}</td>
+                  <td>${stall.market_name || 'N/A'}</td>
+                  <td>${stall.section_name || 'N/A'}</td>
+                 
+                  <td class="${
+                    stall.payment_status === 'Overdue' ? 'text-secondary' :
+                    stall.payment_status === 'Unpaid' ? 'text-danger' :
+                    stall.payment_status === 'Payment_Period' ? 'text-success' :
+                    '' }">
+                       <strong>${stall.payment_status || 'N/A'}</strong> 
+                  </td>
+                  <td>${stall.extension_cost || 'N/A'}</td>
+                  <td>${stall.duration || 'N/A'}</td>
+                  <td>${stall.expiration_date ? stall.expiration_date.split(' ')[0] : 'N/A'}</td>
+                            `;
+            recieptExtensionsContainer.appendChild(row);
+
+            // Click to select radio button
+            row.addEventListener("click", () => {
+              const radio = row.querySelector('input[name="selected_stall_id"]');
+              if (radio) {
+                radio.checked = true;
+              }
+            });
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          document.getElementById('stall_message').textContent = 'Error loading stalls.';
+        });
+    }
+
+    function populateSubmitStallReceiptTable() {
       fetch('../actions/get_unpaid_stalls.php')
         .then(response => response.json())
         .then(data => {
@@ -333,10 +517,10 @@ require_once '../../includes/session.php';
                            <input type="radio" name="selected_stall_id" value="${stall.id}">
                            <span class="radio-checkmark"></span>
                        </label>
-                   </td>
-                   <td>${stall.stall_number}</td>
-                   <td>${stall.market_name || 'N/A'}</td>
-                   <td>${stall.section_name || 'N/A'}</td>
+                  </td>
+                  <td>${stall.stall_number}</td>
+                  <td>${stall.market_name || 'N/A'}</td>
+                  <td>${stall.section_name || 'N/A'}</td>
                   <td>${stall.rental_fee || 'N/A'}</td>
                   <td class="${
                     stall.payment_status === 'Overdue' ? 'text-secondary' :
@@ -344,11 +528,10 @@ require_once '../../includes/session.php';
                     stall.payment_status === 'Payment_Period' ? 'text-success' :
                     '' }">
                        <strong>${stall.payment_status || 'N/A'}</strong> 
-                      </td>
-                                <td>${stall.expiration_date ? stall.expiration_date.split(' ')[0] : 'N/A'}</td>
+                  </td>
+                  <td>${stall.expiration_date ? stall.expiration_date.split(' ')[0] : 'N/A'}</td>
                             `;
             recieptStallsContainer.appendChild(row);
-            console.log(stall.expiration_date)
 
             // Click to select radio button
             row.addEventListener("click", () => {
