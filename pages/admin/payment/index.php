@@ -99,7 +99,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         </div>
     </div> -->
 
-    <!-- Announcement Modal -->
+    <!-- Payment Modal -->
     <div class="modal fade" id="paymentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -141,7 +141,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
                             <div class="text-end mt-5">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button id="confirmPaymentBtn" onclick="confirmPayment()" class="btn btn-success">
+                                <button type="button" id="confirmPaymentBtn" onclick="confirmPayment()" class="btn btn-success">
                                     Mark as Paid
                                 </button>
                             </div>
@@ -210,6 +210,8 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
             // Set payment ID as data attribute
             confirmBtn.setAttribute('data-payment-id', payment.id);
             confirmBtn.setAttribute('data-stall-id', payment.stall_id);
+            confirmBtn.setAttribute('data-extension-id', payment.extension_id);
+            confirmBtn.setAttribute('data-violation-id', payment.violation_id);
             confirmBtn.setAttribute('data-payment-type', payment.source_type);
 
             // Disable button if already paid
@@ -228,7 +230,21 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
             let confirmBtn = document.getElementById('confirmPaymentBtn');
             let paymentId = confirmBtn.getAttribute('data-payment-id');
             let stallId = confirmBtn.getAttribute('data-stall-id');
+            let extensionId = confirmBtn.getAttribute('data-extension-id');
+            let violationId = confirmBtn.getAttribute('data-violation-id');
             let paymentType = confirmBtn.getAttribute('data-payment-type');
+
+            let reference_id;
+
+            if (paymentType === "stall") {
+                reference_id = stallId;
+            } else if (paymentType === "extension") {
+                reference_id = extensionId;
+            } else if (paymentType === "violation") {
+                reference_id = violationId;
+            }
+
+            console.log(reference_id);
 
             if (!paymentId) {
                 alert("Invalid payment ID.");
@@ -244,15 +260,16 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                     },
                     body: new URLSearchParams({
                         payment_id: paymentId,
-                        reference_id: stallId,
-                        payment_type: paymentType
+                        reference_id: reference_id,
+                        payment_type: paymentType,
+
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     alert(data.message);
                     if (data.success) {
-                        // location.reload();
+                        location.reload();
                     }
                 })
                 .catch(error => console.error("Error:", error));

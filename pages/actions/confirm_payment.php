@@ -16,11 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $payment_id = intval($_POST['payment_id']);
     $reference_id = intval($_POST['reference_id']); // ID of stall, stall_extension, or violation
-    $payment_type = $_POST['payment_type']; // Can be 'stall', 'stall_extension', or 'violation'
+    $payment_type = $_POST['payment_type'];
 
     try {
-        // Begin transaction
-        $pdo->beginTransaction();
 
         // Update payment status to 'Paid' in the payments table
         $query = $pdo->prepare("UPDATE payments SET payment_status = 'Paid' WHERE id = :payment_id");
@@ -47,8 +45,82 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $updateStmt->bindParam(':payment_type', $payment_type, PDO::PARAM_STR);
                     $updateStmt->bindParam(':status', $status, PDO::PARAM_STR);
                     $updateStmt->execute();
+
+                    if ($updateStmt->rowCount() === 0) {
+                        throw new Exception("No expiration record updated");
+                    }
                 }
-            } elseif ($payment_type === "stall_extension" || $payment_type === "violation") {
+
+                // Update payment status to 'Paid' in the stalls table
+                $updateStallStmt = $pdo->prepare("UPDATE stalls SET payment_status = 'Paid' WHERE id = :stall_id");
+                $updateStallStmt->bindParam(':stall_id', $reference_id, PDO::PARAM_INT);
+                $updateStallStmt->execute();
+
+                if ($updateStallStmt->rowCount() === 0) {
+                    throw new Exception("No stall record updated");
+                }
+            }
+
+            if ($payment_type === "extension") {
+                // 1. Get current expiration
+                $stmt = $pdo->prepare("
+                  SELECT e.expiration_date,
+                         ex.duration                   
+                  FROM expiration_dates e
+                  JOIN extensions ex ON e.reference_id = ex.id
+                  WHERE e.reference_id = :reference_id 
+                    AND e.type = :payment_type
+                ");
+                $stmt->execute([
+                    ':reference_id' => $reference_id,
+                    ':payment_type' => $payment_type
+                ]);
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($row) {
+                    // 2. Compute new expiration by adding the requested months
+                    $duration = intval($row['duration']);            // e.g. 3 months
+                    $newDate = date(
+                        'Y-m-d',
+                        strtotime("{$row['expiration_date']} +{$duration} month")
+                    );
+
+                    // 3. Update expiration_dates
+                    $updateExp = $pdo->prepare("
+                      UPDATE expiration_dates 
+                      SET expiration_date = :newDate, status = 'active' 
+                      WHERE reference_id = :reference_id 
+                        AND type = :payment_type
+                    ");
+                    $updateExp->execute([
+                        ':newDate'       => $newDate,
+                        ':reference_id'  => $reference_id,
+                        ':payment_type'  => $payment_type
+                    ]);
+                    if ($updateExp->rowCount() === 0) {
+                        throw new Exception("No extension record updated");
+                    }
+
+                    $updateExtension = $pdo->prepare("UPDATE extensions SET payment_status = 'Paid', updated_at = NOW() WHERE id = :reference_id");
+                    $updateExtension->execute([':reference_id' => $reference_id]);
+
+                    if ($updateExtension->rowCount() === 0) {
+                        throw new Exception("No extension record updated");
+                    }
+                } else {
+                    throw new Exception("No expiration record updated");
+                }
+
+                // // 4. (Optional) Mark the extension *request* as closed
+                // $closeReq = $pdo->prepare("
+                //   UPDATE stall_extension_requests 
+                //   SET status = 'Paid' 
+                //   WHERE id = :reference_id
+                // ");
+                // $closeReq->execute([':reference_id' => $reference_id]);
+            }
+
+            if ($payment_type === "violation") {
                 // Mark stall extension or violation as inactive
                 $updateStmt = $pdo->prepare("UPDATE expiration_dates SET status = 'Inactive' WHERE reference_id = :reference_id AND type = :payment_type");
                 $updateStmt->bindParam(':reference_id', $reference_id, PDO::PARAM_INT);
@@ -56,20 +128,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $updateStmt->execute();
             }
 
-            // Update payment status to 'Paid' in the stalls table
-            $updateStallStmt = $pdo->prepare("UPDATE stalls SET payment_status = 'Paid' WHERE id = :stall_id");
-            $updateStallStmt->bindParam(':stall_id', $reference_id, PDO::PARAM_INT);
-            $updateStallStmt->execute();
 
-            // Commit transaction
-            $pdo->commit();
             echo json_encode(["success" => true, "message" => "Payment marked as Paid. Changes applied for $payment_type."]);
         } else {
-            $pdo->rollBack();
             echo json_encode(["success" => false, "message" => "Payment not found or already marked as Paid."]);
         }
     } catch (Exception $e) {
-        $pdo->rollBack();
         echo json_encode(["success" => false, "message" => "Error: " . $e->getMessage()]);
     }
 } else {

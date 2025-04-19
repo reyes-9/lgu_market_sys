@@ -51,7 +51,7 @@ function updateExtensionsPaymentStatuses(PDO $pdo)
           UPDATE extensions e
           JOIN expiration_dates ed ON e.id = ed.reference_id
           SET e.payment_status = 'Payment_Period'
-          WHERE ed.type = 'stall extension'
+          WHERE ed.type = 'extension'
             AND ed.status = 'payment_period'
       ";
     $stmt = $pdo->prepare($updateExtensionPaymentPeriodQuery);
@@ -62,7 +62,7 @@ function updateExtensionsPaymentStatuses(PDO $pdo)
           UPDATE extensions e
           JOIN expiration_dates ed ON e.id = ed.reference_id
           SET e.payment_status = 'Overdue'
-          WHERE ed.type = 'stall extension'
+          WHERE ed.type = 'extension'
             AND ed.status = 'expired'
       ";
     $stmt = $pdo->prepare($updateExtensionExpiredQuery);
