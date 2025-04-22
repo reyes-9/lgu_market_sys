@@ -362,15 +362,14 @@
             submitButton.disabled = true;
 
             try {
-
-                const response = await fetch("../actions/login_action.php", {
+                const response = await fetch("http://localhost/lgu_market_sys/pages/actions/login_action.php", {
                     method: "POST",
                     body: formData
                 });
 
                 const data = await response.json();
-
                 console.log(data);
+
                 if (data.isVerified === false) {
                     displayToast(data.message || "Please verify your email first.", "warning");
                     document.getElementById("otp_div").classList.remove("d-none");
@@ -380,9 +379,7 @@
                     startOTPTimer(300);
                 } else {
                     if (data.success && data.isVerified) {
-
                         displayToast("Login successful!", "success");
-
                         let redirectUrl = data.user_type === 'Admin' ?
                             "http://localhost/lgu_market_sys/pages/admin/home/" :
                             "http://localhost/lgu_market_sys/";
@@ -398,6 +395,7 @@
                 }
 
             } catch (error) {
+
                 console.error("Login Error:", error);
                 displayToast("An error occurred. Please try again.", "error");
             } finally {

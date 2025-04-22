@@ -13,8 +13,8 @@ body {
   background-size: cover;
 }
 .fixed-row {
-  height: 600px; /* Set a fixed height */
-  overflow-y: hidden; /* Enable vertical scrolling if content overflows */
+  height: 700px; /* Set a fixed height */
+  overflow-y: hidden; /*Enable vertical scrolling if content overflows*/
 }
 /* Cards */
 .card {

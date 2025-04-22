@@ -2,7 +2,7 @@
 session_start();
 require_once '../../includes/config.php';
 require_once '../../includes/session.php';
-require 'get_user_id.php';
+require_once 'get_user_id.php';
 
 $account_id = $_SESSION['account_id'];
 $user_id = getUserIdByAccountId($pdo, $account_id);
@@ -51,7 +51,7 @@ try {
             LEFT JOIN helpers h ON h.stall_id = s.id 
             LEFT JOIN extensions ext ON s.id = ext.stall_id AND ext.status = 'active'
             LEFT JOIN expiration_dates es ON s.id = es.reference_id AND es.type = 'stall'
-            LEFT JOIN expiration_dates ex ON ext.id = ex.reference_id AND ex.type = 'stall extension'
+            LEFT JOIN expiration_dates ex ON ext.id = ex.reference_id AND ex.type = 'extension'
             WHERE s.user_id = :user_id
         ");
 

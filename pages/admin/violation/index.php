@@ -1,4 +1,5 @@
 <?php
+require_once '../../../includes/config.php';
 require_once '../../../includes/session.php';
 
 if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {
@@ -8,7 +9,41 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
    </script>';
     exit;
 }
+$user_type = $_SESSION['user_type'];
 
+try {
+    // Fetch violations with joined tables for user, stall, and violation type
+    $stmt_violation_types = $pdo->query("SELECT violation_name, id FROM violation_types");
+
+    $stmt_violation = $pdo->query("
+       SELECT 
+    v.id, 
+    CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS vendor_name,
+    u.account_id,
+    s.stall_number, 
+    vt.violation_name, 
+    vt.fine_amount,
+    vt.criticality,
+    v.violation_description, 
+    v.evidence_image_path, 
+    v.violation_date, 
+    v.status, 
+    v.created_at,
+    v.appeal_text,
+    v.appeal_document_path,
+    v.payment_status
+FROM violations v
+JOIN users u ON v.user_id = u.id
+JOIN stalls s ON v.stall_id = s.id
+JOIN violation_types vt ON v.violation_type_id = vt.id
+LEFT JOIN expiration_dates ed ON v.id = ed.reference_id
+ORDER BY v.payment_status ASC;
+");
+    $violations = $stmt_violation->fetchAll(PDO::FETCH_ASSOC);
+    $violation_types = $stmt_violation_types->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Database Error: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,215 +80,264 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         </div>
     </div>
 
-    <div class="container-fluid w-75 mt-5">
+    <div class="container-fluid mt-5">
         <div class="d-flex justify-content-center align-items-center mb-4">
             <div class="container">
                 <h4 class="fw-bold">Violation Management</h4>
                 <p class="text-muted">Tracks and manages vendor violations, allowing reporting, searching, editing, and deletion for market regulation compliance.</p>
             </div>
-            <div class="container text-end">
-                <!-- Button to Open the Modal -->
-                <button class="btn btn-danger report-button" data-bs-toggle="modal" data-bs-target="#addViolationModal">
-                    Create Report
-                </button>
-            </div>
         </div>
 
         <!-- Violations Table -->
-        <div class="table-responsive tables mb-5 w-100">
-            <div class="text-center mb-4 mt-5">
-                <h4>Violations Table</h4>
-            </div>
+        <?php if ($user_type !== "Inspector"): ?>
+            <div class="table-responsive tables mb-5">
+                <div class="text-center mb-4 mt-5">
+                    <h4>Violations Table</h4>
+                </div>
 
-            <?php
-            require_once '../../../includes/config.php';
+                <!-- Filter Buttons -->
 
-            try {
-                // Fetch violations with joined tables for user, stall, and violation type
-                $stmt = $pdo->query("
-                       SELECT 
-                    v.id, 
-                    CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS vendor_name,
-                    u.account_id,
-                    s.stall_number, 
-                    vt.violation_name, 
-                    vt.fine_amount,
-                    vt.criticality,
-                    v.violation_description, 
-                    v.evidence_image_path, 
-                    v.violation_date, 
-                    v.status, 
-                    v.created_at,
-                    v.appeal_text,
-                    v.appeal_document_path,
-                    v.payment_status
-                FROM violations v
-                JOIN users u ON v.user_id = u.id
-                JOIN stalls s ON v.stall_id = s.id
-                JOIN violation_types vt ON v.violation_type_id = vt.id
-                LEFT JOIN expriration_dates ed ON v.id = ed.reference_id
-                ORDER BY v.payment_status ASC;
-                ");
-                $violations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                die("Database Error: " . $e->getMessage());
-            }
-            ?>
-            <!-- Filter Buttons -->
+                <div class="d-flex flex-wrap justify-content-center gap-5 mb-4 filter-container">
+                    <button class="btn filter-button" data-value="">All</button>
+                    <button class="btn filter-button" data-value="Resolved">Resolved</button>
+                    <button class="btn filter-button" data-value="Pending">Pending</button>
+                    <button class="btn filter-button" data-value="Deleted">Deleted</button>
+                    <button class="btn filter-button" data-value="Critical">Critical</button>
+                </div>
 
-            <div class="d-flex flex-wrap justify-content-center gap-5 mb-4 filter-container">
-                <button class="btn filter-button" data-value="">All</button>
-                <button class="btn filter-button" data-value="Resolved">Resolved</button>
-                <button class="btn filter-button" data-value="Pending">Pending</button>
-                <button class="btn filter-button" data-value="Deleted">Deleted</button>
-                <button class="btn filter-button" data-value="Critical">Critical</button>
-            </div>
-
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Vendor Name</th>
-                        <th>Stall Number</th>
-                        <th>Violation Type</th>
-                        <th>Violation Description</th>
-                        <th>Evidence Image</th>
-                        <th>Violation Date</th>
-                        <th>Payment Status</th>
-                        <th>Fine Amount</th>
-                        <th>Status</th>
-                        <th>ViolationAppeal</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="violationsTable">
-                    <?php foreach ($violations as $violation): ?>
-
-                        <tr id="row-<?= $violation['id'] ?>" data-status="<?= $violation['status'] ?>" data-criticality="<?= $violation['criticality'] ?>">
-                            <td><?= htmlspecialchars($violation['id']) ?></td>
-                            <td><?= htmlspecialchars($violation['vendor_name']) ?></td>
-                            <td><?= htmlspecialchars($violation['stall_number']) ?></td>
-                            <td><?= htmlspecialchars($violation['violation_name']) ?></td>
-                            <td><?= htmlspecialchars($violation['violation_description']) ?></td>
-                            <td>
-                                <?php if (!empty($violation['evidence_image_path'])): ?>
-                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal<?= $violation['id'] ?>">
-                                        <i class="bi bi-file-image"></i>
-                                        View
-                                    </button>
-                                <?php else: ?>
-                                    No Image
-                                <?php endif; ?>
-                            </td>
-                            <td><?= htmlspecialchars($violation['violation_date']) ?></td>
-                            <td>
-                                <?php
-                                $statusClass = match ($violation['payment_status']) {
-                                    'Paid' => 'text-success',
-                                    'Unpaid' => 'text-danger',
-                                    'Pending' => 'text-warning',
-                                    default => '',
-                                };
-                                ?>
-                                <strong class="<?= $statusClass ?>">
-                                    <?= htmlspecialchars($violation['payment_status']) ?>
-                                </strong>
-                            </td>
-                            <td><?= htmlspecialchars($violation['fine_amount']) ?></td>
-                            <td id="status-<?= $violation['id'] ?>"><?= htmlspecialchars($violation['status']) ?></td>
-                            <td>
-                                <?php if (!empty($violation['appeal_text'])): ?>
-                                    <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#appealModal<?= $violation['id'] ?>">
-                                        <i class="bi bi-file-earmark-text-fill"></i> View
-                                    </button>
-                                <?php endif; ?>
-                            </td>
-                            <td><?= htmlspecialchars($violation['created_at']) ?></td>
-                            <td>
-                                <?php
-                                $isResolvedOrDeleted = $violation['status'] === 'Resolved' || $violation['status'] === 'Deleted';
-                                $isDeleted = $violation['status'] === 'Deleted';
-                                $isUnpaid = $violation['payment_status'] === 'Unpaid';
-                                $isPending = $violation['payment_status'] === 'Pending';
-                                $resolveDisabled = $isResolvedOrDeleted || $isUnpaid || $isPending ? 'disabled' : '';
-                                $deleteDisabled = $isDeleted || $isUnpaid || $isPending ? 'disabled' : '';
-                                ?>
-                                <button class="btn btn-success btn-sm mb-1 w-100"
-                                    onclick="resolveViolation(<?= $violation['id'] ?>, <?= $violation['account_id'] ?>)"
-                                    <?= $resolveDisabled ?>>
-                                    <i class="bi bi-check-circle-fill"></i> Resolve
-                                </button>
-
-                                <button class="btn btn-danger btn-sm w-100"
-                                    onclick="deleteViolation(<?= $violation['id'] ?>)"
-                                    <?= $deleteDisabled ?>>
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            </td>
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Vendor Name</th>
+                            <th>Stall Number</th>
+                            <th>Violation Type</th>
+                            <th>Violation Description</th>
+                            <th>Evidence Image</th>
+                            <th>Violation Date</th>
+                            <th>Payment Status</th>
+                            <th>Fine Amount</th>
+                            <th>Status</th>
+                            <th>ViolationAppeal</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
                         </tr>
+                    </thead>
+                    <tbody id="violationsTable">
+                        <?php foreach ($violations as $violation): ?>
 
-                        <!-- Modal for Image -->
-                        <div class="modal fade" id="modal<?= $violation['id'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $violation['id'] ?>" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modalLabel<?= $violation['id'] ?>">Evidence Image</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <img src="../../../<?= htmlspecialchars($violation['evidence_image_path']) ?>" alt="Evidence" class="img-fluid">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            <tr class="align-middle" id="row-<?= $violation['id'] ?>" data-status="<?= $violation['status'] ?>" data-criticality="<?= $violation['criticality'] ?>">
+                                <td><?= htmlspecialchars($violation['id']) ?></td>
+                                <td><?= htmlspecialchars($violation['vendor_name']) ?></td>
+                                <td><?= htmlspecialchars($violation['stall_number']) ?></td>
+                                <td><?= htmlspecialchars($violation['violation_name']) ?></td>
+                                <td><?= htmlspecialchars($violation['violation_description']) ?></td>
+                                <td>
+                                    <?php if (!empty($violation['evidence_image_path'])): ?>
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal<?= $violation['id'] ?>">
+                                            <i class="bi bi-file-image"></i>
+                                            View
+                                        </button>
+                                    <?php else: ?>
+                                        No Image
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= htmlspecialchars($violation['violation_date']) ?></td>
+                                <td>
+                                    <?php
+                                    $statusClass = match ($violation['payment_status']) {
+                                        'Paid' => 'text-success',
+                                        'Unpaid' => 'text-danger',
+                                        'Pending' => 'text-warning',
+                                        default => '',
+                                    };
+                                    ?>
+                                    <strong class="<?= $statusClass ?>">
+                                        <?= htmlspecialchars($violation['payment_status']) ?>
+                                    </strong>
+                                </td>
+                                <td><?= htmlspecialchars($violation['fine_amount']) ?></td>
+                                <td id="status-<?= $violation['id'] ?>"><?= htmlspecialchars($violation['status']) ?></td>
+                                <td>
+                                    <?php if (!empty($violation['appeal_text'])): ?>
+                                        <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#appealModal<?= $violation['id'] ?>">
+                                            <i class="bi bi-file-earmark-text-fill"></i> View
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= htmlspecialchars($violation['created_at']) ?></td>
+                                <td>
+                                    <?php
+                                    $isResolvedOrDeleted = $violation['status'] === 'Resolved' || $violation['status'] === 'Deleted';
+                                    $isDeleted = $violation['status'] === 'Deleted';
+                                    $isUnpaid = $violation['payment_status'] === 'Unpaid';
+                                    $isPending = $violation['payment_status'] === 'Pending';
+                                    $resolveDisabled = $isResolvedOrDeleted || $isUnpaid || $isPending ? 'disabled' : '';
+                                    $deleteDisabled = $isDeleted || $isUnpaid || $isPending ? 'disabled' : '';
+                                    ?>
+                                    <button class="btn btn-success btn-sm mb-1 w-100"
+                                        onclick="resolveViolation(<?= $violation['id'] ?>, <?= $violation['account_id'] ?>)"
+                                        <?= $resolveDisabled ?>>
+                                        <i class="bi bi-check-circle-fill"></i> Resolve
+                                    </button>
 
-                        <!-- Modal for Appeal -->
-                        <div class="modal fade" id="appealModal<?= $violation['id'] ?>" tabindex="-1" aria-labelledby="appealModalLabel<?= $violation['id'] ?>" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                                    <button class="btn btn-danger btn-sm w-100"
+                                        onclick="deleteViolation(<?= $violation['id'] ?>)"
+                                        <?= $deleteDisabled ?>>
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
 
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <div class="modal-container">
-                                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                                <h3 class="modal-title" id="modalLabel<?= $violation['id'] ?>">Appeal for Violation</h3>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <hr>
-                                            <h5>Appeal Message: </h5>
-                                            <p><?= $violation['appeal_text'] ?></p>
-                                            <h5>Appeal Document: </h5>
-                                            <?php
-                                            $filePath = $violation['appeal_document_path'];
-                                            $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-                                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-                                            // Determine whether to display or provide a link
-                                            if (in_array(strtolower($fileExtension), $imageExtensions)): ?>
-                                                <img src="../../../<?= $filePath ?>" alt="Appeal Image" class="img-fluid">
-                                            <?php else: ?>
-                                                <a href="../<?= $filePath ?>" target="_blank" class="btn btn-info">
-                                                    <i class="bi bi-file-earmark-text"></i> View Document
-                                                </a>
-                                            <?php endif; ?>
+                            <!-- Modal for Image -->
+                            <div class="modal fade" id="modal<?= $violation['id'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $violation['id'] ?>" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel<?= $violation['id'] ?>">Evidence Image</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-
+                                        <div class="modal-body">
+                                            <img src="../../../<?= htmlspecialchars($violation['evidence_image_path']) ?>" alt="Evidence" class="img-fluid">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+
+                            <!-- Modal for Appeal -->
+                            <div class="modal fade" id="appealModal<?= $violation['id'] ?>" tabindex="-1" aria-labelledby="appealModalLabel<?= $violation['id'] ?>" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div class="modal-container">
+                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                    <h3 class="modal-title" id="modalLabel<?= $violation['id'] ?>">Appeal for Violation</h3>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <hr>
+                                                <h5>Appeal Message: </h5>
+                                                <p><?= $violation['appeal_text'] ?></p>
+
+                                                <?php if (isset($violation['appeal_document_path'])): ?>
+                                                    <h5>Appeal Document: </h5>
+                                                    <?php
+
+                                                    var_dump($filePath);
+
+                                                    $filePath = $violation['appeal_document_path'];
+                                                    $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                                    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                                                    // Determine whether to display or provide a link
+                                                    if (in_array(strtolower($fileExtension), $imageExtensions)): ?>
+                                                        <img src="../../../<?= $filePath ?>" alt="Appeal Image" class="img-fluid">
+                                                    <?php else: ?>
+                                                        <a href="../<?= $filePath ?>" target="_blank" class="btn btn-info">
+                                                            <i class="bi bi-file-earmark-text"></i> View Document
+                                                        </a>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+
+
+        <!-- VIOLATION FORM -->
+        <div class="container violation-form-container">
+            <form id="violationForm" enctype="multipart/form-data">
+                <div class="form-title">Create Violation Report</div>
+
+                <h4>Stall</h4>
+                <hr>
+                <div class="mb-4 form-group">
+                    <label for="market" class="form-label">Market: <small class="error-message"></small></label>
+                    <select class="form-select" id="market" name="market" onchange="getStallData()" required>
+                        <option value="" disabled selected>-- Select Market --</option>
+                    </select>
+                    <span id="market_address"></span>
+                </div>
+
+                <!-- Section and Stall (side by side) -->
+                <div class="row mb-5">
+                    <div class="col form-group">
+                        <label for="section" class="form-label">Section: <small class="error-message"></small></label>
+                        <select class="form-select" id="section" name="section" onchange="getStallData()">
+                            <option value="" disabled selected>-- Select Section --</option>
+                        </select>
+                    </div>
+                    <div class="col form-group">
+                        <label for="stall" class="form-label">Stall Number: <small class="error-message"></small></label>
+                        <select class="form-select" id="stall" name="stall" onchange="getVendorName()" required>
+                            <option value="" disabled selected>-- Select Stall Number --</option>
+                        </select>
+                    </div>
+                    <div id="message"></div>
+                </div>
+
+                <h4>Vendor</h4>
+                <hr>
+                <div class="d-flex justify-content-between gap-1">
+                    <div class="flex-fill mb-3">
+                        <label class="form-label">Name:</label>
+                        <input type="text" id="vendorName" class="form-control" readonly>
+                        <input type="hidden" id="userId" name="user_id" class="form-control" readonly>
+                    </div>
+                </div>
+                <br>
+
+                <h4 class="text-danger">Violation</h4>
+                <hr>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <div class="mb-3 flex-grow-1">
+                        <label class="mb-2" for="violation_date">Violation Date:</label>
+                        <input type="date" id="violation_date" name="violation_date" class="form-control w-100" required>
+                    </div>
+
+                    <div class="mb-3 flex-grow-1">
+                        <label class="form-label">Violation Type:</label>
+                        <select class="form-select" name="violation_type_id" required>
+                            <option value="" selected disabled>Select a violation</option>
+                            <?php foreach ($violation_types as $types): ?>
+                                <option value="<?= htmlspecialchars($types['id']) ?>">
+                                    <?= htmlspecialchars($types['violation_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Violation Description:</label>
+                    <textarea class="form-control" name="violation_description" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Evidence Image:</label>
+                    <input type="file" class="form-control" name="evidence_image" accept="image/*" required>
+                </div>
+
+                <div class="mt-5 text-center">
+                    <button type="submit" class="btn btn-danger">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Add Violation Modal -->
-    <div class="modal fade" id="addViolationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addViolationModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <!-- <div class="modal fade" id="addViolationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addViolationModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="modal-container">
@@ -264,109 +348,14 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                         <p class="text-muted me-5">Report violations to ensure compliance and maintain order. Provide accurate details to help authorities investigate and take appropriate action.</p>
                         <hr class="mb-4">
 
-                        <form id="violationForm" enctype="multipart/form-data">
-                            <h4>Vendor</h4>
-
-                            <div class="d-flex justify-content-between ms-3">
-                                <div class="mb-3">
-                                    <label class="form-label">First Name:</label>
-                                    <input type="text" class="form-control" name="vendor_first_name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Middle Name:</label>
-                                    <input type="text" class="form-control" name="vendor_middle_name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Last Name:</label>
-                                    <input type="text" class="form-control" name="vendor_last_name" required>
-                                </div>
-                            </div>
-                            <div class="mb-3 ms-3">
-                                <label class="form-label">Vendor Id:</label>
-                                <input type="text" class="form-control" name="user_id" required>
-                            </div>
-
-
-                            <h4>Stall</h4>
-                            <div class="mb-4 ms-3 form-group">
-                                <label for="market">Market: <small class="error-message"></small></label>
-                                <select class="form-select" id="market" name="market" onchange="getStallData()" required>
-                                    <option value="" disabled selected>-- Select Market --</option>
-                                </select>
-                                <span id="market_address"></span>
-                            </div>
-
-                            <!-- Section and Stall (side by side) -->
-                            <div class="row mb-5 ms-3">
-                                <div class="col form-group">
-                                    <label for="section">Section: <small class="error-message"></small></label>
-                                    <select class="form-select" id="section" name="section" onchange="getStallData()">
-                                        <option value="" disabled selected>-- Select Section --</option>
-                                    </select>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="stall">Stall Number: <small class="error-message"></small></label>
-                                    <select class="form-select" id="stall" name="stall" required>
-                                        <option value="" disabled selected>-- Select Stall Number --</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div id="message"></div>
-
-                            <h4 class="text-danger">Violation</h4>
-                            <div class="mb-3 ms-3 d-flex flex-column">
-                                <label class="mb-2" for="violation_date">Violation Date:</label>
-                                <input type="date" id="violation_date" name="violation_date" required>
-                            </div>
-
-
-                            <div class="mb-3 ms-3">
-                                <label class="form-label">Violation Type:</label>
-                                <?php
-                                require_once '../../../includes/config.php';
-
-                                try {
-                                    // Fetch violation types from the database
-                                    $stmt = $pdo->query("SELECT id, violation_name FROM violation_types ORDER BY violation_name ASC");
-                                    $violations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                } catch (PDOException $e) {
-                                    die("Database Error: " . $e->getMessage());
-                                }
-                                ?>
-
-                                <select class="form-select" name="violation_type_id" required>
-                                    <option value="" selected disabled>Select a violation</option>
-                                    <?php foreach ($violations as $violation): ?>
-                                        <option value="<?= htmlspecialchars($violation['id']) ?>">
-                                            <?= htmlspecialchars($violation['violation_name']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 ms-3">
-                                <label class="form-label">Violation Description:</label>
-                                <textarea class="form-control" name="violation_description" rows="3" required></textarea>
-                            </div>
-
-                            <div class="mb-3 ms-3">
-                                <label class="form-label">Upload Evidence Image:</label>
-                                <input type="file" class="form-control" name="evidence_image" accept="image/*" required>
-                            </div>
-
-                            <div class="mt-3 text-center">
-                                <button type="submit" class="btn btn-danger">Submit</button>
-                            </div>
-                        </form>
 
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <?php include '../../../includes/footer.php'; ?>
-    <?php include '../../../includes/theme.php'; ?>
 
     <script>
         document.getElementById("violationForm").addEventListener("submit", function(event) {
@@ -392,7 +381,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                     if (data.success) {
                         alert(data.message);
                         document.getElementById("violationForm").reset();
-                        location.reload(); // Reload page to reflect changes
+                        location.reload();
                     } else {
                         alert("Error: " + data.message);
                     }
@@ -443,7 +432,6 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                 clickedButton.classList.add("active");
             }
         });
-
 
         function resolveViolation(violationId, account_id) {
             if (!confirm("Are you sure you want to resolve this violation?")) return;
@@ -539,6 +527,32 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
             return isValid;
         }
+
+        function getVendorName() {
+            const stallId = document.getElementById('stall').value;
+            const userIdInput = document.getElementById('userId');
+            const vendorNameInput = document.getElementById('vendorName')
+
+            if (!stallId) {
+                document.getElementById('vendorName').value = "None";
+                return;
+            }
+
+            fetch('../../actions/get_vendor_name.php?stall_id=' + encodeURIComponent(stallId))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        vendorNameInput.value = data.vendor_name;
+                        userIdInput.value = data.user_id;
+                    } else {
+                        document.getElementById('vendorName').value = "Not found";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching vendor name:", error);
+                    document.getElementById('vendorName').value = "Error";
+                });
+        }
     </script>
 
 
@@ -580,8 +594,8 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
             // Update the stallInfo section with a table
             const stallInfo = `
-        <div class="card custom-card">
-        <div class="card-body text-center">
+            <div class="card custom-card">
+            <div class="card-body text-center">
             <h5 class="card-title">Stall Information</h5>
             <div class="row">
                 <div class="col-md-6">
@@ -597,15 +611,18 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-        `;
+            </div>
+            </div>
+            `;
             document.getElementById('stallInfo').innerHTML = stallInfo;
         }
 
         function getStallData() {
             const marketId = document.getElementById('market').value;
             const sectionId = document.getElementById('section').value;
+            const vendor_name = document.getElementById('vendorName');
+
+            vendor_name.value = "";
 
             // Only make the request if both market and section are selected
             if (marketId && sectionId) {

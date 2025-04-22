@@ -20,8 +20,8 @@ require_once '../../includes/session.php';
 
     <div class="payment-banner d-flex justify-content-between align-items-center px-5 py-4">
         <div class="banner-text">
-            <h4 class="text-white">Violation Payment</h4>
-            <p class="text-white mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
+            <h4>Violation Payment</h4>
+            <p class="mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
         </div>
         <button class="btn btn-warning submit-receipt-btn" data-bs-toggle="modal" data-bs-target="#submitReceiptModal">Submit Receipt</button>
     </div>
@@ -43,7 +43,7 @@ require_once '../../includes/session.php';
 
                         <form id="submitRecieptForm" enctype="multipart/form-data">
 
-                            <table class="table table-borderless table-hover">
+                            <table class="table table-borderless table-hover table-striped">
                                 <thead>
                                     <tr>
                                         <th>Violation</th>
@@ -57,6 +57,8 @@ require_once '../../includes/session.php';
 
                                 </tbody>
                             </table>
+
+
                             <h5 id="receipt_stall_message"></h5>
                             <div class="container text-start w-50 m-0">
 
@@ -82,46 +84,42 @@ require_once '../../includes/session.php';
         </div>
     </div>
 
-    <div class="container mt-5 vh-100">
-        <div class="container mt-3 p-0">
-            <a href="../portal/" class="btn btn-outline btn-return mb-3">
-                <i class="bi bi-arrow-left"></i> Profile
-            </a>
-        </div>
-        <div class="container content">
+    <div class="container mt-5">
+        <div class="row m-5 p-5 shadow rounded-4 violation-container">
+            <div class="col-md-12">
+                <div class="stall-card">
+                    <div class="text-center mb-4 mt-3">
+                        <h4 class="mb-5 table-title">Violations Table</h4>
+                    </div>
 
-            <div class="text-center mb-4 mt-3">
-                <h4 class="mb-5 table-title">Violations Table</h4>
-            </div>
+                    <div class="d-flex flex-wrap justify-content-center gap-5 mb-4 filter-container">
+                        <button class="btn filter-btn" data-value="">All</button>
+                        <button class="btn filter-btn" data-value="Resolved">Resolved</button>
+                        <button class="btn filter-btn" data-value="Pending">Pending</button>
+                        <button class="btn filter-btn" data-value="Critical">Critical</button>
+                    </div>
 
-            <div class="mb-3">
+                    <div class="table-container">
+                        <table class="table table-borderless table-striped violations-table">
+                            <thead>
+                                <tr>
+                                    <th>Violation</th>
+                                    <th>Date Issued <br> (YYYY-MM-DD)</th>
+                                    <th>Fine Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="violationsTableBody">
 
-                <div class="d-flex flex-wrap justify-content-center gap-5 mb-4 filter-container">
-                    <button class="btn filter-btn" data-value="">All</button>
-                    <button class="btn filter-btn" data-value="Resolved">Resolved</button>
-                    <button class="btn filter-btn" data-value="Pending">Pending</button>
-                    <button class="btn filter-btn" data-value="Critical">Critical</button>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
-
-
-            </div>
-            <div class="table-container">
-                <table class="table table-borderless table-striped violations-table">
-                    <thead>
-                        <tr>
-                            <th>Violation</th>
-                            <th>Date Issued <br> (YYYY-MM-DD)</th>
-                            <th>Fine Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="violationsTableBody">
-
-                    </tbody>
-                </table>
             </div>
         </div>
+
     </div>
 
     <div class="modal fade" id="violationDetailsModal" tabindex="-1" aria-labelledby="violationDetailsLabel" aria-hidden="true">
@@ -362,7 +360,8 @@ require_once '../../includes/session.php';
                             <span class="badge ${
                                 row.status === 'Pending' ? 'bg-warning text-dark' :
                                 row.status === 'Resolved' ? 'bg-success' : 
-                                row.status === 'Rejected' ? 'bg-dark' : ''
+                                row.status === 'Rejected' ? 'bg-danger' :
+                                row.status === 'Escalated' ? 'bg-dark' : '' 
                             }">${row.status}</span> 
                             ${row.criticality === 'Critical' ? `<span class="badge bg-danger">Critical</span>` : ''}
                         </td>

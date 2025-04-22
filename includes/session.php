@@ -1,18 +1,102 @@
 <?php
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+ini_set('display_errors', 0);
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+include_once __DIR__ . '/../pages/actions/get_user_id.php';
+require_once 'config.php';
+
 $isLoginPage = strpos($_SERVER['REQUEST_URI'], '/pages/login/') !== false;
-
-// if (!isset($_SESSION['account_id']) && !$isLoginPage) {
-//     header('Location: /lgu_market_sys/pages/login/');
-//     exit;
-// }
-
 $isInActionsFolder = strpos($_SERVER['REQUEST_URI'], '/actions/') !== false;
 $isInAdminFolder = strpos($_SERVER['REQUEST_URI'], '/admin/') !== false;
+
+$account_id = $_SESSION['account_id'];
+$user_id = getUserIdByAccountId($pdo, $account_id);
+$restrictedFoldersSuspended = [
+    '/stall_app/',
+    '/stall_transfer/',
+    '/stall_extend/',
+    '/helper_app/',
+    '/track_app/',
+    '/transfer_stall_app/'
+];
+
+$currentURI = $_SERVER['REQUEST_URI'];
+$isInRestrictedFolder = false;
+
+foreach ($restrictedFoldersSuspended as $folder) {
+    if (strpos($currentURI, $folder) !== false) {
+        $isInRestrictedFolder = true;
+        break;
+    }
+}
+
+// Check if user has a suspended stall
+$stallStatusQuery = "
+    SELECT s.status
+    FROM stalls s
+    JOIN applications a ON s.id = a.stall_id
+    WHERE a.account_id = :account_id
+      AND a.status = 'Approved'
+    LIMIT 1
+";
+
+$stmt = $pdo->prepare($stallStatusQuery);
+$stmt->execute(['account_id' => $account_id]);
+$stall = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$shouldShowModal = false;
+$shouldDisablePortal = false;
+
+if ($isInRestrictedFolder && $stall && $stall['status'] === 'suspended') {
+    $shouldShowModal = true;
+}
+
+if ($stall['status'] === 'terminated') {
+    $shouldDisablePortal = true;
+}
 ?>
+<?php if ($shouldDisablePortal): ?>
+    <script>
+        // Delegate the event to the parent container
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('modules-button-container').addEventListener('click', function(e) {
+                if (e.target && e.target.matches('a.portal-btn')) {
+                    e.preventDefault();
+                    alert('This account has been terminated. If you believe this is a mistake, please reach out to the system administrator.');
+                }
+            });
+        });
+    </script>
+<?php endif; ?>
+
+<?php if ($shouldShowModal): ?>
+    <div class="modal fade" id="suspendedModal" tabindex="-1" aria-labelledby="suspendedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title w-100" id="suspendedModalLabel">Access Denied</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Your stall is currently <strong>suspended</strong>. You cannot access this page until the suspension period ends.</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a href="http://localhost/lgu_market_sys/pages/portal/" class="btn btn-primary">Go Back to Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const suspendedModal = new bootstrap.Modal(document.getElementById('suspendedModal'));
+            suspendedModal.show();
+        };
+    </script>
+<?php endif; ?>
+
 <?php if (!$isInActionsFolder): ?>
     <?php require_once 'cdn-resources.php'; ?>
     <style>

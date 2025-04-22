@@ -1,16 +1,15 @@
-@import url('main.css');
+@import url("main.css");
 
-html,
 body {
-    background-image: url('../images/market.jpg');
-    background-size: cover;
-    background-position: center;
-    transition: background-color 0.5s, color 0.5s;
+  background-image: url("../images/market.jpg");
+  background-size: cover;
+  background-position: center;
+  transition: background-color 0.5s, color 0.5s;
+  height: 100vh !important;
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
-

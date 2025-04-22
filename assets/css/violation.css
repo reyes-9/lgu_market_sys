@@ -1,59 +1,26 @@
 @import url("main.css");
-body {
-  background: rgb(23, 162, 184);
-  background: linear-gradient(
-    225deg,
-    rgba(23, 162, 184, 1) 0%,
-    rgba(3, 64, 112, 1) 41%,
-    rgba(0, 51, 102, 1) 100%
-  );
-}
-
-.btn-return {
-  color: #d3d3d3 !important;
-  border: 0 !important;
-  font-size: 18px !important;
-  outline: none !important;
-}
-.btn-return:hover {
-  color: #757575 !important;
-}
-
-.container.content {
-  background: linear-gradient(225deg, #002e5c, #00376d);
-  box-shadow: -38px 38px 76px #002b57, 38px -38px 76px #003b75;
-  color: #f8f9fc;
-  border-radius: 40px;
-  box-shadow: 0 1px 100px rgba(133, 133, 133, 0.185);
-  /* border: 6px solid #f8f9fc; */
-  padding: 30px 50px;
-  margin-bottom: 50px;
-  overflow-y: auto;
-}
 
 .table-container {
-  max-height: 350px; /* Set a fixed height */
+  max-height: 400px; /* Set a fixed height */
   overflow-y: auto; /* Enable vertical scrolling */
+  background-color: white !important;
 }
 
 .table-title {
   padding-bottom: 15px;
   margin-bottom: 20px;
-  border-bottom: 2px solid #f8f9fc;
+  border-bottom: 2px solid #660011;
 }
 
 .violations-table th,
 .violations-table td {
-  background-color: #003366 !important;
   padding: 15px;
-  color: var(--bs-light) !important;
-  border-bottom: 1px solid rgb(126, 126, 126);
 }
 
 .violations-table th {
   position: sticky;
   top: 0;
-  background-color: white; /* Ensure the header remains visible */
+  background-color: transparent; /* Ensure the header remains visible */
   z-index: 10;
 }
 
@@ -74,13 +41,17 @@ body {
   background: #555;
 }
 
+.violation-container {
+  background-color: white;
+}
+
 /* Buttons */
 .filter-btn {
   position: relative;
   padding: 5px 20px !important;
   font-size: 16px;
   font-weight: bold;
-  color: #f8f9fc !important;
+
   background: none;
   border: 0 !important;
   cursor: pointer !important;
@@ -103,11 +74,11 @@ body {
 }
 
 .filter-btn:hover {
-  color: #f8f9fca8 !important;
+  color: #660011 !important;
 }
 .filter-btn.active {
   border: 0;
-  color: #f8f9fca8 !important;
+  color: #660011 !important;
   font-weight: 600;
 }
 .filter-btn.active::after {
@@ -144,4 +115,19 @@ textarea {
 
 .modal-table th {
   font-weight: bold;
+}
+
+.payment-banner {
+  margin: 20px;
+  padding: 1rem 2rem;
+  background: rgb(220, 53, 69);
+  background: linear-gradient(
+    225deg,
+    rgba(220, 53, 69, 1) 0%,
+    /* Light red (like Bootstrap's danger) */ rgba(153, 0, 34, 1) 41%,
+    /* Deeper crimson */ rgba(102, 0, 17, 1) 100% /* Dark cherry red */
+  );
+  color: white !important;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

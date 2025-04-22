@@ -197,11 +197,7 @@ textarea {
   ); /* Darker Navy to Royal Blue */
 }
 .helper-bg {
-  background: linear-gradient(
-    135deg,
-    #1e3a8a,
-    #2563eb
-  ); /* Darker Royal Blue to Sky Blue */
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
 }
 
 .table-container {
@@ -210,8 +206,12 @@ textarea {
 }
 
 #title {
-  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 15px;
   border-bottom: 2px solid #003366;
+  color: black;
 }
 
 /* Banner styling */

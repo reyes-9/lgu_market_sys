@@ -14,7 +14,6 @@
 require_once '../../includes/session.php';
 ?>
 
-
 <body class="body light">
 
   <?php include '../../includes/nav.php'; ?>
@@ -45,23 +44,23 @@ require_once '../../includes/session.php';
 
       </div>
 
-      <div class="row m-5 py-5 px-3 mx-auto shadow rounded-4 w-75 table-container">
+      <div class="row m-5 p-5 mx-auto shadow rounded-4 w-75 table-container">
         <div class="col-md-12">
           <div class="stall-card">
             <h3 id="title">Stalls</h3>
             <h5 id="stall_message"></h5>
 
-            <table class="table table-striped table-borderless table-hover">
+            <table class="table table-striped table-borderless table-hover mt-5">
               <thead>
                 <tr>
-                  <th><strong>Market</strong></th>
-                  <th><strong>Section</strong></th>
-                  <th><strong>Stall No.</strong></th>
-                  <th><strong>Stall Size</strong></th>
-                  <th><strong>Rental Fee</strong></th>
-                  <th><strong>Rent Exp. Date</strong></th>
-                  <th><strong>Extension Exp. Date</strong></th>
-                  <th><strong>Helper</strong></th>
+                  <th>Market</th>
+                  <th>Section</th>
+                  <th>Stall No</th>
+                  <th>Stall Size</th>
+                  <th>Rental Fee</th>
+                  <th>Rent Exp. Date</th>
+                  <th>Extension Exp. Date</th>
+                  <th>Helper</th>
                 </tr>
               </thead>
               <tbody id="stallsContainer">
@@ -135,13 +134,13 @@ require_once '../../includes/session.php';
               <table class="table table-borderless table-hover">
                 <thead>
                   <tr>
-                    <th><strong>Select</strong></th>
-                    <th><strong>Stall No.</strong></th>
-                    <th><strong>Market</strong></th>
-                    <th><strong>Section</strong></th>
-                    <th><strong>Rental Fee</strong></th>
-                    <th><strong>Payment Status</strong></th>
-                    <th><strong>Expiration Date</strong></th>
+                    <th>Select</th>
+                    <th>Stall Number</th>
+                    <th>Market</th>
+                    <th>Section</th>
+                    <th>Rental Fee</th>
+                    <th>Payment Status</th>
+                    <th>Expiration Date</th>
                   </tr>
                 </thead>
                 <tbody id="recieptStallsContainer">
@@ -149,6 +148,7 @@ require_once '../../includes/session.php';
                 </tbody>
               </table>
               <h5 id="receipt_stall_message"></h5>
+              <br>
               <div class="container text-start w-50 m-0">
 
                 <div class="mb-3">
@@ -192,14 +192,14 @@ require_once '../../includes/session.php';
               <table class="table table-borderless table-hover">
                 <thead>
                   <tr>
-                    <th><strong>Select</strong></th>
-                    <th><strong>Stall No.</strong></th>
-                    <th><strong>Market</strong></th>
-                    <th><strong>Section</strong></th>
-                    <th><strong>Payment Status</strong></th>
-                    <th><strong>Extension Cost</strong></th>
-                    <th><strong>Extension Duration</strong></th>
-                    <th><strong>Expiration Date</strong></th>
+                    <th>Select</th>
+                    <th>Stall Number</th>
+                    <th>Market</th>
+                    <th>Section</th>
+                    <th>Payment Status</th>
+                    <th>Extension Cost</th>
+                    <th>Extension Duration</th>
+                    <th>Expiration Date</th>
                   </tr>
                 </thead>
                 <tbody id="receiptExtensionContainer">
@@ -207,6 +207,7 @@ require_once '../../includes/session.php';
                 </tbody>
               </table>
               <h5 id="receipt_extension_message"></h5>
+              <br>
               <div class="container text-start w-50 m-0">
 
                 <div class="mb-3">
@@ -339,18 +340,19 @@ require_once '../../includes/session.php';
       const form = document.getElementById("garbageRequestForm");
       form.addEventListener("submit", handleGarbageRequestSubmission);
 
-      function fetchStallsData() {
-        fetch('../actions/profile_action.php')
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-            populateViewStallsTable(data.stalls);
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-      }
     });
+
+    function fetchStallsData() {
+      fetch('../actions/profile_action.php')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          populateViewStallsTable(data.stalls);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
 
     // Validate Receipt Form
     function validateReceiptForm(stall, fileInput, paid_amount, amount_due) {
@@ -414,7 +416,7 @@ require_once '../../includes/session.php';
       stallsContainer.innerHTML = ''; // Clear the table body
 
       if (!stalls || stalls.length === 0) {
-        document.getElementById('stall_message').textContent = 'No stalls available.';
+        document.getElementById('stall_message').textContent = 'No stall is subject for payment.';
       } else {
         stalls.forEach(stall => {
           const row = document.createElement('tr');
@@ -448,7 +450,7 @@ require_once '../../includes/session.php';
 
           // Check if response is valid
           if (!data.success || !data.unpaid_extensions || data.unpaid_extensions.length === 0) {
-            document.getElementById('receipt_extension_message').textContent = 'No stalls available.';
+            document.getElementById('receipt_extension_message').textContent = 'No stall extension is subject for payment.';
             return;
           }
 

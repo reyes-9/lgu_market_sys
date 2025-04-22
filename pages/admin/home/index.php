@@ -325,7 +325,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
       document.querySelectorAll(".card-body").forEach((card) => {
         const title = card.querySelector(".card-title-home").textContent.trim();
 
-        if (title === "Inspection Management" || title === "Stall Violations") {
+        if (title === "Inspection Management") {
 
           const icon = card.querySelector("i.fs-2");
           if (icon) {

@@ -6,20 +6,18 @@ include "log_admin_actions.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
+
         // Validate required fields
         if (
-            empty($_POST["vendor_first_name"]) || empty($_POST["vendor_middle_name"]) || empty($_POST["vendor_last_name"]) || empty($_POST["user_id"]) ||
-            empty($_POST["stall"]) || empty($_POST["violation_type_id"]) || empty($_POST["violation_description"]) || empty($_POST["violation_date"])
+            empty($_POST["user_id"]) || empty($_POST["stall"]) || empty($_POST["violation_type_id"]) ||
+            empty($_POST["violation_description"]) || empty($_POST["violation_date"])
         ) {
             throw new Exception("All fields are required.");
         }
 
         // Sanitize input
-        $vendor_first_name = htmlspecialchars(trim(properCase($_POST["vendor_first_name"]))); // not used in DB query
-        $vendor_middle_name = htmlspecialchars(trim(properCase($_POST["vendor_middle_name"])));
-        $vendor_last_name = htmlspecialchars(trim(properCase($_POST["vendor_last_name"])));
-        $user_id = htmlspecialchars(trim($_POST["user_id"]));
 
+        $user_id = htmlspecialchars(trim($_POST["user_id"]));
         $stall_id = htmlspecialchars(trim($_POST["stall"]));
         $violation_date = htmlspecialchars(trim($_POST["violation_date"]));
         $violation_type_id = htmlspecialchars(trim($_POST["violation_type_id"]));
