@@ -1,12 +1,12 @@
 <?php
 require_once "../../includes/config.php";
-require "../../includes/session.php";
-include "notifications.php";
-include "validate_document.php";
-include "upload_document.php";
-include "upload_application.php";
-include "get_user_id.php";
-include "insert_applicant.php";
+require_once "../../includes/session.php";
+require_once "validate_document.php";
+require_once "upload_document.php";
+require_once "upload_application.php";
+require_once "get_user_id.php";
+require_once "insert_applicant.php";
+include_once "notifications.php";
 
 try {
 

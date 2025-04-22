@@ -1,7 +1,7 @@
 <?php
 require_once '../../includes/config.php';
 require_once '../../includes/session.php';
-include 'get_user_id.php';
+require_once 'get_user_id.php';
 error_reporting(E_ERROR | E_PARSE);
 
 $account_id = $_SESSION['account_id'];

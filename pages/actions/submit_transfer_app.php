@@ -1,13 +1,13 @@
 <?php
 require_once "../../includes/config.php";
 require_once '../../includes/session.php';
+require_once "validate_document.php";
+require_once "upload_document.php";
+require_once "upload_application.php";
+require_once "get_user_id.php";
+require_once "insert_stall_transfers.php";
+require_once "insert_applicant.php";
 include_once "notifications.php";
-include "validate_document.php";
-include "upload_document.php";
-include "upload_application.php";
-include "get_user_id.php";
-include "insert_stall_transfers.php";
-include "insert_applicant.php";
 error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE); // Disable warnings & notices
 
 try {

@@ -1,6 +1,6 @@
 <?php
 require_once '../../includes/config.php';
-require '../../includes/session.php';
+require_once '../../includes/session.php';
 
 
 $account_id = $_SESSION['account_id'];

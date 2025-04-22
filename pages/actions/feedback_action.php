@@ -1,6 +1,6 @@
 <?php
 require_once '../../includes/config.php';
-require '../../includes/session.php';
+require_once '../../includes/session.php';
 include_once 'notifications.php';
 
 ob_start();

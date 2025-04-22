@@ -1,6 +1,6 @@
 <?php
 require_once "../../includes/config.php";
-require "../../includes/session.php";
+require_once "../../includes/session.php";
 require_once "get_user_id.php";
 
 header("Content-Type: application/json");

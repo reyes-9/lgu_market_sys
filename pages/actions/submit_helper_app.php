@@ -2,11 +2,11 @@
 require_once "../../includes/config.php";
 require_once '../../includes/session.php';
 include_once "notifications.php";
-include "validate_document.php";
-include "upload_document.php";
-include "upload_application.php";
-include "get_user_id.php";
-include "insert_applicant.php";
+include_once "validate_document.php";
+include_once "upload_document.php";
+include_once "upload_application.php";
+include_once "get_user_id.php";
+include_once "insert_applicant.php";
 
 try {
 

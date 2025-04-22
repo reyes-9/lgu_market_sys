@@ -1,9 +1,10 @@
 <?php
 require_once '../../includes/config.php';
-require "../../includes/session.php";
-require "log_admin_actions.php";
-require "notifications.php";
-require "get_user_id.php";
+require_once "../../includes/session.php";
+require_once "get_user_id.php";
+require_once "log_admin_actions.php";
+require_once "notifications.php";
+
 
 header('Content-Type: application/json');
 

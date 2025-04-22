@@ -1,6 +1,7 @@
 <?php
 require_once "../../includes/config.php";
-include "../../includes/session.php";
+require_once "../../includes/session.php";
+
 header("Content-Type: application/json");
 error_reporting(E_ALL & ~E_WARNING);
 

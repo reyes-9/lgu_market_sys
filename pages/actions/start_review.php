@@ -1,8 +1,8 @@
 
 <?php
 require_once "../../includes/config.php";
-require "../../includes/session.php";
-require "log_admin_actions.php";
+require_once "../../includes/session.php";
+include_once "log_admin_actions.php";
 
 header('Content-Type: application/json');
 

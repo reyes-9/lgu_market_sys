@@ -1,8 +1,8 @@
 <?php
 
 require_once "../../includes/config.php";
-require "../../includes/session.php";
-require "../actions/get_user_id.php";
+require_once "../../includes/session.php";
+require_once "get_user_id.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
