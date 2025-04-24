@@ -151,12 +151,20 @@ ORDER BY v.payment_status ASC;
                                 <td><?= htmlspecialchars($violation['violation_date']) ?></td>
                                 <td>
                                     <?php
-                                    $statusClass = match ($violation['payment_status']) {
-                                        'Paid' => 'text-success',
-                                        'Unpaid' => 'text-danger',
-                                        'Pending' => 'text-warning',
-                                        default => '',
-                                    };
+                                    switch ($violation['payment_status']) {
+                                        case 'Paid':
+                                            $statusClass = 'text-success';
+                                            break;
+                                        case 'Unpaid':
+                                            $statusClass = 'text-danger';
+                                            break;
+                                        case 'Pending':
+                                            $statusClass = 'text-warning';
+                                            break;
+                                        default:
+                                            $statusClass = '';
+                                            break;
+                                    }
                                     ?>
                                     <strong class="<?= $statusClass ?>">
                                         <?= htmlspecialchars($violation['payment_status']) ?>

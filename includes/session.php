@@ -1,6 +1,7 @@
 <?php
-// error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
-// ini_set('display_errors', 0);
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+ini_set('display_errors', 0);
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -13,8 +14,8 @@ $isInActionsFolder = strpos($_SERVER['REQUEST_URI'], '/actions/') !== false;
 $isInAdminFolder = strpos($_SERVER['REQUEST_URI'], '/admin/') !== false;
 $isHomepage = defined('IS_HOMEPAGE') && IS_HOMEPAGE;
 
-$account_id = $_SESSION['account_id'];
-$user_id = getUserIdByAccountId($pdo, $account_id);
+$account_id = $_SESSION['account_id'] ?? null;
+$user_id = $account_id ? getUserIdByAccountId($pdo, $account_id) : null;
 $restrictedFoldersSuspended = [
     '/stall_app/',
     '/stall_transfer/',
@@ -36,12 +37,13 @@ foreach ($restrictedFoldersSuspended as $folder) {
 
 // Check if user has a suspended stall
 $stallStatusQuery = "
-    SELECT s.status
-    FROM stalls s
-    JOIN applications a ON s.id = a.stall_id
-    WHERE a.account_id = :account_id
-      AND a.status = 'Approved'
-    LIMIT 1
+SELECT s.status AS stall_status, u.status AS user_status
+FROM stalls s
+JOIN applications a ON s.id = a.stall_id
+JOIN users u ON a.account_id = u.account_id
+WHERE a.account_id = :account_id
+  AND a.status = 'Approved'
+LIMIT 1
 ";
 
 $stmt = $pdo->prepare($stallStatusQuery);
@@ -51,11 +53,12 @@ $stall = $stmt->fetch(PDO::FETCH_ASSOC);
 $shouldShowModal = false;
 $shouldDisablePortal = false;
 
-if ($isInRestrictedFolder && $stall && $stall['status'] === 'suspended') {
+
+if ($isInRestrictedFolder && $stall && $stall['status'] === 'suspended' && $stall['user_status'] === 'suspended') {
     $shouldShowModal = true;
 }
 
-if ($stall['status'] === 'terminated') {
+if ($stall['status'] === 'terminated' || $stall['user_status'] === 'terminated') {
 
     $shouldDisablePortal = true;
 }
@@ -65,8 +68,6 @@ if ($stall['status'] === 'terminated') {
 if ($isHomepage) {
     include_once 'banner.php';
 }
-
-
 
 ?>
 
