@@ -190,27 +190,32 @@ function updateViolationPaymentStatuses(PDO $pdo)
           $stmt = $pdo->prepare($updateViolationQuery);
           $stmt->execute(['violationId' => $violationId]);
 
-          // Terminate the stall (once is enough)
-          $updateStallQuery = "
-                  UPDATE stalls
-                  SET status = 'terminated'
-                  WHERE id = :stallId
-              ";
-          $stmt = $pdo->prepare($updateStallQuery);
+          $updateBothQuery = "
+          UPDATE users u
+          JOIN stalls s ON s.user_id = u.id
+          SET u.status = 'terminated',
+              u.updated_at = NOW(),
+              s.status = 'terminated'
+          WHERE s.id = :stallId
+      ";
+          $stmt = $pdo->prepare($updateBothQuery);
           $stmt->execute(['stallId' => $stallId]);
+
 
           break; // Already handled the highest priority
         } elseif ($hasSuspended) {
           // Escalate violations with suspension
           if ($violation['escalation_status'] === 'Suspended') {
             $updateViolationQuery = "
-                      UPDATE violations
-                      SET payment_status = 'Overdue',
-                          status = 'Escalated',
-                          updated_at = NOW(),
-                          suspension_started = NOW(),
-                          suspension_end = DATE_ADD(NOW(), INTERVAL 1 MONTH)
-                      WHERE id = :violationId
+                      UPDATE violations v
+                      JOIN users u ON v.user_id = u.id
+                      SET v.payment_status = 'Overdue',
+                          v.status = 'Escalated',
+                          v.updated_at = NOW(),
+                          v.suspension_started = NOW(),
+                          v.suspension_end = DATE_ADD(NOW(), INTERVAL 1 MONTH),
+                          u.status = 'suspended'
+                      WHERE v.id = :violationId
                   ";
             $stmt = $pdo->prepare($updateViolationQuery);
             $stmt->execute(['violationId' => $violationId]);

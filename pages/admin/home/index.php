@@ -225,7 +225,47 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         </div>
 
       </div>
+    </section>
 
+    <hr>
+
+    <section class="container my-5">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="text-start mb-4">
+          <h4 class="fw-bold">Suspended and Terminated Accounts</h4>
+          <p class="text-muted">Manage market operations efficiently with these tools.</p>
+        </div>
+        <div class="text-start mb-4">
+          <button class="btn btn-dark" id="exportSuspended&TerminatedUsers">Export</button>
+        </div>
+      </div>
+
+      <div class="table-responsive rounded">
+        <table class="table table-hover align-middle shadow-sm px-5">
+          <thead class="table-dark text-center">
+            <tr>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Violations & Issuance Dates</th>
+              <th>Termination Date</th>
+              <th>Market</th>
+              <th>Stall Number</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+
+            <tr>
+              <!-- Dynamically Added Content -->
+            </tr>
+            <tr>
+              <!-- Dynamically Added Content -->
+            </tr>
+          </tbody>
+        </table>
+        <div id="violatorMessage"></div>
+      </div>
     </section>
 
     <!-- Announcement Modal -->
@@ -443,6 +483,106 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
           console.error('Fetch error:', error);
         });
     }
+  </script>
+
+  <!-- Export As CSV -->
+  <script>
+    // Add event listener to the button
+    let suspendedAndTerminatedUsers = [];
+    document.getElementById('exportSuspended&TerminatedUsers').addEventListener('click', exportAsCSV);
+
+    function exportAsCSV() {
+      // Check if there's any data to export
+      if (suspendedAndTerminatedUsers.length === 0) {
+        alert('No users to export.');
+        return;
+      }
+
+      // Create a FormData object to send the data via POST
+      const formData = new FormData();
+      formData.append('violators', JSON.stringify(suspendedAndTerminatedUsers)); // Convert array to JSON string
+
+      // Make a POST request to the PHP script to generate the CSV
+      fetch('../../actions/create_csv.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+
+          // Check if it's a CSV file response
+          const contentType = response.headers.get("Content-Type");
+          console.log("CONTENT TYPE: ", contentType);
+
+          if (contentType && contentType.includes("application/csv")) {
+            return response.blob(); // It's a CSV file, so process it
+            console.log("blob")
+          } else {
+            return response.json(); // Otherwise, handle as JSON error message
+            console.log("no blob")
+          }
+
+        })
+        .then(data => {
+          if (data instanceof Blob) {
+            console.log('IM HERE BLOB')
+            // Handle CSV file download
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(data);
+            link.href = url;
+            link.download = 'terminated&suspended_users.csv'; // Set a default file name
+            link.click();
+            URL.revokeObjectURL(url); // Clean up the URL object
+          } else {
+            // Handle JSON response if an error occurred
+            console.error(data.message || 'An unknown error occurred.');
+          }
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+    }
+  </script>
+
+  <!-- Fetch Suspended & Terminated Accounts -->
+  <script>
+    fetch("../../actions/get_suspended_terminated_accounts.php")
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(json => {
+
+        if (!json.success) throw new Error(json.message);
+        if (json.success && json.message) {
+          const message_container = document.getElementById("violatorMessage");
+          message_container.innerHTML = json.message;
+          return;
+        }
+
+        const data = json.data; // <-- the actual violators array
+
+        const tableBody = document.querySelector("tbody");
+        tableBody.innerHTML = '';
+
+        data.forEach(item => {
+          suspendedAndTerminatedUsers.push(item);
+          const row = document.createElement("tr");
+          row.innerHTML = `
+        <td>${item.user_id}</td>
+        <td>${item.name}</td>
+        <td class="status-${item.status.toLowerCase()}">${item.status}</td>
+        <td>${item.reason}</td>
+        <td>${item.date}</td>
+        <td>${item.market}</td>
+        <td>${item.stall_number}</td>
+      `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Fetched error:', error.message);
+      });
   </script>
 
   <!-- Chart.js Configuration -->

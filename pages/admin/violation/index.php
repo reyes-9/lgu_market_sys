@@ -67,7 +67,7 @@ ORDER BY v.payment_status ASC;
             <i class="bi bi-bar-chart-line-fill"></i>
         </div>
         <div>
-            <h4 class="m-0">Inspector - Violations</h4>
+            <h4 class="m-0">Admin - Violations</h4>
             <p class="text-muted mb-0">Manage and track vendor violations to ensure compliance with market regulations.</p>
         </div>
         <div class="ms-auto me-5">
@@ -81,10 +81,16 @@ ORDER BY v.payment_status ASC;
     </div>
 
     <div class="container-fluid mt-5">
-        <div class="d-flex justify-content-center align-items-center mb-4">
-            <div class="container">
-                <h4 class="fw-bold">Violation Management</h4>
-                <p class="text-muted">Tracks and manages vendor violations, allowing reporting, searching, editing, and deletion for market regulation compliance.</p>
+        <div class="d-flex justify-content-around align-items-center mb-4">
+            <div class="container text-center">
+                <div class="text-start ms-5">
+                    <h4 class="fw-bold">Violation Management</h4>
+                    <p class="text-muted">Tracks and manages vendor violations, allowing reporting, searching, editing, and deletion for market regulation compliance.</p>
+                </div>
+
+            </div>
+            <div class="container text-center">
+                <button class="btn btn-danger" id="openViolationReportBtn">Create Violation Report</button>
             </div>
         </div>
 
@@ -254,7 +260,7 @@ ORDER BY v.payment_status ASC;
 
 
         <!-- VIOLATION FORM -->
-        <div class="container violation-form-container">
+        <div class="container violation-form-container d-none" id="violationFormDiv">
             <form id="violationForm" enctype="multipart/form-data">
                 <div class="form-title">Create Violation Report</div>
 
@@ -329,10 +335,13 @@ ORDER BY v.payment_status ASC;
                 </div>
 
                 <div class="mt-5 text-center">
-                    <button type="submit" class="btn btn-danger">Submit</button>
+                    <button type="button" class="btn btn-secondary mx-2" id="closeViolationFormDiv">Close</button>
+                    <button type="submit" class="btn btn-danger mx-2">Submit</button>
                 </div>
             </form>
         </div>
+
+
     </div>
 
     <!-- Add Violation Modal -->
@@ -358,6 +367,19 @@ ORDER BY v.payment_status ASC;
     <?php include '../../../includes/footer.php'; ?>
 
     <script>
+        const form = document.getElementById("violationFormDiv");
+
+        document.getElementById("openViolationReportBtn").onclick = () => {
+            form.classList.replace("d-none", "d-block");
+            form.scrollIntoView({
+                behavior: "smooth"
+            });
+        };
+
+        document.getElementById("closeViolationFormDiv").onclick = () => {
+            form.classList.replace("d-block", "d-none");
+        };
+
         document.getElementById("violationForm").addEventListener("submit", function(event) {
             event.preventDefault();
             if (!validateViolationForm()) {

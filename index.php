@@ -1,5 +1,8 @@
 <?php
+define('IS_HOMEPAGE', true);
 require_once __DIR__ . '/includes/session.php';
+
+
 
 // Only allow vendors
 if ($_SESSION['user_type'] !== 'Vendor' && $_SESSION['user_type'] !== 'Visitor' && $_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector') {

@@ -7,14 +7,18 @@
     <title>Vendor Profile</title>
     <link rel="stylesheet" href="../../assets/css/profile.css">
     <?php include_once "../../includes/cdn-resources.php" ?>
+
 </head>
 
-<?php
-require_once '../../includes/session.php';
+<?php require_once '../../includes/session.php';
+
 ?>
 
 <body>
-    <?php include '../../includes/nav.php'; ?>
+
+    <?php require_once '../../includes/nav.php'; ?>
+
+
 
     <div class="profile-header">
         <h1>Hello, Jesse</h1>
