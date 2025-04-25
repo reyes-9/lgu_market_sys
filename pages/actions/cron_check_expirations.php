@@ -142,7 +142,8 @@ function updateViolationPaymentStatuses(PDO $pdo)
     SELECT 
       v.id AS violation_id, 
       vt.escalation_status, 
-      v.stall_id
+      v.stall_id,
+      v.suspension_end
     FROM violations v
     JOIN expiration_dates ed ON v.id = ed.reference_id
     JOIN violation_types vt ON v.violation_type_id = vt.id
@@ -197,15 +198,20 @@ function updateViolationPaymentStatuses(PDO $pdo)
               u.updated_at = NOW(),
               s.status = 'terminated'
           WHERE s.id = :stallId
-      ";
+        ";
           $stmt = $pdo->prepare($updateBothQuery);
           $stmt->execute(['stallId' => $stallId]);
 
 
           break; // Already handled the highest priority
         } elseif ($hasSuspended) {
+
+          $current_date = date('Y-m-d');
+
           // Escalate violations with suspension
           if ($violation['escalation_status'] === 'Suspended') {
+            $suspension_end = new DateTime($violation['suspension_end']); // convert to DateTime object
+
             $updateViolationQuery = "
                       UPDATE violations v
                       JOIN users u ON v.user_id = u.id
@@ -228,11 +234,38 @@ function updateViolationPaymentStatuses(PDO $pdo)
                   ";
             $stmt = $pdo->prepare($updateStallQuery);
             $stmt->execute(['stallId' => $stallId]);
+
+            // Escalate the suspension if it is goes over the suspension end date
+            if ($suspension_end <= $current_date) {
+              echo "The Suspension Already Ends: " . $suspension_end->format('Y-m-d');
+              // Escalate 'suspension' to 'terminated'
+              $updateViolationQuery = "
+                        UPDATE violations
+                        SET payment_status = 'Overdue',
+                            status = 'Escalated',
+                            updated_at = NOW()
+                        WHERE id = :violationId
+                    ";
+              $stmt = $pdo->prepare($updateViolationQuery);
+              $stmt->execute(['violationId' => $violationId]);
+
+              $updateBothQuery = "
+                UPDATE users u
+                JOIN stalls s ON s.user_id = u.id
+                SET u.status = 'terminated',
+                    u.updated_at = NOW(),
+                    s.status = 'terminated'
+                WHERE s.id = :stallId
+              ";
+              $stmt = $pdo->prepare($updateBothQuery);
+              $stmt->execute(['stallId' => $stallId]);
+            } else {
+              echo "Still suspended.";
+            }
           }
         }
       }
     }
-
 
 
     return [

@@ -16,7 +16,7 @@ $isHomepage = defined('IS_HOMEPAGE') && IS_HOMEPAGE;
 
 $account_id = $_SESSION['account_id'] ?? null;
 $user_id = $account_id ? getUserIdByAccountId($pdo, $account_id) : null;
-$restrictedFoldersSuspended = [
+$restrictedFolders = [
     '/stall_app/',
     '/stall_transfer/',
     '/stall_extend/',
@@ -24,16 +24,6 @@ $restrictedFoldersSuspended = [
     '/track_app/',
     '/transfer_stall_app/'
 ];
-
-$currentURI = $_SERVER['REQUEST_URI'];
-$isInRestrictedFolder = false;
-
-foreach ($restrictedFoldersSuspended as $folder) {
-    if (strpos($currentURI, $folder) !== false) {
-        $isInRestrictedFolder = true;
-        break;
-    }
-}
 
 // Check if user has a suspended stall
 $stallStatusQuery = "
@@ -53,18 +43,36 @@ $stall = $stmt->fetch(PDO::FETCH_ASSOC);
 $shouldShowModal = false;
 $shouldDisablePortal = false;
 
+// If the user is terminated, disable portal access and add it to the restricted list
+if ($stall && ($stall['stall_status'] === 'terminated' || $stall['user_status'] === 'terminated')) {
+    $shouldDisablePortal = true;
+    $restrictedFolders[] = '/portal/';
+}
 
-if ($isInRestrictedFolder && $stall && $stall['status'] === 'suspended' && $stall['user_status'] === 'suspended') {
+// Now check if current page is in a restricted folder
+$currentURI = $_SERVER['REQUEST_URI'];
+$isInRestrictedFolder = false;
+
+foreach ($restrictedFolders as $folder) {
+    if (strpos($currentURI, $folder) !== false) {
+        $isInRestrictedFolder = true;
+        break;
+    }
+}
+
+// If in a restricted folder and suspended or terminated, show modal
+if (
+    $isInRestrictedFolder &&
+    $stall &&
+    (
+        ($stall['stall_status'] === 'suspended' && $stall['user_status'] === 'suspended') ||
+        ($stall['stall_status'] === 'terminated' && $stall['user_status'] === 'terminated')
+    )
+) {
     $shouldShowModal = true;
 }
 
-if ($stall['status'] === 'terminated' || $stall['user_status'] === 'terminated') {
-
-    $shouldDisablePortal = true;
-}
-
-?>
-<?php
+// Optional: homepage banner
 if ($isHomepage) {
     include_once 'banner.php';
 }
@@ -94,10 +102,10 @@ if ($isHomepage) {
                     <h5 class="modal-title w-100" id="suspendedModalLabel">Access Denied</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Your stall is currently <strong>suspended</strong>. You cannot access this page until the suspension period ends.</p>
+                    <p>You cannot access this page.</p>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <a href="http://localhost/lgu_market_sys/pages/portal/" class="btn btn-primary">Go Back to Profile</a>
+                    <a href="http://localhost/lgu_market_sys/" class="btn btn-primary">Go Back to Home</a>
                 </div>
             </div>
         </div>

@@ -1033,10 +1033,10 @@
                     const indicatorId = `${stall.stall_number.toLowerCase()}_indicator`;
                     const indicatorElement = document.getElementById(indicatorId);
 
-                    console.log("INDICATOR ELEMENT: ", indicatorElement);
+                    console.log("Stall Status: ", stall.status);
 
                     if (indicatorElement) {
-                        if (stall.status === "occupied") {
+                        if (stall.status === "occupied" || stall.status === "terminated" || stall.status === "suspended") {
                             indicatorElement.style.fill = "red";
                         } else {
                             indicatorElement.style.fill = "green";
@@ -1081,7 +1081,7 @@
                 document.getElementById("stall-owner").textContent = stall.user_name || "Not Assigned";
                 document.getElementById("stall-section").textContent = stall.section_name || "N/A";
 
-                if (stall.status === "occupied") {
+                if (stall.status === "occupied" || stall.status === "terminated" || stall.status === "suspended") {
                     apply_btn.disabled = true;
                 } else {
                     apply_btn.disabled = false;
