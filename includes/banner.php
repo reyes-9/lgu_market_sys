@@ -2,33 +2,36 @@
 
 $account_id = $_SESSION['account_id'];
 $user_id = getUserIdByAccountId($pdo, $account_id);
-
 $getExpiringViolationsQuery = "
- SELECT e.expiration_date,
-       u.status AS user_status
+SELECT e.expiration_date, u.status AS user_status
 FROM expiration_dates e
 LEFT JOIN violations v ON e.reference_id = v.id
 LEFT JOIN users u ON v.user_id = u.id
 WHERE 
     v.user_id = :userId
     AND e.type = 'violation'
-    AND DATEDIFF(e.expiration_date, NOW()) <= 10
-    AND DATEDIFF(e.expiration_date, NOW()) >= 0
-
+    AND e.status = 'active'
+    AND DATEDIFF(e.expiration_date, NOW()) BETWEEN 0 AND 10
 ";
 
 $stmt = $pdo->prepare($getExpiringViolationsQuery);
 $stmt->execute(['userId' => $user_id]);
 $expiringViolations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$user_status = $expiringViolations[0]['user_status'];
 
-$showSuspensionBanner = count($expiringViolations) > 0;
+$showSuspensionBanner = false;
 $showTerminatedBanner = false;
 
-if ($user_status === "terminated") {
-    $showSuspensionBanner = false;
-    $showTerminatedBanner = true;
+if ($expiringViolations) {
+    $user_status = strtolower(trim($expiringViolations[0]['user_status']));
+
+    if ($user_status === 'terminated') {
+        $showSuspensionBanner = false;
+        $showTerminatedBanner = true;
+    } else {
+        $showSuspensionBanner = true;
+    }
 }
+
 ?>
 
 <style>
@@ -92,7 +95,6 @@ if ($user_status === "terminated") {
             <h2><strong>Termination </strong> Alert Notification</h2>
             <p>Your account has an escalated market violation, resulting in termination. Please contact support for further assistance.</p>
 
-            <!-- <a href="http://localhost/lgu_market_sys/pages/violation/" class="btn btn-danger text-light fw-bold mt-4">View Violation</a> -->
         </div>
         <div class="banner-icon">
             <img src="https://cdn-icons-png.flaticon.com/512/564/564619.png" alt="Warning Icon" class="img-fluid" width="100">
