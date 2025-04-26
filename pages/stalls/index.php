@@ -284,6 +284,14 @@ require_once '../../includes/session.php';
         }
       });
 
+      // Extension
+      const extensionModal = document.getElementById('submitExtensionReceiptModal');
+      extensionModal.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault(); // Stops the form from submitting or closing the modal
+        }
+      });
+
       const uploadStallButton = document.getElementById('uploadStallPaymentReceipt');
       uploadStallButton.addEventListener('click', function() {
         const selectedStall = document.querySelector('input[name="selected_stall_id"]:checked');
@@ -305,13 +313,6 @@ require_once '../../includes/session.php';
 
       });
 
-      // Extension
-      const extensionModal = document.getElementById('submitExtensionReceiptModal');
-      extensionModal.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault(); // Stops the form from submitting or closing the modal
-        }
-      });
 
       const uploadExtensionButton = document.getElementById('uploadExtensionPaymentReceipt');
       uploadExtensionButton.addEventListener('click', function() {

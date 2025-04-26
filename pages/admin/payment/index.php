@@ -269,7 +269,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                 .then(data => {
                     alert(data.message);
                     if (data.success) {
-                        location.reload();
+                        // location.reload();
                     }
                 })
                 .catch(error => console.error("Error:", error));

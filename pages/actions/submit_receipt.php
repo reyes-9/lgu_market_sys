@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = getUserIdByAccountId($pdo, $account_id);
     $source_type = $_POST['source_type'];
     $extension_id = null;
+    $violation_id = null;
     $stall_id = $_POST['selected_stall_id'];
 
     try {
@@ -24,9 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $paid_amount = $_POST['extension_paid_amount'];
                 $file = $_FILES['extension_receipt_file'];
                 break;
+            case 'violation':
+                $violation_id = $_POST['selected_violation_id'];
+                $paid_amount = $_POST['violation_paid_amount'];
+                $file = $_FILES['violation_receipt_file'];
+                break;
         }
 
-        $result = insertPayment($pdo, $user_id, $stall_id, $extension_id, $source_type, $paid_amount, $file);
+        $result = insertPayment($pdo, $user_id, $stall_id, $extension_id, $violation_id, $source_type, $paid_amount, $file);
 
         if ($result['success'] === false) {
             error_log($result['message']);
@@ -72,7 +78,7 @@ function handleFileUpload($file)
     return ['success' => true, 'filePath' => $uploadDir . $fileName];
 }
 
-function insertPayment($pdo, $user_id, $stall_id, $extension_id, $source_type, $payment_amount, $file)
+function insertPayment($pdo, $user_id, $stall_id, $extension_id, $violation_id, $source_type, $payment_amount, $file)
 {
     $uploadResult = handleFileUpload($file);
 
@@ -116,12 +122,26 @@ function insertPayment($pdo, $user_id, $stall_id, $extension_id, $source_type, $
                     ':receipt_path' => $filePath
                 ]);
                 break;
+            case 'violation':
+                $stmt = $pdo->prepare("
+                INSERT INTO payments (user_id, violation_id, source_type, amount, payment_date, receipt_path) 
+                VALUES (:user_id, :violation_id, :source_type, :amount, NOW(), :receipt_path)
+            ");
+                $stmt->execute([
+                    ':user_id'      => $user_id,
+                    ':violation_id' => $violation_id,
+                    ':source_type'  => $source_type,
+                    ':amount'       => $payment_amount,
+                    ':receipt_path' => $filePath
+                ]);
+                break;
         }
 
-
-        // Update stall payment status
-        $updateStmt = $pdo->prepare("UPDATE stalls SET payment_status = 'Pending' WHERE id = :stall_id");
-        $updateStmt->execute([':stall_id' => $stall_id]);
+        if ($source_type !== 'violation') {
+            // Update stall payment status
+            $updateStmt = $pdo->prepare("UPDATE stalls SET payment_status = 'Pending' WHERE id = :stall_id");
+            $updateStmt->execute([':stall_id' => $stall_id]);
+        }
 
         return [
             'success' => true,

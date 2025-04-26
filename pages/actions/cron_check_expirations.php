@@ -141,6 +141,7 @@ function updateViolationPaymentStatuses(PDO $pdo)
     $getViolationStatusQuery = "
     SELECT 
       v.id AS violation_id, 
+      v.status AS violation_status,
       vt.escalation_status, 
       v.stall_id,
       v.suspension_end
@@ -167,6 +168,8 @@ function updateViolationPaymentStatuses(PDO $pdo)
       $hasTerminated = false;
       $hasSuspended = false;
 
+
+
       foreach ($violationGroup as $violation) {
         if ($violation['escalation_status'] === 'Terminated') {
           $hasTerminated = true;
@@ -178,6 +181,7 @@ function updateViolationPaymentStatuses(PDO $pdo)
 
       foreach ($violationGroup as $violation) {
         $violationId = $violation['violation_id'];
+        $violationStatus = $violation['violation_status'];
 
         if ($hasTerminated) {
           // Escalate all related violations (without suspension fields)
@@ -236,9 +240,33 @@ function updateViolationPaymentStatuses(PDO $pdo)
             $stmt->execute(['stallId' => $stallId]);
 
             // Escalate the suspension if it is goes over the suspension end date
-            if ($suspension_end <= $current_date) {
+            if ($suspension_end <= $current_date && $violationStatus === 'expired') {
               echo "The Suspension Already Ends: " . $suspension_end->format('Y-m-d');
               // Escalate 'suspension' to 'terminated'
+              $updateViolationQuery = "
+                        UPDATE violations
+                        SET payment_status = 'Overdue',
+                            status = 'Escalated',
+                            updated_at = NOW()
+                        WHERE id = :violationId
+                    ";
+              $stmt = $pdo->prepare($updateViolationQuery);
+              $stmt->execute(['violationId' => $violationId]);
+
+              $updateBothQuery = "
+                UPDATE users u
+                JOIN stalls s ON s.user_id = u.id
+                SET u.status = 'terminated',
+                    u.updated_at = NOW(),
+                    s.status = 'terminated'
+                WHERE s.id = :stallId
+              ";
+              $stmt = $pdo->prepare($updateBothQuery);
+              $stmt->execute(['stallId' => $stallId]);
+
+            } elseif ($suspension_end <= $current_date && $violationStatus === 'inactive') {
+              echo "The Suspension Already Ends: " . $suspension_end->format('Y-m-d');
+              // De-escalate 'suspension'
               $updateViolationQuery = "
                         UPDATE violations
                         SET payment_status = 'Overdue',

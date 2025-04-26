@@ -37,13 +37,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if ($expiration) {
                     // Extend expiration date by one month
                     $new_expiration_date = date('Y-m-d', strtotime($expiration['expiration_date'] . ' +1 month'));
-                    $status = "active";
                     // Update expiration date
-                    $updateStmt = $pdo->prepare("UPDATE expiration_dates SET expiration_date = :new_expiration_date, status = :status WHERE reference_id = :reference_id AND type = :payment_type");
+                    $updateStmt = $pdo->prepare("UPDATE expiration_dates SET expiration_date = :new_expiration_date, status = 'active' WHERE reference_id = :reference_id AND type = :payment_type");
                     $updateStmt->bindParam(':new_expiration_date', $new_expiration_date);
                     $updateStmt->bindParam(':reference_id', $reference_id, PDO::PARAM_INT);
                     $updateStmt->bindParam(':payment_type', $payment_type, PDO::PARAM_STR);
-                    $updateStmt->bindParam(':status', $status, PDO::PARAM_STR);
                     $updateStmt->execute();
 
                     if ($updateStmt->rowCount() === 0) {
@@ -62,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
 
             if ($payment_type === "extension") {
-                // 1. Get current expiration
+                // Get current expiration
                 $stmt = $pdo->prepare("
                   SELECT e.expiration_date,
                          ex.duration                   
@@ -78,14 +76,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($row) {
-                    // 2. Compute new expiration by adding the requested months
+                    // Compute new expiration by adding the requested months
                     $duration = intval($row['duration']);            // e.g. 3 months
                     $newDate = date(
                         'Y-m-d',
                         strtotime("{$row['expiration_date']} +{$duration} month")
                     );
 
-                    // 3. Update expiration_dates
+                    // Update expiration_dates
                     $updateExp = $pdo->prepare("
                       UPDATE expiration_dates 
                       SET expiration_date = :newDate, status = 'active' 
@@ -105,27 +103,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $updateExtension->execute([':reference_id' => $reference_id]);
 
                     if ($updateExtension->rowCount() === 0) {
-                        throw new Exception("No extension record updated");
+                        throw new Exception("No violation record updated");
                     }
                 } else {
                     throw new Exception("No expiration record updated");
                 }
-
-                // // 4. (Optional) Mark the extension *request* as closed
-                // $closeReq = $pdo->prepare("
-                //   UPDATE stall_extension_requests 
-                //   SET status = 'Paid' 
-                //   WHERE id = :reference_id
-                // ");
-                // $closeReq->execute([':reference_id' => $reference_id]);
             }
 
             if ($payment_type === "violation") {
-                // Mark stall extension or violation as inactive
-                $updateStmt = $pdo->prepare("UPDATE expiration_dates SET status = 'Inactive' WHERE reference_id = :reference_id AND type = :payment_type");
+
+                // echo "reference_id: $reference_id, payment_type: $payment_type";
+
+                // Mark violation as inactive
+
+                $updateStmt = $pdo->prepare("UPDATE expiration_dates SET status = 'inactive' WHERE reference_id = :reference_id AND type = :payment_type");
                 $updateStmt->bindParam(':reference_id', $reference_id, PDO::PARAM_INT);
                 $updateStmt->bindParam(':payment_type', $payment_type, PDO::PARAM_STR);
                 $updateStmt->execute();
+
+                // Update violation status to paid
+                $updateViolation = $pdo->prepare("UPDATE violations 
+                   SET status = 'Resolved', 
+                       payment_status = 'Paid',
+                       updated_at = NOW()
+                   WHERE id = :reference_id");
+                $updateViolation->bindParam(':reference_id', $reference_id, PDO::PARAM_INT);
+                $updateViolation->execute();
+
+                if ($updateViolation->rowCount() === 0) {
+                    throw new Exception("No violation record updated");
+                }
             }
 
 

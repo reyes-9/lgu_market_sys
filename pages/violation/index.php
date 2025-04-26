@@ -23,17 +23,17 @@ require_once '../../includes/session.php';
             <h4>Violation Payment</h4>
             <p class="mt-3">Don't wait until the last minute! <br>Upload your payment receipt for verification today to avoid any violations. Be sure to submit it before the due date.</p>
         </div>
-        <button class="btn btn-warning submit-receipt-btn" data-bs-toggle="modal" data-bs-target="#submitReceiptModal">Submit Receipt</button>
+        <button class="btn btn-warning submit-receipt-btn" data-bs-toggle="modal" data-bs-target="#violationReceiptModal">Submit Receipt</button>
     </div>
 
     <!-- Submit Receipt Modal -->
-    <div class="modal fade" id="submitReceiptModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="submitReceiptModal" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+    <div class="modal fade" id="violationReceiptModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="violationReceiptModal" aria-hidden="true">
+        <div class="modal-dialog modal-xl" style="max-width: 100%; margin: 0;">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="modal-container">
                         <div class="d-flex align-items-center justify-content-between">
-                            <h4 class="modal-title fw-bold" id="submitReceiptModalLabel">Upload Reciept</h4>
+                            <h4 class="modal-title fw-bold" id="violationReceiptModalLabel">Upload Reciept</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <p class="text-muted me-5">
@@ -41,41 +41,42 @@ require_once '../../includes/session.php';
                         </p>
                         <hr class="mb-4">
 
-                        <form id="submitRecieptForm" enctype="multipart/form-data">
+                        <form id="submitViolationRecieptForm" enctype="multipart/form-data">
 
                             <table class="table table-borderless table-hover table-striped">
                                 <thead>
                                     <tr>
+                                        <th>Select</th>
                                         <th>Violation</th>
                                         <th>Date Issued <br> (YYYY-MM-DD)</th>
                                         <th>Fine Amount</th>
+                                        <th>Escalation Fee</th>
                                         <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="recieptStallsContainer">
+                                <tbody id="unpaidViolationsList">
 
                                 </tbody>
                             </table>
 
 
-                            <h5 id="receipt_stall_message"></h5>
+                            <h5 id="receipt_vioaltion_message"></h5>
                             <div class="container text-start w-50 m-0">
 
                                 <div class="mb-3">
                                     <label for="receiptFile" class="form-label">Upload Reciept (PDF or Image)</label>
-                                    <input type="file" class="form-control" id="receiptFile" name="receipt_file" accept=".pdf, image/*">
+                                    <input type="file" class="form-control" id="violationReceiptFile" name="violation_receipt_file" accept=".pdf, image/*">
                                 </div>
 
                                 <label for="receiptFile" class="form-label">Paid Amount</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">₱</span>
-                                    <input type="number" class="form-control" id="paidAmount" name="paid_amount" aria-label="Amount (to the nearest dollar)">
+                                    <input type="number" class="form-control" id="violationPaidAmount" name="violation_paid_amount" aria-label="Amount (to the nearest dollar)">
                                 </div>
-                                <input type="hidden" id="sourceType" name="source_type" value="stall">
+                                <input type="hidden" id="sourceType" name="source_type" value="violation">
                             </div>
 
-                            <button class="btn btn-dark mt-3" id="uploadPaymentReceipt" type="button">Upload</button>
+                            <button class="btn btn-dark mt-3" id="uploadViolationPaymentReceipt" type="button">Upload</button>
 
                         </form>
                     </div>
@@ -157,11 +158,11 @@ require_once '../../includes/session.php';
                                 </tr>
                                 <tr>
                                     <td><strong>Status:</strong></td>
-                                    <td id="modalStatus" class="badge"></td>
+                                    <td><span id="modalStatus" class="badge"></span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Criticality:</strong></td>
-                                    <td id="modalCriticality" class="badge"></td>
+                                    <td><span id="modalCriticality" class="badge"></span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -171,7 +172,6 @@ require_once '../../includes/session.php';
         </div>
     </div>
     <?php
-    include "../../includes/session.php";
 
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -221,6 +221,7 @@ require_once '../../includes/session.php';
 
             fetchViolations();
             addFilterToTable();
+            fetchUnpaidViolations();
 
             // Set violation ID when appeal button is clicked
             document.body.addEventListener('click', function(event) {
@@ -243,8 +244,73 @@ require_once '../../includes/session.php';
                     updateViolationModal(event.target);
                 }
             });
+
+            // Violation
+            const violationModal = document.getElementById('violationReceiptModal');
+            violationModal.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Stops the form from submitting or closing the modal
+                }
+            });
+
+            const uploadViolationButton = document.getElementById('uploadViolationPaymentReceipt');
+            uploadViolationButton.addEventListener('click', function() {
+
+                console.log("Upload button clicked");
+
+                const selectedStall = document.querySelector('input[name="selected_violation_id"]:checked'); // fixed typo
+                if (!selectedStall) {
+                    alert("No violation selected.");
+                    return;
+                }
+
+                const selectedRow = selectedStall.closest('tr');
+                const fileInput = document.getElementById('violationReceiptFile');
+                const paid_amount = parseFloat(document.getElementById('violationPaidAmount').value);
+                const status = selectedRow.querySelector('td:nth-child(6)').textContent.trim();
+                const fine_amount = parseFloat(selectedRow.querySelector('td:nth-child(4)').textContent.trim());
+                const escalation_fee = parseFloat(selectedRow.querySelector('td:nth-child(5)').textContent.trim());
+
+                console.log("Selected Violation Details:");
+                console.log("Fine Amount:", fine_amount);
+                console.log("Escalation Fee:", escalation_fee);
+                console.log("Paid Amount:", paid_amount);
+                console.log("Status:", status);
+                console.log("File Selected:", fileInput.files[0]);
+
+                if (validateReceiptForm(selectedRow, fileInput, paid_amount, status, fine_amount, escalation_fee)) {
+                    const violation_form = document.getElementById('submitViolationRecieptForm')
+                    submitPayment(violation_form);
+                }
+
+            });
         });
 
+        function submitPayment(form) {
+            const formData = new FormData(form);
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
+            }
+            fetch('../actions/submit_receipt.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        alert('Payment successfully submitted!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting the payment.');
+                });
+
+        }
 
         function submitAppeal() {
 
@@ -326,18 +392,18 @@ require_once '../../includes/session.php';
             let status = button.getAttribute('data-status');
             modalStatus.textContent = status;
             modalStatus.className = "badge " +
-                (status === "Rejected" ? "bg-dark" :
+                (status === "Rejected" ? "bg-danger" :
                     status === "Pending" ? "bg-warning" :
-                    status === "Resolved" ? "bg-success" : "");
+                    status === "Resolved" ? "bg-success" :
+                    status === "Escalated" ? "bg-dark text-light" : "");
 
             let criticality = button.getAttribute('data-criticality');
             modalCriticality.textContent = (criticality === "Critical" ? criticality : "");
-            modalCriticality.className = "badge " + (criticality === "Critical" ? "bg-danger" : "");
+            modalCriticality.className = "badge " + (criticality === "Critical" ? "bg-danger text-light" : "");
         }
 
         function fetchViolations(filter) {
 
-            console.log(filter)
             fetch('../actions/violation_action.php')
                 .then(response => response.json())
                 .then(data => {
@@ -423,8 +489,8 @@ require_once '../../includes/session.php';
             }
         }
 
-        function fetchvUnpaidViolations() {
-            fetch('backend/get_unpaid_violations.php') // Adjust path as needed
+        function fetchUnpaidViolations() {
+            fetch('../actions/get_unpaid_violations.php') // Adjust path as needed
                 .then(response => {
                     if (!response.ok) throw new Error('Network error');
                     return response.json();
@@ -451,16 +517,80 @@ require_once '../../includes/session.php';
             }
 
             violations.forEach(v => {
-                const div = document.createElement('div');
-                div.className = 'violation-card';
-                div.innerHTML = `
-            <h4>Violation ID: ${v.id}</h4>
-            <p><strong>Date:</strong> ${v.violation_date}</p>
-            <p><strong>Description:</strong> ${v.violation_description}</p>
-            <p><strong>Status:</strong> ${v.status}</p>
-        `;
-                container.appendChild(div);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                 <td>
+                       <label class="radio-modern">
+                           <input type="radio" name="selected_violation_id" value="${v.id}">
+                           <span class="radio-checkmark"></span>
+                       </label>
+                  </td>
+              <td>${v.violation_name}</td>
+              <td>${v.violation_date}</td>
+              <td>${v.fine_amount}</td>
+              <td>${v.escalation_fee}</td>
+              <td class="${
+                    v.status === 'Pending' ? 'text-secondary' :
+                    v.status === 'Escalated' ? 'text-danger' :
+                    v.status === 'Payment_Period' ? 'text-success' :
+                    '' }">
+                       <strong>${v.status || 'N/A'}</strong> 
+                  </td>
+        
+              
+            `;
+                container.appendChild(tr);
+                // Click to select radio button
+                tr.addEventListener("click", () => {
+                    const radio = tr.querySelector('input[name="selected_violation_id"]');
+                    if (radio) {
+                        radio.checked = true;
+                    }
+                });
             });
+        }
+
+        // Validate Receipt Form
+        function validateReceiptForm(violation, fileInput, paid_amount, status, fine_amount, escalation_fee) {
+            let valid = true;
+
+            // Validate file input and stall
+            if (!fileInput.files.length || !violation || !paid_amount) {
+                alert("Please complete the form.");
+                valid = false;
+            } else {
+                const file = fileInput.files[0];
+                const allowedExtensions = /(\.pdf|\.jpg|\.jpeg|\.png|\.gif|\.bmp|\.webp)$/i; // Added more image formats
+                if (!allowedExtensions.exec(file.name)) {
+                    alert("Invalid file type. Only PDF or image files are allowed.");
+                    valid = false;
+                }
+            }
+
+            if (status === "Escalated") {
+                const total_fee = fine_amount + escalation_fee;
+                if (valid && paid_amount < total_fee) {
+                    alert("Paid amount cannot be less than the Total Due = (Fine + Escalation Fee).");
+                    valid = false;
+                }
+                if (valid && paid_amount > total_fee) {
+                    alert("Paid amount cannot be greater than the Total Due = (Fine + Escalation Fee).");
+                    valid = false;
+                }
+            } else {
+                // Additional validation for paid_amount and amount_due
+                if (valid && paid_amount < fine_amount) {
+                    alert("Paid amount cannot be less than the amount due.");
+                    valid = false;
+                }
+
+                if (valid && paid_amount > fine_amount) {
+                    alert("Paid amount cannot be greater than the amount due.");
+                    valid = false;
+                }
+            }
+
+            return valid;
         }
     </script>
 
@@ -482,8 +612,10 @@ require_once '../../includes/session.php';
 
                     // Update status badge color
                     var status = this.getAttribute('data-status');
+                    console.log("Status: ", status);
                     modalStatus.textContent = status;
-                    modalStatus.className = "badge " + (status === "Unresolved" ? "bg-danger" : "bg-success");
+                    modalStatus.className = "badge " + (status === "Escalated" ? "bg-dark" : status === "Unresolved" ? "bg-danger" : "bg-success");
+
                 });
             });
         });
