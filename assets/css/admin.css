@@ -148,19 +148,27 @@ table td button {
 
 /* Card 1 - Stall Application */
 .card-db {
-  border: 0 !important;
-  padding: 50px 10px;
-  background-color: #003366;
+  box-sizing: border-box;
+  width: 270px;
+  height: 320px;
+  margin: 30px;
+  background: linear-gradient(135deg, #0a1d3c, #1e40af);
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px);
+  border-radius: 17px;
+  text-align: center;
   cursor: pointer;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-weight: bolder;
 }
 
 .card-db:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  border: 2px solid #000000;
+  transform: scale(1.05);
 }
 
 .card-body {
@@ -307,4 +315,18 @@ input[type="text"],
 input[type="calendar"] {
   height: 45px;
   outline: none !important;
+}
+.btn-outline-pill {
+  border: 1px solid #ddd; /* Lighter border */
+  border-radius: 50rem;
+  padding: 0.5rem 1rem;
+  color: #333; /* Darker text */
+  background-color: #f8f9fa; /* Light background */
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-check:checked + .btn-outline-pill {
+  background-color: #198754;
+  color: white;
+  border-color: #198754;
 }

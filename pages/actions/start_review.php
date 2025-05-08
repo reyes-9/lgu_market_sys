@@ -56,7 +56,6 @@ try {
     $updateStmt->bindParam(':id', $application_id, PDO::PARAM_INT);
     $updateStmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
 
-    // Execute the update and commit the transaction
     if ($updateStmt->execute()) {
 
         $pdo->commit(); // Commit the transaction

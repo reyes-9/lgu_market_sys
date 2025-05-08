@@ -111,7 +111,7 @@ $isLogin = isset($_SESSION['account_id']) ? true : false;
             <h4>Integrated Systems</h4>
             <hr>
             <ul>
-                <li><a class="footer-links" href="#">WASTE MANAGEMENT SYSTEM</a></li>
+                <li><a class="footer-links" href="https://www.facebook.com/">WASTE MANAGEMENT SYSTEM</a></li>
             </ul>
         </div>
 

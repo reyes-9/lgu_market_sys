@@ -1,77 +1,136 @@
 <?php
+require_once '../../vendor/autoload.php';
 
-// Check if the POST request contains the "violators" parameter
-if (!isset($_POST['violators']) || empty($_POST['violators'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'No violators data received.']);
-    exit();
-}
+header('Content-Type: application/json');
 
-// Decode the JSON data
-$suspendedAndTerminatedUsers = json_decode($_POST['violators'], true);
-
-// Check if decoding was successful
-if ($suspendedAndTerminatedUsers === null) {
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'Invalid data format received.']);
-    exit();
-}
-
-// Call the export function with the data, file name, and column headers
-exportToCSV($suspendedAndTerminatedUsers, 'terminated_users_' . date('Y-m-d') . '.csv', [
-    'User ID',
-    'Name',
-    'Status',
-    'Reason - Date Issued',
-    'Date of Termination',
-    'Market',
-    'Stall Number'
-]);
-
-
-
-/**
- * Function to export data to a CSV file
- * 
- * @param array $data         The data to export
- * @param string $fileName    The name of the CSV file
- * @param array $headers      The headers for the CSV file
- */
-function exportToCSV($data, $fileName, $headers)
-{
-    // Set headers to prompt the user to download the file
-    header('Content-Type: application/csv');
-    header('Content-Disposition: attachment; filename="' . $fileName . '"');
-
-    // Open the output stream for writing the CSV data
-    $output = fopen('php://output', 'w');
-
-    // Add CSV column headers
-    fputcsv($output, $headers);
-
-    // Write the data to the CSV
-    foreach ($data as $item) {
-        $row = [];
-        foreach ($headers as $header) {
-            // If the key exists in the data array, add it to the row
-            $row[] = isset($item[strtolower(str_replace(' ', '_', $header))]) ? cleanHtml($item[strtolower(str_replace(' ', '_', $header))]) : '';
-        }
-        fputcsv($output, $row);
+try {
+    // Check if POST data is present
+    if (!isset($_POST['data'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'No data provided.']);
+        exit;
     }
 
-    // Close the output stream
-    fclose($output);
-    exit();
+    $payload = json_decode($_POST['data'], true);
+    if (!is_array($payload) || !isset($payload['headers']) || !isset($payload['rows'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid data structure.']);
+        exit;
+    }
+
+    $headers = $payload['headers'];
+    $rows = $payload['rows'];
+
+    if (empty($headers) || empty($rows)) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Headers or rows are missing.']);
+        exit;
+    }
+
+    $postKey = $_POST['postKey'] ?? null;
+    $title = $_POST['title'] ?? null;
+
+    if (!$postKey) {
+        echo json_encode(['success' => false, 'message' => 'Invalid data provided.']);
+        exit;
+    }
+
+    switch ($postKey) {
+        case "stallUtilizationReport":
+            $summaryHeaders = [
+                'Title',
+                'Market Name',
+                'Total Stalls',
+                'Occupied Stalls',
+                'Occupancy Rate',
+                'Availability Rate'
+            ];
+            list($pdf, $html) = generateCSVReport($rows, $headers, $summaryHeaders, $title);
+            break;
+        case "vendorMasterListReport":
+            $summaryHeaders = [
+                'Title',
+                'Market Name',
+                'Total Vendors'
+            ];
+            list($pdf, $html) = generateCSVReport($rows, $headers, $summaryHeaders, $title);
+            break;
+
+        default:
+            echo json_encode(['success' => false, 'message' => 'Unknown report key.']);
+            exit;
+    }
+
+    ob_clean(); // Clean any buffered output
+    $pdf->writeHTML($html, true, false, true, false, '');
+    $pdf->Output('reports.pdf', 'D'); // Force download
+    exit;
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Server error generating PDF.',
+        'error' => $e->getMessage()
+    ]);
+    exit;
 }
 
 /**
- * Function to clean up HTML entities and tags
- * 
- * @param string $input  The input string to clean
- * @return string        The cleaned string
+ * Normalize a list of headers: trim whitespace and convert to lowercase.
  */
-function cleanHtml($input)
+function normalizeHeaders(array $headers): array
 {
-    // Decode HTML entities and strip HTML tags
-    return strip_tags(html_entity_decode($input, ENT_QUOTES, 'UTF-8'));
+    return array_map(fn($h) => strtolower(trim($h)), $headers);
+}
+function generateCSVReport($rows, $headers, $summaryHeaders, $reportTitle)
+{
+    // Set CSV headers for download
+    header('Content-Type: text/csv');
+    header("Content-Disposition: attachment; filename=\"$reportTitle.csv\"");
+
+    $output = fopen('php://output', 'w');
+
+    if (!$output) {
+        throw new Exception('Unable to open output stream.');
+    }
+
+    // ===== Write Summary Section =====
+    fputcsv($output, [$reportTitle]);
+    fputcsv($output, []); // Empty row
+
+    // Header row for summary
+    fputcsv($output, $summaryHeaders);
+
+    // Data row for summary
+    $summaryRow = [];
+    foreach ($summaryHeaders as $header) {
+        $key = strtolower(str_replace(' ', '_', $header));
+        $summaryRow[] = $rows[0][$key] ?? '';
+    }
+    fputcsv($output, $summaryRow);
+
+    fputcsv($output, []); // Empty row for spacing
+
+    // ===== Write Detailed Section =====
+    $normalizedSummaryHeaders = normalizeHeaders($summaryHeaders);
+    $filteredHeaders = array_filter($headers, function ($header) use ($normalizedSummaryHeaders) {
+        $normalizedHeader = strtolower(trim($header));
+        return !in_array($normalizedHeader, $normalizedSummaryHeaders);
+    });
+
+    // Header row for detailed data
+    fputcsv($output, $filteredHeaders);
+
+    // Data rows
+    foreach ($rows as $row) {
+        $dataRow = [];
+        foreach ($filteredHeaders as $header) {
+            $key = strtolower(str_replace(' ', '_', $header));
+            $dataRow[] = $row[$key] ?? '';
+        }
+        fputcsv($output, $dataRow);
+    }
+
+    fclose($output);
+    exit;
 }

@@ -44,7 +44,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         </div>
     </div>
 
-    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+    <div class="container-fluid my-5 d-flex align-items-center justify-content-center">
 
         <div class="container m-0 w-100 p-0">
             <div class="row justify-content-center mb-3">
@@ -56,48 +56,57 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                     </div>
                     <div class="row align-items-center">
                         <!-- Title Column -->
-                        <div class="col-md-3 text-center">
+                        <!-- <div class="col-md-3 text-center">
                             <div class="title">
                                 <h2>Select Table</h2>
                             </div>
-                        </div>
-                        <div class="col-md-9">
+                        </div> -->
+                        <div class="col-md-12">
                             <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
                                 <!-- Card 1 -->
-                                <div class="col">
-                                    <div class="card-db card-stall" onclick="">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Stall Applications</h5>
-                                        </div>
+                                <div class="card-db card-stall" onclick="">
+                                    <span id="stallAppBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        99+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Stall Applications</h5>
                                     </div>
                                 </div>
 
                                 <!-- Card 2 -->
-                                <div class="col">
-                                    <div class="card-db card-transfer" onclick="window.location.href='#'">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Stall Transfer/Succession Applications</h5>
-                                        </div>
+                                <div class="card-db card-transfer" onclick="window.location.href='#'">
+                                    <span id="transferAppBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        99+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Stall Transfer/Succession Applications</h5>
                                     </div>
                                 </div>
 
                                 <!-- Card 3 -->
-                                <div class="col">
-                                    <div class="card-db card-ext" onclick="window.location.href='#'">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Stall Extension Applications</h5>
-                                        </div>
+                                <div class="card-db card-ext" onclick="window.location.href='#'">
+                                    <span id="extensionAppBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        99+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Stall Extension Applications</h5>
                                     </div>
                                 </div>
 
                                 <!-- Card 4 -->
-                                <div class="col">
-                                    <div class="card-db card-helper" onclick="window.location.href='#'">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Helper Applications</h5>
-                                        </div>
+                                <div class="card-db card-helper" onclick="window.location.href='#'">
+                                    <span id="helperAppBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        99+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Helper Applications</h5>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -235,6 +244,61 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     <?php include '../../../includes/footer.php'; ?>
     <?php include '../../../includes/theme.php'; ?>
 
+
+    <!-- SSE -->
+    <script>
+        // Connect to SSE server
+        const eventSource = new EventSource('../../actions/sse_new_applications.php');
+        const events = [{
+                name: 'new_stall_app_count',
+                badgeId: 'stallAppBadge'
+            },
+            {
+                name: 'new_transfer_app_count',
+                badgeId: 'transferAppBadge'
+            },
+            {
+                name: 'new_extension_app_count',
+                badgeId: 'extensionAppBadge'
+            },
+            {
+                name: 'new_helper_app_count',
+                badgeId: 'helperAppBadge'
+            }
+        ];
+
+        // Loop through events
+        events.forEach(event => {
+            eventSource.addEventListener(event.name, function(e) {
+                const count = parseInt(e.data);
+                console.log(`${event.name}:`, count);
+
+                const tableBadge = document.getElementById(event.badgeId);
+                setBadge(tableBadge, count);
+            });
+        });
+
+        function setBadge(tableBadge, count) {
+            if (tableBadge) {
+                if (count > 0) {
+
+                    tableBadge.style.display = 'inline-block';
+
+                    if (count >= 100) {
+                        tableBadge.textContent = '99+';
+                    } else {
+                        tableBadge.textContent = count;
+                    }
+
+                } else {
+                    tableBadge.style.display = 'none';
+                }
+            } else {
+                console.error('Badge element not found!');
+            }
+        }
+    </script>
+
     <script>
         // Website Views
         var ctx = document.getElementById('websiteViewsChart').getContext('2d');
@@ -311,22 +375,22 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         document.addEventListener("DOMContentLoaded", function() {
 
             document.querySelector(".card-stall").addEventListener("click", function() {
-                fetchTableStall('All Applications');
+                fetchTableStall('Submitted');
                 createFilterButtons('stall');
                 showTableStall();
             });
             document.querySelector(".card-transfer").addEventListener("click", function() {
-                fetchTableStallTransfer('All Applications');
+                fetchTableStallTransfer('Submitted');
                 createFilterButtons('transfer');
                 showTableTransfer();
             });
             document.querySelector(".card-ext").addEventListener("click", function() {
-                fetchTableStallExtend('All Applications');
+                fetchTableStallExtend('Submitted');
                 createFilterButtons('extend');
                 showTableExtension();
             });
             document.querySelector(".card-helper").addEventListener("click", function() {
-                fetchTableHelper('All Applications');
+                fetchTableHelper('Submitted');
                 createFilterButtons('helper');
                 showTableHelper();
             });
@@ -376,7 +440,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                 filterOptions.forEach(option => {
                     const button = document.createElement('button');
 
-                    if (option === 'All Applications') {
+                    if (option === 'Submitted') {
                         button.classList.add('active');
                     }
                     button.classList.add('btn', 'filter-button');

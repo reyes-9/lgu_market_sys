@@ -56,6 +56,7 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
   </div>
 
   <div class="container mt-4">
+
     <section class="my-5">
       <div class="text-start mb-4">
         <h4 class="fw-bold">Market Performance Overview</h4>
@@ -148,6 +149,10 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
       <div class="row g-4 d-flex justify-content-center">
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <span id="violationBadge" class="badge position-absolute top-0 start-100 translate-middle rounded-pill bg-danger">
+              New
+              <span class="visually-hidden">unread messages</span>
+            </span>
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-exclamation-triangle text-danger fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Stall Violations</h5>
@@ -174,6 +179,10 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <span id="inspectionBadge" class="badge position-absolute top-0 start-100 translate-middle rounded-pill bg-danger">
+              New
+              <span class="visually-hidden">unread messages</span>
+            </span>
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-clipboard-check text-success fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Inspection Management</h5>
@@ -187,6 +196,9 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <span id="vendorAppBadge" class="badge position-absolute top-0 start-100 translate-middle rounded-pill bg-danger">
+              New <span class="visually-hidden">unread messages</span>
+            </span>
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-file-earmark-text text-orange fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Vendor Applications</h5>
@@ -200,6 +212,10 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <span id="paymentBadge" class="badge position-absolute top-0 start-100 translate-middle rounded-pill bg-danger">
+              New
+              <span class="visually-hidden">unread messages</span>
+            </span>
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-wallet fs-2 mb-3 text-indigo" id="paymentIcon"></i>
               <h5 class="card-title-home fw-bold">Payment Management</h5>
@@ -213,6 +229,10 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
 
         <div class="col-md-4 d-flex">
           <div class="card border-0 shadow-sm p-3 text-center modern-card w-100">
+            <span id="marketAppBadge" class="badge position-absolute top-0 start-100 translate-middle rounded-pill bg-danger">
+              New
+              <span class="visually-hidden">unread messages</span>
+            </span>
             <div class="card-body d-flex flex-column justify-content-between">
               <i class="bi bi-file-earmark-text text-warning fs-2 mb-3"></i>
               <h5 class="card-title-home fw-bold">Market Applications</h5>
@@ -225,6 +245,117 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         </div>
 
       </div>
+    </section>
+
+    <hr>
+
+    <section class="container my-5">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="text-start mb-4">
+          <h4 class="fw-bold">Reports Generation</h4>
+          <p class="text-muted">Generate detailed reports to monitor and optimize market operations effectively.</p>
+        </div>
+      </div>
+
+      <div class="card p-4 mb-4">
+        <form id="reportGenerationForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+
+              <div class="mb-3 form-group">
+                <label class="form-label fw-bold">Select Market</label>
+                <select class="form-select" id="marketForReports" name="marketId">
+                  <!-- Dynamically Added -->
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label fw-bold">Select Report Category</label>
+                <div class="d-flex flex-wrap gap-2">
+
+                  <input type="radio" class="btn-check" name="reportCategory" id="stallVendor" value="Stall & Vendor Reports" autocomplete="off" checked>
+                  <label class="btn btn-outline-pill" for="stallVendor">
+                    Stall & Vendor Reports
+                  </label>
+
+                  <input type="radio" class="btn-check" name="reportCategory" id="paymentFinancial" autocomplete="off">
+                  <label class="btn btn-outline-pill" for="paymentFinancial">
+                    Payment & Financial Reports
+                  </label>
+
+                  <input type="radio" class="btn-check" name="reportCategory" id="violationEnforcement" autocomplete="off">
+                  <label class="btn btn-outline-pill" for="violationEnforcement">
+                    Violation & Enforcement Reports
+                  </label>
+
+                  <input type="radio" class="btn-check" name="reportCategory" id="operational" autocomplete="off">
+                  <label class="btn btn-outline-pill" for="operational">
+                    Operational Reports
+                  </label>
+
+                  <input type="radio" class="btn-check" name="reportCategory" id="feedback" autocomplete="off">
+                  <label class="btn btn-outline-pill" for="feedback">
+                    Feedback Reports
+                  </label>
+
+                </div>
+              </div>
+
+
+              <label for="reportType" class="form-label fw-bold">Select Report Type</label>
+              <select class="form-select" id="reporOptionsContainer" name="reportType">
+                <!-- Dynamically Populated -->
+              </select>
+
+
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex flex-column w-100 h-100">
+
+                <!-- Report Title Input -->
+                <div>
+                  <label for="reportTitle" class="form-label fw-bold">Report Title</label>
+                  <input type="text" id="reportTitle" class="form-control" name="reportTitle" placeholder="ex. Market Stall Occupancy Report">
+                </div>
+
+                <label for="dateRange" class="form-label my-3 fw-bold">Select Date Range (Start - End)</label>
+                <div class="d-flex align-items-center">
+                  <input type="date" class="form-control" name="startDate" id="startDate">
+                  <i class="bi bi-arrow-right mx-3 fw-bold"></i>
+                  <input type="date" class="form-control" name="endDate" id="endDate">
+                </div>
+
+                <!-- Generate Button -->
+                <hr>
+                <div class="d-flex justify-content-center mt-3">
+                  <button type="submit" class="btn btn-success w-75 mt-auto" id="generateReportBtn">
+                    <i class="bi bi-bar-chart"></i> Generate Report
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+
+      <!-- Report Output -->
+      <div id="reportOutput" class="p-4 d-none">
+        <h5 class="fw-bold mb-3" id="reportTitleTable">Report Title</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover" id="reportTable">
+            <!-- Dynamically populated rows -->
+          </table>
+        </div>
+        <div class="mt-3 text-end">
+          <button class="btn btn-success" id="exportReportAsExcelBtn"><i class="bi bi-file-earmark-excel"></i> Export as Excel</button>
+          <button class="btn btn-danger" id="exportReportAsPdfBtn"><i class="bi bi-file-earmark-pdf"></i> Export as PDF</button>
+        </div>
+      </div>
+
+
     </section>
 
     <hr>
@@ -267,6 +398,8 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         <div id="violatorMessage"></div>
       </div>
     </section>
+
+    <hr>
 
     <!-- Announcement Modal -->
     <div class="modal fade" id="announcementModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
@@ -335,54 +468,420 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
   $user_type = $_SESSION['user_type'] ?? 'default';
   ?>
 
+  <!-- Reports -->
   <script>
-    const user_type = "<?php echo $user_type; ?>";
+    let reportsExport = [];
+    let reportFileName;
+    const reportForm = document.getElementById("reportGenerationForm");
 
-    console.log(user_type);
+    reportForm.addEventListener("submit", function(e) {
+      e.preventDefault();
 
-    if (user_type === "Inspector") {
-      document.querySelectorAll(".card-body").forEach((card) => {
-        const title = card.querySelector(".card-title-home").textContent.trim();
+      const startDate = document.getElementById("startDate").value.trim();
+      const endDate = document.getElementById("endDate").value.trim();
+      const reportTitle = document.getElementById("reportTitle").value.trim();
+      const reportType = document.getElementById('reporOptionsContainer').value;
 
-        if (title !== "Inspection Management" && title !== "Stall Violations") {
+      const exportPDFBtn = document.getElementById('exportReportAsPdfBtn');
+      const exportCSVBtn = document.getElementById('exportReportAsExcelBtn');
+      exportPDFBtn.dataset.report_type = toCamelCase(reportType);
+      exportPDFBtn.dataset.report_title = reportTitle;
+      exportCSVBtn.dataset.report_type = toCamelCase(reportType);
+      exportCSVBtn.dataset.report_title = reportTitle;
 
-          const icon = card.querySelector("i.fs-2");
-          if (icon) {
-            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo", "text-orange");
-            icon.classList.add("text-secondary");
+      if (startDate === "" || endDate === "" || reportTitle === "") {
+        alert("Please, complete the form.");
+        exit();
+      }
+
+
+      const formData = new FormData(reportForm);
+
+      fetch("../../actions/generate_report.php", {
+          method: "POST",
+          body: formData,
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+
+            console.log("Data REPORTS: ", data.reports)
+
+            const report = data.reports;
+            console.log("FORMAT: ", [report])
+
+            reportsExport = [report];
+            reportFileName = report.rows[0].title;
+
+            console.log("REPORT TITLE: ", report.rows[0].title);
+
+            populateReport(report, reportType);
+            alert("✅ " + data.message);
+
+          } else {
+            alert("❌ " + data.message);
           }
+        })
+        .catch(err => {
+          console.error("Request failed", err);
+        });
 
-          const button = card.querySelector(".btn");
-          if (button) {
-            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo", "btn-orange");
-            button.classList.add("btn-secondary");
-            button.disabled = true;
-            button.style.pointerEvents = "none";
-          }
+    });
+
+    function populateReport(response, reportType) {
+      console.log("RESPONSE: ", response);
+
+      const headers = response.headers;
+      const reportData = response.rows;
+
+      console.log("Headers:", headers);
+      console.log("First row of data:", reportData);
+
+      const reportTable = document.getElementById('reportTable');
+      const reportTitle = document.getElementById('reportTitleTable');
+
+      // Clear existing content
+      reportTable.innerHTML = '';
+      reportTitle.textContent = reportData[0].title;
+
+      let statusHeader = [];
+      let statusHeaderKeys = [];
+
+      switch (reportType) {
+        case 'Stall Utilization Report':
+          statusHeader = ['Title', 'Market Name', 'Total Stalls', 'Occupied Stalls', 'Occupancy Rate', 'Availability Rate'];
+          statusHeaderKeys = ['title', 'market_name', 'total_stalls', 'occupied_stalls', 'occupancy_rate', 'availability_rate'];
+          break;
+        case 'Vendor Master List Report':
+          statusHeader = ['Title', 'Market Name', 'Total Vendors'];
+          statusHeaderKeys = ['title', 'market_name', 'total_vendors'];
+          break;
+
+
+      }
+
+      console.log("REPOSRT TYPE INSIDE THE FUNCTION: ", reportType)
+
+      // Build status header
+      const statusRow = document.createElement('tr');
+      statusRow.innerHTML = headers.map(header => {
+        if (statusHeader.includes(header)) {
+          return `<th>${header}</th>`;
         }
-      });
-    } else {
-      document.querySelectorAll(".card-body").forEach((card) => {
-        const title = card.querySelector(".card-title-home").textContent.trim();
+        return '';
+      }).join('');
+      reportTable.appendChild(statusRow);
 
-        if (title === "Inspection Management") {
-
-          const icon = card.querySelector("i.fs-2");
-          if (icon) {
-            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo", "text-orange");
-            icon.classList.add("text-secondary");
-          }
-
-          const button = card.querySelector(".btn");
-          if (button) {
-            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo", "btn-orange");
-            button.classList.add("btn-secondary");
-            button.disabled = true;
-            button.style.pointerEvents = "none";
-          }
+      const row = reportData[0]; // Only process the first (and only) row
+      const dataRowStats = document.createElement('tr');
+      dataRowStats.innerHTML = headers.map(header => {
+        const key = convertHeaderToKey(header);
+        console.log("KEY: ", key);
+        if (statusHeaderKeys.includes(key)) {
+          return `<td>${row[key] ?? ''}</td>`;
         }
+        return '';
+      }).join('');
+      reportTable.appendChild(dataRowStats);
+
+      // Build table header
+      const headerRow = document.createElement('tr');
+      headerRow.innerHTML = headers.map(header => {
+        if (statusHeader.includes(header)) {
+          return '';
+        }
+        return `<th>${header}</th>`;
+      }).join('');
+      reportTable.appendChild(headerRow);
+
+      // Build data rows
+      reportData.forEach(row => {
+        const dataRow = document.createElement('tr');
+        dataRow.innerHTML = headers.map(header => {
+          const key = convertHeaderToKey(header);
+          if (statusHeaderKeys.includes(key)) {
+            return '';
+          }
+          return `<td>${row[key] ?? ''}</td>`;
+        }).join('');
+        reportTable.appendChild(dataRow);
       });
+
+      // Show report section
+      document.getElementById('reportOutput').classList.remove('d-none');
     }
+
+
+    // Function to dynamically show report options based on selected category
+    const optionsData = {
+      "stallVendor": [
+        "Stall Utilization Report",
+        "Vendor Master List Report"
+      ],
+      "paymentFinancial": [
+        "Payment Collection Report",
+        "Unpaid Dues Report",
+        "Official Receipts Report"
+      ],
+      "violationEnforcement": [
+        "Violation Summary Report",
+        "Suspended & Terminated Vendors Report"
+      ],
+      "operational": [
+        "Stall Transfer Requests Report",
+        "Stall Extension Requests Report",
+        "Helper Registration Report"
+      ],
+      "feedback": [
+        "Customer Feedback Summary",
+        "Response Time Report"
+      ]
+    };
+
+    showOptions();
+
+    // Initialize the report options when a radio button is selected
+    document.querySelectorAll('input[name="reportCategory"]').forEach(radio => {
+      radio.addEventListener("change", showOptions);
+    });
+
+    // Function to update report options based on selected report category
+    function showOptions() {
+      const selectedCategory = document.querySelector('input[name="reportCategory"]:checked')?.id;
+      const optionsContainer = document.getElementById("reporOptionsContainer");
+
+      // Clear previous options
+      optionsContainer.innerHTML = "";
+
+      if (selectedCategory) {
+        const optionsList = optionsData[selectedCategory];
+        if (optionsList) {
+          const ul = document.createElement("ul");
+
+          optionsList.forEach(option => {
+            const optionEl = document.createElement("option");
+            optionEl.textContent = option;
+            optionEl.value = option;
+            ul.appendChild(optionEl);
+          });
+
+          optionsContainer.appendChild(ul);
+        }
+      }
+    }
+    // Utility: Convert header label to object key
+    function convertHeaderToKey(header) {
+      return header
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, '') // remove punctuation
+        .trim()
+        .replace(/\s+/g, '_'); // replace spaces with _
+    }
+  </script>
+
+
+  <!-- Export As PDF -->
+  <script>
+    const exportPDFBtn = document.getElementById('exportReportAsPdfBtn');
+    exportPDFBtn.addEventListener('click', () => {
+      console.log("REPORT EXPORT: ", reportsExport[0])
+      console.log("REPORT FILENAME: ", reportFileName)
+      const postKey = exportPDFBtn.dataset.report_type;
+      const title = exportPDFBtn.dataset.report_title;
+
+      exportPDF({
+        dataArray: reportsExport[0],
+        filename: reportFileName + '.pdf',
+        postKey: postKey,
+        title: title
+      });
+    });
+
+    function exportPDF({
+      dataArray,
+      filename,
+      postKey,
+      title
+    }) {
+
+      console.log('ARRAY DATA from the PDF Function: ', dataArray);
+      // Convert array to JSON string and prepare form data
+      const formData = new URLSearchParams();
+      formData.append('data', JSON.stringify(dataArray));
+      formData.append('postKey', postKey);
+      formData.append('title', title);
+
+      fetch('../../actions/create_pdf.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData.toString()
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('PDF generation failed');
+          return response.blob();
+        })
+        .then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(blobUrl);
+        })
+        .catch(error => {
+          alert('Error: ' + error.message);
+        });
+    }
+  </script>
+
+  <!-- Export As CSV -->
+  <script>
+    const exportCSVBtn = document.getElementById('exportReportAsExcelBtn')
+    exportCSVBtn.addEventListener('click', () => {
+      console.log("REPORT EXPORT: ", reportsExport[0])
+      console.log("REPORT FILENAME: ", reportFileName)
+      const postKey = exportCSVBtn.dataset.report_type;
+      const title = exportCSVBtn.dataset.report_title;
+
+      exportCSV({
+        dataArray: reportsExport[0],
+        filename: reportFileName + '.csv',
+        postKey: postKey,
+        title: title
+      });
+    });
+
+    // Add event listener to the button
+    let suspendedAndTerminatedUsers = [];
+    document.getElementById('exportSuspended&TerminatedUsers').addEventListener('click', () => {
+      exportCSV({
+        dataArray: suspendedAndTerminatedUsers,
+        filename: 'terminated_suspended_users.csv',
+        postKey: 'violators'
+      });
+    });
+
+    function exportCSV({
+      dataArray,
+      filename,
+      postKey,
+      title
+    }) {
+
+      if (!postKey) {
+        console.error("Missing postKey");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(dataArray));
+      formData.append('postKey', postKey);
+      formData.append('title', title);
+
+      // Optionally log the formData to check its content (for debugging purposes)
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]); // Logs key-value pairs
+      }
+
+      for (let [key, value] of formData.entries()) {
+        console.log(`\n\n${key}: `, value);
+      }
+
+      fetch('../../actions/create_csv.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          const contentType = response.headers.get("Content-Type");
+
+          if (contentType && contentType.includes("text/csv")) {
+            return response.blob();
+          } else {
+            return response.json();
+          }
+        })
+        .then(data => {
+          if (data instanceof Blob) {
+            const link = document.createElement('a');
+            const blobUrl = URL.createObjectURL(data);
+            link.href = blobUrl;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(blobUrl);
+          } else {
+            console.error(data.message || 'An unknown error occurred.');
+          }
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+    }
+  </script>
+
+  <!-- SSE -->
+  <script>
+    // Connect to SSE server
+    const eventSource = new EventSource('../../actions/sse_new_applications.php');
+
+    eventSource.addEventListener('market_app_badge', function(e) {
+      const toDisplay = (e.data === 'true');
+
+      const cardBadge = document.getElementById('marketAppBadge');
+      if (toDisplay) {
+        cardBadge.classList.remove('d-none');
+      } else {
+        cardBadge.classList.add('d-none');
+      }
+    });
+
+    eventSource.addEventListener('violation_badge', function(e) {
+      const toDisplay = (e.data === 'true');
+
+      const cardBadge = document.getElementById('violationBadge');
+      if (toDisplay) {
+        cardBadge.classList.remove('d-none');
+      } else {
+        cardBadge.classList.add('d-none');
+      }
+    });
+
+    eventSource.addEventListener('vendor_app_badge', function(e) {
+      const toDisplay = (e.data === 'true');
+
+      const cardBadge = document.getElementById('vendorAppBadge');
+      if (toDisplay) {
+        cardBadge.classList.remove('d-none');
+      } else {
+        cardBadge.classList.add('d-none');
+      }
+    });
+
+    eventSource.addEventListener('payment_badge', function(e) {
+      const toDisplay = (e.data === 'true');
+
+      const cardBadge = document.getElementById('paymentBadge');
+      if (toDisplay) {
+        cardBadge.classList.remove('d-none');
+      } else {
+        cardBadge.classList.add('d-none');
+      }
+    });
+
+    eventSource.addEventListener('inspection_badge', function(e) {
+      const toDisplay = (e.data === 'true');
+
+      const cardBadge = document.getElementById('inspectionBadge');
+      if (toDisplay) {
+        cardBadge.classList.remove('d-none');
+      } else {
+        cardBadge.classList.add('d-none');
+      }
+    });
   </script>
 
   <!-- Post Announcement -->
@@ -416,10 +915,10 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
       formData.append("start_date", startDate);
       formData.append("expiry_date", expiryDate);
 
-      console.log("FormData being sent:");
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
+      // console.log("FormData being sent:");
+      // for (const [key, value] of formData.entries()) {
+      //   console.log(`${key}: ${value}`);
+      // }
 
       // Send data to backend via AJAX
       fetch("../../actions/post_announcements.php", {
@@ -451,15 +950,18 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         return response.json();
       })
       .then(data => {
-        console.log('Received data:', data);
+
         const select = document.getElementById('market');
+        const selectForReports = document.getElementById('marketForReports');
         select.innerHTML = '';
+        selectForReports.innerHTML = '';
 
         data.forEach(item => {
           const option = document.createElement('option');
           option.value = item.id;
           option.textContent = item.market_name;
           select.appendChild(option);
+          selectForReports.appendChild(option);
         });
       })
       .catch(error => {
@@ -485,64 +987,6 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     }
   </script>
 
-  <!-- Export As CSV -->
-  <script>
-    // Add event listener to the button
-    let suspendedAndTerminatedUsers = [];
-    document.getElementById('exportSuspended&TerminatedUsers').addEventListener('click', exportAsCSV);
-
-    function exportAsCSV() {
-      // Check if there's any data to export
-      if (suspendedAndTerminatedUsers.length === 0) {
-        alert('No users to export.');
-        return;
-      }
-
-      // Create a FormData object to send the data via POST
-      const formData = new FormData();
-      formData.append('violators', JSON.stringify(suspendedAndTerminatedUsers)); // Convert array to JSON string
-
-      // Make a POST request to the PHP script to generate the CSV
-      fetch('../../actions/create_csv.php', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-
-          // Check if it's a CSV file response
-          const contentType = response.headers.get("Content-Type");
-          console.log("CONTENT TYPE: ", contentType);
-
-          if (contentType && contentType.includes("application/csv")) {
-            return response.blob(); // It's a CSV file, so process it
-            console.log("blob")
-          } else {
-            return response.json(); // Otherwise, handle as JSON error message
-            console.log("no blob")
-          }
-
-        })
-        .then(data => {
-          if (data instanceof Blob) {
-            console.log('IM HERE BLOB')
-            // Handle CSV file download
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(data);
-            link.href = url;
-            link.download = 'terminated&suspended_users.csv'; // Set a default file name
-            link.click();
-            URL.revokeObjectURL(url); // Clean up the URL object
-          } else {
-            // Handle JSON response if an error occurred
-            console.error(data.message || 'An unknown error occurred.');
-          }
-        })
-        .catch(error => {
-          console.error('Fetch error:', error);
-        });
-    }
-  </script>
 
   <!-- Fetch Suspended & Terminated Accounts -->
   <script>
@@ -624,7 +1068,74 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
     });
   </script>
 
+  <script>
+    function toCamelCase(text) {
+      return text
+        .replace(/(?:^\w|[A-Z]|\b\w|\s+|_)/g, (match, index) =>
+          index === 0 ? match.toLowerCase() : match.toUpperCase()
+        )
+        .replace(/\s+/g, '')
+        .replace(/_/g, '');
+    }
+  </script>
 
+  <script>
+    const user_type = "<?php echo $user_type; ?>";
+
+    if (user_type === "Inspector") {
+      document.querySelectorAll(".card-body").forEach((card) => {
+        const title = card.querySelector(".card-title-home").textContent.trim();
+
+        if (title !== "Inspection Management" && title !== "Stall Violations") {
+
+          const icon = card.querySelector("i.fs-2");
+
+          if (icon) {
+            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo", "text-orange");
+            icon.classList.add("text-secondary");
+          }
+
+          const button = card.querySelector(".btn");
+          if (button) {
+            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo", "btn-orange");
+            button.classList.add("btn-secondary");
+            button.disabled = true;
+            button.style.pointerEvents = "none";
+          }
+        }
+      });
+
+
+    } else {
+
+      document.querySelectorAll(".card-body").forEach((card) => {
+        const title = card.querySelector(".card-title-home").textContent.trim();
+
+        if (title === "Inspection Management") {
+
+          const icon = card.querySelector("i.fs-2");
+          if (icon) {
+            icon.classList.remove("text-danger", "text-primary", "text-success", "text-warning", "text-indigo", "text-orange");
+            icon.classList.add("text-secondary");
+          }
+
+          const inspectionBadge = document.getElementById("inspectionBadge");
+          if (inspectionBadge) {
+            inspectionBadge.classList.remove("bg-danger");
+            inspectionBadge.classList.add("bg-secondary");
+          }
+
+          const button = card.querySelector(".btn");
+          if (button) {
+            button.classList.remove("btn-danger", "btn-primary", "btn-success", "btn-warning", "btn-indigo", "btn-orange");
+            button.classList.add("btn-secondary");
+            button.disabled = true;
+            button.style.pointerEvents = "none";
+          }
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>

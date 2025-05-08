@@ -10,6 +10,7 @@ require_once 'config.php';
 include_once __DIR__ . '/../pages/actions/get_user_id.php';
 
 $isLoginPage = strpos($_SERVER['REQUEST_URI'], '/pages/login/') !== false;
+$isSignupPage = strpos($_SERVER['REQUEST_URI'], '/pages/signup/') !== false;
 $isInActionsFolder = strpos($_SERVER['REQUEST_URI'], '/actions/') !== false;
 $isInAdminFolder = strpos($_SERVER['REQUEST_URI'], '/admin/') !== false;
 $isHomepage = defined('IS_HOMEPAGE') && IS_HOMEPAGE;
@@ -212,7 +213,7 @@ if ($isHomepage) {
         </script>
     <?php endif; ?>
 
-    <?php if (!isset($_SESSION['account_id']) && !$isLoginPage): ?>
+    <?php if (!isset($_SESSION['account_id']) && !$isLoginPage && !$isSignupPage): ?>
         <!-- Not Logged In Modal -->
         <div class="modal fade" id="notLoggedInModal" tabindex="-1" aria-labelledby="notLoggedInModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

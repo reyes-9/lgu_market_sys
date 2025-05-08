@@ -166,7 +166,7 @@ function assignStallOwner($pdo, $applicants_user_id, $stall_number)
 
         // Assign the stall to the user
         $status = "occupied";
-        $stmtUpdate = $pdo->prepare("UPDATE stalls SET user_id = :user_id, status = :status WHERE stall_number = :stall_number");
+        $stmtUpdate = $pdo->prepare("UPDATE stalls SET user_id = :user_id, status = :status, occupancy_date = NOW() WHERE stall_number = :stall_number");
         $stmtUpdate->bindParam(':user_id', $applicants_user_id, PDO::PARAM_INT);
         $stmtUpdate->bindParam(':status', $status, PDO::PARAM_STR);
         $stmtUpdate->bindParam(':stall_number', $stall_number, PDO::PARAM_STR);
