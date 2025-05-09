@@ -279,10 +279,10 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                     Stall & Vendor Reports
                   </label>
 
-                  <input type="radio" class="btn-check" name="reportCategory" id="paymentFinancial" autocomplete="off">
+                  <!-- <input type="radio" class="btn-check" name="reportCategory" id="paymentFinancial" autocomplete="off">
                   <label class="btn btn-outline-pill" for="paymentFinancial">
                     Payment & Financial Reports
-                  </label>
+                  </label> -->
 
                   <input type="radio" class="btn-check" name="reportCategory" id="violationEnforcement" autocomplete="off">
                   <label class="btn btn-outline-pill" for="violationEnforcement">
@@ -556,7 +556,18 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
           statusHeader = ['Title', 'Market Name', 'Total Vendors'];
           statusHeaderKeys = ['title', 'market_name', 'total_vendors'];
           break;
-
+        case 'Violation Summary Report':
+          statusHeader = ['Title', 'Market Name', 'Violation Count', 'Pending Count', 'Resolved Count', 'Escalated Count', 'Vendor Count', 'Most Common Violation'];
+          statusHeaderKeys = ['title', 'market_name', 'violation_count', 'pending_count', 'resolved_count', 'escalated_count', 'vendor_count', 'most_common_violation'];
+          break;
+        case 'Stall Transfer Requests Report':
+          statusHeader = ['Title', 'Market Name', 'Total Transfer Requests', 'Pending Count', 'Approved Count', 'Rejected Count'];
+          statusHeaderKeys = ['title', 'market_name', 'total_transfer_requests', 'pending_count', 'approved_count', 'rejected_count'];
+          break;
+        case 'Stall Extension Requests Report':
+          statusHeader = ['Title', 'Market Name', 'Total Extension Requests', 'Pending Count', 'Approved Count', 'Rejected Count'];
+          statusHeaderKeys = ['title', 'market_name', 'total_extension_requests', 'pending_count', 'approved_count', 'rejected_count'];
+          break;
 
       }
 
@@ -618,24 +629,13 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         "Stall Utilization Report",
         "Vendor Master List Report"
       ],
-      "paymentFinancial": [
-        "Payment Collection Report",
-        "Unpaid Dues Report",
-        "Official Receipts Report"
-      ],
       "violationEnforcement": [
-        "Violation Summary Report",
-        "Suspended & Terminated Vendors Report"
+        "Violation Summary Report"
       ],
       "operational": [
         "Stall Transfer Requests Report",
         "Stall Extension Requests Report",
-        "Helper Registration Report"
       ],
-      "feedback": [
-        "Customer Feedback Summary",
-        "Response Time Report"
-      ]
     };
 
     showOptions();

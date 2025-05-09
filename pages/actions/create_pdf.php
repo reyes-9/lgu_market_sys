@@ -56,6 +56,44 @@ try {
             // This assumes generatePDFReport returns [$pdf, $html]
             list($pdf, $html) = generatePDFReport($rows, $headers, $summaryHeaders, $title);
             break;
+        case "violationSummaryReport":
+            $summaryHeaders = [
+                'Title',
+                'Market Name',
+                'Violation Count',
+                'Pending Count',
+                'Resolved Count',
+                'Escalated Count',
+                'Vendor Count',
+                'Most Common Violation'
+            ];
+            // This assumes generatePDFReport returns [$pdf, $html]
+            list($pdf, $html) = generatePDFReport($rows, $headers, $summaryHeaders, $title);
+            break;
+        case "stallTransferRequestsReport":
+            $summaryHeaders = [
+                'Title',
+                'Market Name',
+                'Total Transfer Requests',
+                'Pending Count',
+                'Approved Count',
+                'Rejected Count'
+            ];
+            // This assumes generatePDFReport returns [$pdf, $html]
+            list($pdf, $html) = generatePDFReport($rows, $headers, $summaryHeaders, $title);
+            break;
+        case "stallExtensionRequestsReport":
+            $summaryHeaders = [
+                'Title',
+                'Market Name',
+                'Total Extension Requests',
+                'Pending Count',
+                'Approved Count',
+                'Rejected Count'
+            ];
+            // This assumes generatePDFReport returns [$pdf, $html]
+            list($pdf, $html) = generatePDFReport($rows, $headers, $summaryHeaders, $title);
+            break;
 
         default:
             echo json_encode(['success' => false, 'message' => 'Unknown report key.']);
