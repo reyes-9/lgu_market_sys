@@ -458,7 +458,6 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
         </div>
       </div>
     </div>
-
   </div>
 
   <hr>

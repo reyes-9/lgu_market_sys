@@ -83,11 +83,14 @@ require_once '../../includes/session.php';
             return str.replace(/\b\w/g, (char) => char.toUpperCase());
         }
 
-        function generateCards(data) {
+        async function generateCards(data) {
 
             const container = document.querySelector('.row.g-5');
+
             container.innerHTML = '';
-            data.forEach((app, index) => {
+            for (let index = 0; index < data.length; index++) {
+                const app = data[index];
+                const docsInputs = await generateRequiredDocsInputs(app.id, app.application_type);
                 const delay = index * 0.1;
                 const card = `
             <div class="col-md-4 slide-up">
@@ -101,6 +104,7 @@ require_once '../../includes/session.php';
                     app.status === 'Approved' ? 'status-approved' :
                     app.status === 'Rejected' ? 'status-rejected' :
                     app.status === 'Withdrawn' ? 'status-withdrawn' : 
+                    app.status === 'Document Resubmission' ? 'status-resubmit' : 
                     ''
                     }">
                     
@@ -160,20 +164,48 @@ require_once '../../includes/session.php';
             <div class="modal fade" id="viewProgressModal${app.id}" tabindex="-1" aria-labelledby="viewProgressModalLabel${app.id}" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title" id="viewProgressModalLabel${app.id}">Application Progress</h5>
-                        </div>
                         <div class="modal-body">
-                            <div class="progress-tracker-modern my-5 d-flex flex-column flex-md-row align-items-center justify-content-between" data-status="${app.status}">
-                                ${generateProgressSteps(app.status, app.inspection_status)}
+                            <div class="modal-container">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h4 class="modal-title fw-bold" id="viewProgressModalLabel${app.id}">Application Progress</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                           
+                                <div class="progress-tracker-modern my-5 d-flex flex-column flex-md-row align-items-center justify-content-between" data-status="${app.status}">
+                                    ${generateProgressSteps(app.status, app.inspection_status)}
+                                </div>
+                                ${app.status === 'Document Resubmission' ? `
+                                 <button class="btn bg-warning-subtle btn-sm shadow" data-bs-target="#resubmitDocumentsModal${app.id}" data-bs-dismiss="modal" data-bs-toggle="modal">Resubmit Documents</button>
+                                ` : ''}
+                               
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>  
+                </div>
+            </div>
+
+            <div class="modal fade" id="resubmitDocumentsModal${app.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="modal-container">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h4 class="modal-title fw-bold">Document Resubmission (${app.application_type} Application)</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form class="mt-4" id="resubmitForm${app.id}" enctype="multipart/form-data">
+                                    <div id="requiredDocsContainer${app.id}">
+                                     <input type="hidden" id="application_id" name="application_id" value="${app.id}">
+                                        ${docsInputs}
+                                    </div>
+                                    <button type="submit" id="submitDocumentsBtn" class="btn bg-info-subtle mt-3">Submit</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
                 
             <!-- Withdraw Modal  -->
             <div class="modal fade withdrawModal" id="withdrawModal${app.id}" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
@@ -195,8 +227,112 @@ require_once '../../includes/session.php';
             </div>
             `;
                 container.innerHTML += card;
+            };
+            initializeDocumentResubmission();
+        }
+
+        function initializeDocumentResubmission() {
+            document.querySelectorAll("[id^='resubmitForm']").forEach(form => {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const appId = form.id.replace("resubmitForm", "");
+                    const submitBtn = form.querySelector("#submitDocumentsBtn");
+                    const formData = new FormData(form);
+
+                    let allFilesSelected = true;
+                    for (let pair of formData.entries()) {
+                        if (pair[1] instanceof File && pair[1].name === "") {
+                            allFilesSelected = false;
+                            break;
+                        }
+                    }
+
+                    if (!allFilesSelected) {
+                        alert("Please select a file for all required file inputs.");
+                        return;
+                    }
+
+
+                    for (let [key, value] of formData.entries()) {
+                        if (value instanceof File) {
+                            console.log(`${key}:`, value.name, value.size, value.type);
+                        } else {
+                            console.log(`${key}:`, value);
+                        }
+                    }
+
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Submitting...";
+
+                    try {
+                        const response = await fetch("../actions/resubmit_documents.php", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            alert("Documents resubmitted successfully!");
+
+                            const modalElement = document.getElementById(`resubmitDocumentsModal${appId}`);
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            modalInstance.hide();
+
+                            // Optionally, refresh or update the card
+                        } else {
+                            alert(`Failed to resubmit: ${result.message}`);
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("An error occurred while submitting the documents.");
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "Submit";
+                    }
+                });
             });
         }
+
+
+
+        async function generateRequiredDocsInputs(applicationId, applicationType) {
+            try {
+                const response = await fetch('../actions/generate_docs_inputs.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `application_id=${encodeURIComponent(applicationId)}&application_type=${encodeURIComponent(applicationType)}`
+                });
+
+                const results = await response.json();
+                let inputElements = '';
+
+                if (Array.isArray(results.documents)) {
+                    results.documents.forEach(document => {
+
+                        // Create an input container (div element)
+                        const inputContainer = `
+                <div class="mb-3">
+                    <label for="${document.id}" class="form-label">${document.label}</label>
+                    <input type="file" class="form-control" id="${document.id}" name="${document.name}" accept=".pdf, .jpg, .jpeg, .png">
+                </div>
+            `;
+                        inputElements += inputContainer; // Append the HTML string to the inputElements string
+                    });
+                } else {
+                    console.error("Error: 'documents' is not an array", results.documents);
+                }
+
+                return inputElements;
+            } catch (err) {
+                console.error('Error fetching document inputs:', err);
+                return '';
+            }
+        }
+
 
         function generateProgressSteps(status, inspection_status) {
             const steps = [{
@@ -211,6 +347,11 @@ require_once '../../includes/session.php';
                 },
                 {
                     id: 3,
+                    label: 'Document Resubmission',
+                    icon: ''
+                },
+                {
+                    id: 4,
                     label: 'Inspection',
                     icon: ''
                 },
@@ -226,25 +367,25 @@ require_once '../../includes/session.php';
             statusIndex = steps.findIndex(step => step.label === status);
 
             if (status === "Rejected") {
-                statusIndex = 3;
+                statusIndex = 5;
             }
 
             if (status === "Approved") {
-                statusIndex = 3;
+                statusIndex = 5;
             }
 
             if (status === "Under Review" && inspection_status === "Approved") {
-                statusIndex = 2;
+                statusIndex = 3;
             }
 
             if (status === "Under Review" && inspection_status === "Rejected") {
-                statusIndex = 2;
+                statusIndex = 3;
             }
 
             console.log("Status Index: ", statusIndex)
             return steps.map((step, index) => {
 
-                console.log("Index", index)
+                console.log("Index: ", index)
 
                 let stepClass = 'pending';
                 let icon = '';
@@ -258,6 +399,9 @@ require_once '../../includes/session.php';
                 } else if (status === 'Under Review' && inspection_status === "Rejected" && index === statusIndex) {
                     stepClass = 'rejected';
                     icon = 'bi-x-circle-fill';
+                } else if (status === 'Document Resubmission' && index === statusIndex) {
+                    stepClass = 'ongoing';
+                    icon = 'bi-arrow-repeat';
                 } else if (status === 'Approved' && index === statusIndex) {
                     stepClass = 'completed';
                     icon = 'bi-check-circle-fill';
@@ -284,8 +428,9 @@ require_once '../../includes/session.php';
                                         stepClass === 'rejected' ? 'Rejected' : 
 
                                         'Pending'}</small>
-                                    </div>`
+                                </div>`
             }).join('');
+            console.log("Status Index: ", statusIndex)
 
         }
 

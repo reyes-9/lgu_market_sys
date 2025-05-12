@@ -64,6 +64,9 @@ body {
 .status-withdrawn {
   background-color: #fd7e14;
 }
+.status-resubmit {
+  background-color: #3f14fd;
+}
 
 .pagination {
   padding: 20px;

@@ -289,8 +289,17 @@ if ($applications_id) {
         </div>
 
         <hr>
+        <h6><i class="bi bi-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Checks the inspection status of the application."></i>
+            Inspecton Result:
+            <span class="spinner-border spinner-border-sm" id="inspectionSpinner" aria-hidden="true"></span>
+            <i class="bi bi-check-circle-fill text-success d-none" id="inspectionIconSuccess"></i>
+            <i class="bi bi-x-circle-fill text-danger d-none" id="inspectionIconFailed"></i>
+            <i class="bi bi-clock-fill text-primary d-none" id="inspectionIconScheduled"></i>
+            <i class="bi bi-clock-fill text-warning d-none" id="inspectionIconPending"></i>
+        </h6>
         <div class="container" id="scheduleInfoSection">
-            <h5 class="fw-bold">Inspection Info:</h5>
+
+            <!-- <h5 class="fw-bold">Inspection Info:</h5> -->
             <table class="table table-borderless">
                 <tbody>
                     <tr>
@@ -390,7 +399,9 @@ if ($applications_id) {
                 <input type="hidden" name="extension_duration" value="<?php echo !empty($app['extension_duration']) ? $app['extension_duration'] : ''; ?>">
 
                 <button type="button" class="btn btn-dark" onclick="toggleApplicationRejectionComment()">Reject</button>
+                <button type="submit" id="resubmit-button" name="resubmit" class="btn btn-warning ms-3" disabled>Resubmit Documents</button>
                 <button type="submit" id="approve-button" name="approved" class="btn review-btn ms-3" disabled>Approve</button>
+
 
                 <div id="application-rejection-comment" class="d-none mt-2">
                     <textarea id="rejection_input" name="rejection_reason" placeholder="Enter rejection reason." class="rejection_input" rows="2"></textarea>
@@ -407,6 +418,7 @@ if ($applications_id) {
 
     <script>
         let invalidDocuments = 0;
+        let pendingDocuments = 0;
 
         document.addEventListener("DOMContentLoaded", function() {
             checkEligibility();
@@ -591,14 +603,14 @@ if ($applications_id) {
                         }
 
                         // Determine the badge background color based on document status
-                        let statusBadgeClass = "bg-warning";
+                        let statusBadgeClass = "text-warning";
                         if (doc.document_status.toLowerCase() === "valid") {
-                            statusBadgeClass = "bg-success";
+                            statusBadgeClass = "text-success";
                         } else if (doc.document_status.toLowerCase() === "rejected") {
-                            statusBadgeClass = "bg-danger";
+                            statusBadgeClass = "text-danger";
                             invalidDocuments++;
                         } else if (doc.document_status.toLowerCase() === "pending") {
-                            invalidDocuments++;
+                            pendingDocuments++;
                         }
 
                         return `
@@ -651,13 +663,15 @@ if ($applications_id) {
         function initializeApprovalActions() {
             document.querySelectorAll(".approval-actions").forEach(form => {
                 form.addEventListener("submit", function(event) {
-                    event.preventDefault(); // Prevent default form submission
+                    event.preventDefault();
 
                     let formData = new FormData(this);
-                    let action = event.submitter.name; // Determine which button was clicked
+                    let action = event.submitter.name;
 
                     if (action === "approved") {
                         approveApplication(formData);
+                    } else if (action === "resubmit") {
+                        subjectForResubmission(formData);
                     } else if (action === "rejected") {
 
                         let reject_input = document.getElementById('rejection_input').value;
@@ -671,6 +685,31 @@ if ($applications_id) {
                     }
                 });
             });
+        }
+
+        function subjectForResubmission(formData) {
+            formData.append("action", "resubmit");
+
+            console.log("Form Data:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            fetch("../../actions/process_application.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        setTimeout(() => {
+                            window.location.href = "http://localhost/lgu_market_sys/pages/admin/table/";
+                        }, 1000);
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
 
         function approveApplication(formData) {
@@ -935,7 +974,7 @@ if ($applications_id) {
                     }, 400);
 
 
-                    // Market (Stall) Validation
+                    // Market Stall Validation
                     const marketDiv = document.querySelector(".container.market");
                     const marketSpinner = document.getElementById("marketSpinner");
                     const marketIconSuccess = document.getElementById("marketIconSuccess");
@@ -955,7 +994,7 @@ if ($applications_id) {
 
                     }
                     setTimeout(() => {
-                        if (marketSpinner) marketSpinner.remove(); // Remove loading spinner
+                        if (marketSpinner) marketSpinner.remove();
                     }, 900);
 
 
@@ -979,37 +1018,101 @@ if ($applications_id) {
 
                     }
                     setTimeout(() => {
-                        if (violationSpinner) violationSpinner.remove(); // Remove loading spinner
+                        if (violationSpinner) violationSpinner.remove();
                     }, 1400);
 
-                    const approveButton = document.getElementById("approve-button");
+
+                    // Inspection Validation
+                    const inspectionSpinner = document.getElementById("inspectionSpinner");
+                    const inspectionIconSuccess = document.getElementById("inspectionIconSuccess");
+                    const inspectionIconFailed = document.getElementById("inspectionIconFailed");
+                    const inspectionIconScheduled = document.getElementById("inspectionIconScheduled");
+                    const inspectionIconPending = document.getElementById("inspectionIconPending");
                     const sched_info_div = document.getElementById("scheduleInfoSection");
+
+                    // sched_info_div.style.display = inspection_status === "Approved" ? "block" : "none";
+
+                    if (inspection_status == "Approved") {
+                        setTimeout(() => {
+                            inspectionIconSuccess.classList.remove("d-none");
+
+                            sched_info_div.style.display = "block";
+                        }, 1600);
+
+                    } else if (inspection_status == "Scheduled") {
+                        setTimeout(() => {
+                            inspectionIconScheduled.classList.remove("d-none");
+                            sched_info_div.style.display = "block";
+                        }, 1600);
+
+                    } else if (inspection_status == "Pending") {
+                        setTimeout(() => {
+                            inspectionIconPending.classList.remove("d-none");
+                            sched_info_div.style.display = "none";
+                        }, 1600);
+
+                    } else {
+                        setTimeout(() => {
+                            inspectionIconFailed.classList.remove("d-none");
+
+                            sched_info_div.style.display = "block";
+                        }, 1600);
+
+                    }
+                    setTimeout(() => {
+                        if (inspectionSpinner) inspectionSpinner.remove(); // Remove loading spinner
+                    }, 1600);
+
+
+
+                    const approveButton = document.getElementById("approve-button");
+                    const resubmitButton = document.getElementById("resubmit-button");
                     const inspection_button = document.getElementById("scheduleInspectionBtn");
                     const ownerApprovalDiv = document.getElementById("ownerApprovalDiv");
                     const helperValidationDiv = document.getElementById("helperValidationDiv");
                     const paymentDiv = document.getElementById("paymentDiv");
 
                     let canApprove = true;
+                    let baseValidation = data.isApplicant && data.isStall && !data.hasViolation;
+                    let docResubmission = false;
+                    let pendingDocs = false;
 
-                    if (application_type === "stall transfer" || application_type === "stall succession") {
-                        helperValidationDiv.style.display = "none";
-                        canApprove = data.isStallPaid && data.isTransferApproved && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
-                    } else if (application_type === "helper") {
-                        ownerApprovalDiv.style.display = "none";
-                        canApprove = data.isStallPaid && data.isHelper && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
-                    } else if (application_type === 'stall extension') {
-                        helperValidationDiv.style.display = "none";
-                        ownerApprovalDiv.style.display = "none";
-                        canApprove = data.isStallPaid && data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
-                    } else {
-                        paymentDiv.style.display = "none";
-                        helperValidationDiv.style.display = "none";
-                        ownerApprovalDiv.style.display = "none";
-                        canApprove = data.isApplicant && data.isStall && !data.hasViolation && invalidDocuments === 0;
+                    docResubmission = invalidDocuments > 0;
+                    pendingDocs = pendingDocuments > 0;
+
+                    switch (application_type) {
+                        case "stall transfer":
+                        case "stall succession":
+                            helperValidationDiv.style.display = "none";
+                            canApprove = baseValidation && !docResubmission && !pendingDocs && data.isStallPaid && data.isTransferApproved;
+                            break;
+
+                        case "helper":
+                            ownerApprovalDiv.style.display = "none";
+                            canApprove = baseValidation && !docResubmission && !pendingDocs && data.isStallPaid && data.isHelper;
+                            break;
+
+                        case "stall extension":
+                            helperValidationDiv.style.display = "none";
+                            ownerApprovalDiv.style.display = "none";
+                            canApprove = baseValidation && !docResubmission && !pendingDocs && data.isStallPaid;
+                            break;
+
+                        default:
+                            paymentDiv.style.display = "none";
+                            helperValidationDiv.style.display = "none";
+                            ownerApprovalDiv.style.display = "none";
+                            canApprove = baseValidation && !docResubmission && !pendingDocs;
                     }
 
-                    sched_info_div.style.display = inspection_status === "Approved" ? "block" : "none";
-                    sched_info_div.style.display = "block";
+                    if (docResubmission && !pendingDocs) {
+                        resubmitButton.style.display = "inline-block";
+                        resubmitButton.disabled = false;
+                        approveButton.style.display = "none";
+                    } else {
+                        resubmitButton.style.display = "none";
+                        approveButton.style.display = "inline-block";
+                    }
 
                     if (canApprove === true) {
                         console.log(inspection_status);

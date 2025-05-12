@@ -24,7 +24,7 @@ if (!$application_id) {
 }
 
 try {
-    // Start the transaction
+
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
     $pdo->beginTransaction();
 
@@ -40,7 +40,7 @@ try {
 
     if ($checkStmt->rowCount() == 0) {
         // If no rows are returned, it means the application is already locked by another admin
-        $pdo->rollBack(); // Rollback the transaction
+        $pdo->rollBack();
         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
         echo json_encode(["success" => false, "message" => "This application is already being reviewed by another admin."]);
         exit;
@@ -58,18 +58,18 @@ try {
 
     if ($updateStmt->execute()) {
 
-        $pdo->commit(); // Commit the transaction
+        $pdo->commit();
         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
         logAdminAction($pdo, $admin_id, "Start Review", "Started review for application ID: " . $application_id);
         echo json_encode(["success" => true, "message" => "Review started"]);
     } else {
-        $pdo->rollBack(); // Rollback if update failed
+        $pdo->rollBack();
         $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
         $errorInfo = $updateStmt->errorInfo();
         echo json_encode(["success" => false, "message" => "Failed to update status", "error" => $errorInfo[2]]);
     }
 } catch (Exception $e) {
-    $pdo->rollBack(); // Rollback the transaction in case of an error
+    $pdo->rollBack();
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     echo json_encode(["success" => false, "message" => "Error: " . $e->getMessage()]);
 }

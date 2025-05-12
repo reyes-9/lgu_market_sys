@@ -567,6 +567,11 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
                             statusBtnClass = "start-review-btn";
                             buttonText = "Continue Review";
                         }
+                        if (row.status === "Document Resubmission") {
+                            console.log(row.status);
+                            statusBtnClass = "view-application-btn";
+                            buttonText = "Continue Review";
+                        }
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
@@ -803,27 +808,6 @@ if ($_SESSION['user_type'] !== 'Admin' && $_SESSION['user_type'] !== 'Inspector'
             }
         });
     </script>
-    <script>
-        // Theme
-        const profile = document.querySelector('.profile');
-        const divide = document.querySelector('.divide');
-        const table = document.querySelector('.custom-table');
-
-        themeToggleButton.addEventListener("click", () => {
-            profile.classList.toggle("dark");
-            profile.classList.toggle("light");
-            divide.classList.toggle('dark');
-            divide.classList.toggle('light');
-            table.classList.toggle('dark');
-            table.classList.toggle('light');
-        });
-    </script>
 </body>
 
 </html>
-
-<!-- 
-nreyesmine69@gmail.com
-test1234 
-
--->

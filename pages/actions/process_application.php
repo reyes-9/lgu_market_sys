@@ -5,7 +5,6 @@ require_once "get_user_id.php";
 require_once "log_admin_actions.php";
 require_once "notifications.php";
 
-
 header('Content-Type: application/json');
 
 $admin_id = $_SESSION['admin_id'];
@@ -96,6 +95,10 @@ try {
             }
         }
 
+        if ($action === 'resubmit') {
+            $new_status = "Document Resubmission";
+        }
+
         // Update application status
         $stmt = $pdo->prepare("
                     UPDATE applications 
@@ -116,6 +119,11 @@ try {
         if ($action === 'approved') {
             $message = "Congratulations! Your application for " . $application_type .
                 " (Application Number: " . $application_number . ") has been approved.";
+        } else if ($action === 'resubmit') {
+            $message = "Your application for " . $application_type .
+                " (Application Number: " . $application_number . ") requires resubmission due to issues with the submitted documents.\n" .
+                "Remarks: " . $rejection_reason . ".\n\n" .
+                "Please review the remarks and resubmit the necessary documents through your account dashboard.";
         } else {
             $message = "We're sorry, but your application for " . $application_type .
                 " (Application Number: " . $application_number . ") has been rejected.\n" .
@@ -123,10 +131,11 @@ try {
                 "Please contact the administration for further details.";
         }
 
+
         logAdminAction($pdo, $admin_id, $new_status . " Application", $new_status . " application ID: " . $application_id);
         insertNotification($pdo, $account_id, $new_status . " Application", $message, 'unread');
 
-        echo json_encode(['success' => true, 'message' => "Application successfully $new_status."]);
+        echo json_encode(['success' => true, 'message' => "Application successfully marked $new_status."]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
     }
@@ -135,7 +144,6 @@ try {
     $pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
-
 
 function assignStallOwner($pdo, $applicants_user_id, $stall_number)
 {
